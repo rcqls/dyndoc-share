@@ -1,0 +1,200 @@
+Macro pour générer un Slide simple
+Elle permet notamment de na pas gérer le compteur
+{#def]Slide[#,]pb[][#,]nb[1][#,]titre[][#,]haut[][#,]bas[][#<]
+{#Actor]head:tit_#{pb}[#,]:1-#{nb}[#,]0.5,0.5[#align]center,center[#what]\textbf{\large :{"#{titre}".strip}}[#}
+{#Actor]def:def_#{pb}[#,]:1-#{nb}[#,]0.5,0.5[#align]center,center[#minipage]11cm[#what]#{haut}{#blck][#yield]haut[#}[#}
+{#Actor]ex:ex_#{pb}[#,]:1-#{nb}[#,]0.5,1.0[#align]center,top[#minipage]11cm[#what]#{bas}{#blck][#yield]bas[#}[#}
+{#incCpt]#{nb}[#}
+[#def}
+
+{#def]when[#,]when[][#>]:{CqlsBeamer.when(#{=when})}[#}
+{#def]only[#,]where[][#,]texte[][#>]{#ONLY]#{where}[#}{#{texte}[#yield]default[#>]}[#}
+{#def]view[#,]where[][#,]texte[][#>]{#VIEW]#{where}[#}{#{texte}[#yield]default[#>]}[#}
+{#def]uncover[#,]where[][#,]texte[][#>]{#UNCOVER]#{where}[#}{#{texte}[#yield]default[#>]}[#}
+{#def]invisible[#,]where[#>]\invisible<:{CqlsBeamer.when(#{=where})}>{[#yield]default[#>]}[#}
+{#def]color[#,]where[][#,]color[blue][#,]texte[][#>]{{#COLOR]#{where}[#,]#{color}[#} #{texte}[#yield]default[#>]}[#}
+{#def]item[#,]where[][#,]alert[][#>]\item<:{CqlsBeamer.when(#{=where})}[#?]#{+?alert}[#>]|alert@:{CqlsBeamer.when(#{=alert})}[#?]end[#>]>[#def}
+
+
+{#def]altcol[#,]where[][#,]col1[purple][#,]col2[gray]
+[#>]\alt<:{CqlsBeamer.when(#{=where})}>{\color{#{col1}}[#yield]default[#>]}{\color{#{col2}}[#yield]default[#>][}]
+[#def}
+
+{#def]SlideSFE[#,]pb[][#,]titre[][#,]desc[][#,]exp[][#,]va[][#,]ev[][#,]prob[][#<]
+{#Slide]#{pb}SFE[#nb]5[#titre]:{"#{titre}".strip} (SFE)
+[#haut]Décrivons le Schéma de Formalisation pour :{"#{desc}".strip}.\\
+\centerline{{#only]:2-3[#,]\textbf{Expérience et Variable d'intérêt ?}[#}
+{#only]:4-5[#,]\textbf{Evénement d'intérêt et ses chances de réalisations~?}[#}}
+[#bas]
+{#only]:2-3[#,]\begin{itemize}
+{#view]:2-3[#,]\item\textbf{Expérience $\mathcal{E}$~:}[#}
+{#view]:3[#,]#{exp}.[#}
+{#view]:2-3[#,]\item\textbf{Variable d'intérêt~:}[#}
+{#view]:3[#,]#{va}.[#}
+\end{itemize}[#only}
+{#only]:4-5[#,]\begin{itemize}
+{#view]:4-5[#,]\item\textbf{Evénement d'intérêt~:} [#}
+{#view]:5[#,]#{ev}.[#}
+{#view]:4-5[#,]\item\textbf{Probabilité de réalisation~:} [#}
+{#view]:5[#,]#{prob}.[#}
+\end{itemize}[#only}
+
+[#}
+[#def}
+
+{#hide]A copier coller pour appeler!
+{#SlideSFE][#pb][#titre][#desc][#exp][#va][#ev][#prob][#}
+[#hide}
+
+{#def]InitStyle[#,]style[tikzCqls]
+[#>]{#case]#{style}
+[#when]tikzCqls[#?]!$tikzCqlsStyleInitialized[#>]{#document]
+[#package]
+\usepackage{xkeyval,calc,listings,tikz}
+[#preamble]
+\usetikzlibrary{arrows,%
+  calc,%
+  fit,%
+  patterns,%
+  plotmarks,%
+  shapes.geometric,%
+  shapes.misc,%
+  shapes.symbols,%
+  shapes.arrows,%
+  shapes.callouts,%
+  shapes.multipart,%
+  shapes.gates.logic.US,%
+  shapes.gates.logic.IEC,%
+  er,%
+  automata,%
+  backgrounds,%
+  chains,%
+  topaths,%
+  trees,%
+  petri,%
+  mindmap,%
+  matrix,%
+  calendar,%
+  folding,%
+  fadings,%
+  through,%
+  positioning,%
+  scopes,%
+  decorations.fractals,%
+  decorations.shapes,%
+  decorations.text,%
+  decorations.pathmorphing,%
+  decorations.pathreplacing,%
+  decorations.footprints,%
+  decorations.markings,%
+  shadows}
+\tikzset{
+  every plot/.style={prefix=plots/pgf-},
+  shape example/.style={
+    color=black!30,
+    draw,
+    fill=yellow!30,
+    line width=.5cm,
+    inner xsep=2.5cm,
+    inner ysep=0.5cm}
+}
+[#rb<]$tikzCqlsStyleInitialized=true #only once
+[#document}
+[#case}
+[#}
+
+{#def]InitScene[#>]{#initScene]head[#}{#initScene]def[#}{#initScene]ex[#}[#def}
+
+{#def]PutScene[#,]sceneStyle[cqls]
+[#>]{#case]#{sceneStyle}
+[#when]cqls[#>]
+%\beamertemplateshadingbackground{green!50}{yellow!50}
+\begin{frame}<1->
+\setbeamercolor{header}{fg=black,bg=blue!40!white}
+ \hspace*{2.5cm}\begin{beamerboxesrounded}[width=6cm,shadow=true,lower=header]{}
+  @{beginScene(head)}
+  @{writeScene(head)}
+  @{endScene(head)}
+\end{beamerboxesrounded}
+
+\setbeamercolor{postit}{fg=black,bg=green!40!white}
+%\begin{beamercolorbox}[sep=1em,wd=12cm]{postit}
+\begin{beamerboxesrounded}[shadow=true,lower=postit]{}
+@{beginScene(def)}
+@{writeScene(def)}
+@{endScene(def)}
+\end{beamerboxesrounded}
+%\end{beamercolorbox}
+
+\setbeamercolor{postex}{fg=black,bg=yellow!50!white}
+%\begin{beamercolorbox}[sep=1em,wd=12cm]{postex}
+\begin{beamerboxesrounded}[shadow=true,lower=postex]{}
+@{beginScene(ex)}
+@{writeScene(ex)}
+@{endScene(ex)}
+\end{beamerboxesrounded}
+%\end{beamercolorbox}
+\begin{tikzpicture}[remember picture,overlay]
+  \node [rotate=30,scale=10,text opacity=0.05]
+    at (current page.center) {CQLS};
+\end{tikzpicture}
+\end{frame}
+[#when]simple[#>]
+\begin{frame}<1->
+\setbeamercolor{header}{fg=black,bg=blue!40!white}
+ \hspace*{2.5cm}\begin{beamerboxesrounded}[width=6cm,shaded=true,lower=header]{}
+  @{beginScene(head)}
+  @{writeScene(head)}
+  @{endScene(head)}
+\end{beamerboxesrounded}
+
+\setbeamercolor{postit}{fg=black,bg=magenta!40!white}
+\begin{beamercolorbox}[sep=1em,wd=12cm]{postit}
+@{beginScene(def)}
+@{writeScene(def)}
+@{endScene(def)}
+\end{beamercolorbox}
+
+\setbeamercolor{postex}{fg=black,bg=cyan!40!white}
+\begin{beamercolorbox}[sep=1em,wd=12cm]{postex}
+@{beginScene(ex)}
+@{writeScene(ex)}
+@{endScene(ex)}
+\end{beamercolorbox}
+\end{frame}
+[#case}
+[#}
+
+{#def]BeamerFrame[#,]title[][#,]frameStyle[]
+[#>]\begin{frame}
+\frametitle{:{#{=title}.strip}}
+[#yield]default
+[#?]#{=frameStyle}=="cqls"[#<]{#initStyle]tikzCqls[#}
+[#>]\begin{tikzpicture}[remember picture,overlay]
+  \node [rotate=30,scale=10,text opacity=0.05]
+    at (current page.center) {CQLS};
+\end{tikzpicture}[#?]end
+[#>]\end{frame}
+[#def}
+
+{#def]VerbFrame[#,]title[][#,]frameStyle[]
+[#>]\begin{frame}[containsverbatim]
+\frametitle{:{#{=title}.strip}}
+[#yield]default
+[#?]#{=frameStyle}=="cqls"[#<]{#initStyle]tikzCqls[#}
+[#>]\begin{tikzpicture}[remember picture,overlay]
+  \node [rotate=30,scale=10,text opacity=0.05]
+    at (current page.center) {CQLS};
+\end{tikzpicture}[#?]end
+[#>]\end{frame}
+[#def}
+
+{#def]MultiImages[#,]imgs.path[][#,]imgs.start[0][#,]imgs.end[10][#,]opt[width=8cm,height=8cm][#,]center[true]
+[#?]#{center}[#>]\begin{center}
+[#?]end[#rb>]
+for img in #{imgs.start}..#{imgs.end} do
+{#>]\pgfimage<:{img+1}>[interpolate=true,#{opt}]{#{imgs.path}:{img}.pdf}[#}
+end
+[#>]
+[#?]#{center}[#>]\end{center}
+[#}

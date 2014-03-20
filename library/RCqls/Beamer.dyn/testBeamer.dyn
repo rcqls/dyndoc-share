@@ -1,0 +1,83 @@
+[#=]beamerCfg.theme[Boadilla]
+[#=]beamerCfg.colorTheme[wolverine]
+[#=]beamerCfg.fontTheme[structureitalicserif]
+[#require]RCqls/Beamer
+[#preamble]
+\newcommand{\RS}{{\texttt{R}~}}
+\beamertemplateshadingbackground{red!30}{yellow!40}
+[#title]
+\title{Projet Dyndoc}
+
+\author{R. Drouilhet}
+\institute{Cqls Team}
+\date{ }
+[#main][#<]
+[#=]docs[section_motiv,motiv,section_demo,sessionR,section_use,use]
+[#>]
+{#case]#{docs}
+[#when]section_demo[#>]
+\section{Démo}
+[#when]sessionR[#>]
+\noindent \textbf{Session \texttt{R}}~:
+{#VerbFrame][#>]
+{#beameR]
+y<-rnorm(1000)
+##out | short=2,   \vdots\centerline\vdots,1
+y
+plot(1:10,y[1:10],col=1:10)
+##fig | img=test | opt=width=5cm
+rexp(10)
+[#beameR}[#VerbFrame}
+
+[#when]section_motiv[#>]
+\section{Motivation}
+[#when]motiv[#>]
+{#BeamerFrame]Projet \texttt{dyndoc}[#>]
+\begin{block}{Origine}
+\begin{itemize}[<+->]
+\item \textbf{Enseignement~:}  économie de temps lors de la rédaction des sujets d'examens.
+\item \textbf{Consulting statistique~:} idée de proposer des outils de génération automatique de rapports en intégrant les résultats extraits de traitements \RS.  
+\item \textbf{Programmation~:}  mariage de plusieurs langages de natures complémentaires~:
+\begin{enumerate} 
+\item en \RS, le plus est la manipulation et le traitement de données
+\item en \RS, un des moins est la manipulation de chaînes de caractères qui n'est pas syntaxiquement très aisée (via la fonction \texttt{paste()})\\ $\Rightarrow$ pourquoi ne pas utiliser un langage syntaxiquement plus adapté~?
+\end{enumerate}
+\end{itemize}
+\end{block}
+[#}
+
+{#BeamerFrame]Projet \texttt{dyndoc}[#>]
+\begin{block}{Puis, ...}
+\begin{itemize}[<+->]
+\item Découverte de langages de programmation comme \texttt{python} et \texttt{ruby} (mon préféré). Parmi les avantages~: maintenance des codes, facilité de création d'exécutable, syntaxe simple pour la manipulation de chaînes de  caractères.... 
+\item Découverte de \texttt{Sweave} (et son langage \texttt{noweb}) permettant d'intégrer des résultats issus du \RS dans du code \texttt{latex}.
+\item Initiation au développement web où les langages de templating sont très courants (ex: en \texttt{ruby}, le langage \texttt{eruby} permet de dynamiser les pages \texttt{html}).
+\item Création d'une librairie \texttt{ruby} intégrant le \RS dans un programme \texttt{ruby} et permettant d'échanger très facilement les contenus de tableaux (\texttt{Array}) en \texttt{ruby} avec les vecteurs (\texttt{vector}) en \RS. 
+\end{itemize}
+\end{block}
+[#}
+
+{#BeamerFrame]Projet \texttt{dyndoc}[#>]
+\begin{block}{Et maintenant, \texttt{dyndoc} c'est un~:}
+\begin{itemize}[<+->]
+\item \textbf{système de modèles (``templating system")~:} basé sur un langage de balise (de type ``domino") comparable au langage \texttt{xml}, s'intègrant dans un document au format ``human readable" tel que \texttt{latex}, \texttt{html}, ... mais aussi tout fichier source d'un langage de programmation tel le \RS, \texttt{ruby}, \texttt{C}, ...
+\item \textbf{langage (de script)~:} permettant aussi d'intégrer les langages \texttt{ruby} et \RS (avec possibilité d'intégration de \texttt{python} et tout autre langage étant interfaçable en \texttt{C}).
+\end{itemize}
+\end{block}
+[#}
+
+[#when]section_use[#>]\section{Modes d'utilisation}
+[#when]use[#>]
+
+{#BeamerFrame]Modes d'utilisation[#>]
+\begin{block}{Comment l'utiliser~?}
+\begin{itemize}[<+->]
+\item \textbf{Ligne de commande (version autonome)~:} pour usage personnel privilégié (utilisateur-développeur confirmé ayant pour volonté de maintenir son installation personnellement).
+\item \textbf{Ligne de commande (version client-serveur)~:} pour usage personnel où l'utilisateur n'a à installer qu'un petit programme client (léger) qui délègue le traitement du document \texttt{dyndoc} sur un  serveur \texttt{dyndoc} administré par un utilisateur plus avancé ayant la charge de l'installation complète du système \texttt{dyndoc}. 
+\item \textbf{Interface web~:} zéro install, utilisation à partir d'un site. Définir plusieurs modes d'utilisateurs: développeurs, utilisateurs et client.\\
+$\Rightarrow$ ce système est très adapté à la création instantanée (et en ligne) de pages web (ou documents pdf) avec la possibilité de proposer directement des traitements (statistiques) sous une forme souvent moins primaire qu'un logiciel (de statistiques).
+\end{itemize}
+\end{block}
+[#}
+
+[#case}

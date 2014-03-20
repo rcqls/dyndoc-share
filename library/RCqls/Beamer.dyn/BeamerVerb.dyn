@@ -1,0 +1,2 @@
+[#r<]options(width=70)
+[#<]{#def]beameR[#,]rcode[][#>]{#peteR][#_optLst][<<fontsize[\scriptsize]][#graph.before][\vspace*{-1.4cm}][#graph.after][\vspace*{-1.4cm}][#rcode]#{rcode}[#}[#}

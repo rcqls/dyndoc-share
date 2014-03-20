@@ -1,0 +1,204 @@
+{#document]
+[#main][#rb<]require "dyndoc/V1+/plugins/tex/beamer"
+[#>] lastscene[] [#>] lastfrom [1] 
+[#}
+
+
+{#def]Scene[#,]scene[] [#,] size[]
+[#,] cpt[] [#,] framed[false] [#,] rounded[false] 
+[#,] fg[black]  [#,] bg[cyan]
+[#rb<]
+#{scene}View=CqlsBeamer::Scene.new('#{scene}',[#{size}])
+#{scene}View.bg,#{scene}View.fg='#{bg}','#{fg}'
+#{scene}View.framed = #{framed}
+#{scene}View.rounded = #{rounded}
+#{scene}View.cpt=( (["true","ok","default"].include? "#{cpt}") ? CqlsBeamer.defCpt : eval("#{cpt}") ) unless "#{cpt}".empty?
+[#>] lastscene! [#{scene}]
+[#}
+
+
+{#def]beginScene[#,] scene[#{lastscene}] [#>] [:{#{scene}View.first}] [#}
+
+{#def]endScene[#,] scene[#{lastscene}] [#>] [:{#{scene}View.last}] [#}
+
+{#def]writeScene [#,]  scene[#{lastscene}] [#>] [:{#{scene}View.output}] [#}
+
+{#def]actor[#,] name [] [#,] when[] [#,] where[] [#,] what[]
+[#,] mode[:only] [#,] align[left,top] [#,] isR[false]
+[#rb<]
+quoi=@vars[:what]
+CqlsBeamer::Actor.new("#{name}",quoi,'#{when}','@{xy(#{where}|from=#{lastscene})}','#{align}',#{mode})
+CqlsBeamer::Actor["#{name}"].isR=#{isR}
+[#}
+
+{#def]xy[#,]where[] [#,] from[#{lastscene}]
+[#>]#Rb{CqlsBeamer.where("#{where}","#{from}")}[#}
+
+{#def]When[#,]dec[][#,]from[#{lastfrom}][#>]#Rb{When("#{from}","#{dec}")}[#}
+
+{#def]Only[#,]dec[#,]from[#{lastfrom}][#>]\only<#Rb{When("#{from}","#{dec}")}>[#}
+
+{#def]Color[#,]dec[#,]color[#,] from[#{lastfrom}] [#>]\color<#Rb{When("#{from}","#{dec}")}>{#{color}}[#}
+
+
+{#def]Show[#,]args[][#rb<]
+args=#{=args}.split("|").map{|e| e.split(":")}
+#p args
+color=args.map{|dec,col| '\color<'+dec+'>{'+col+'}'}.join("")
+#p color
+only='\only<'+args.map{|dec,col| dec}.join(",")+'>'
+#p only
+[#>][{:{color+only}{\bm}{][#def}
+
+{#def]shoW[#>][}}][#def}
+
+
+{#def]setArgScene[#rb<]
+vname=File.basename("#{img}",".*")
+fname=File.join(File.dirname("#{img}"),vname)
+size=[#{size}]
+[#}
+
+%%% New Direction: each object is by default inserted to the scene. In order to not break old work, new modified func is renamed! 
+
+{#def]initCpt[#,]cpt[CqlsBeamer.defCpt] [#rb<]#{cpt}=[1][#}
+
+{#def]incCpt[#,]val[1] [#,]cpt[CqlsBeamer.defCpt] [#rb<] #{cpt}[0] = #{cpt}[0] + (#{val})[#}
+
+{#def]initScene[#,]scene[#rb<]#{scene}View.init[#}
+
+{#def]VIEW[#,]quand[#>]\visible<#Rb{CqlsBeamer.when("#{quand}")}>[#}
+
+{#def]ALERT[#,]quand[#>]\alert<#Rb{CqlsBeamer.when("#{quand}")}>[#}
+
+{#def]UNCOVER[#,]quand[#>]\uncover<#Rb{CqlsBeamer.when("#{quand}")}>[#}
+
+{#def]ONLY[#,]quand[#>]\only<#Rb{CqlsBeamer.when("#{quand}")}>[#}
+
+{#def]COLOR[#,]quand[#,]color[#>]\color<#Rb{CqlsBeamer.when("#{quand}")}>{#{color}}[#}
+
+{#def]Actor[#,]name[][#,]when[][#,]where[][#,]what[]
+[#,] minipage[] [#,] align[] [#,] scene[#{lastscene}] [#,]  mode[:only]
+[#rb<]
+sceneName,name="#{name}".split(":")
+if name
+  scene=CqlsBeamer::Scene[sceneName]
+else
+  name,scene,sceneName=sceneName,#{scene}View,"#{scene}"
+end
+minipage=@vars[:minipage].dup
+if minipage.empty?
+  minipage=scene.minipage
+else
+  minipage="" if ["none","nil"].include? minipage
+  scene.minipage=minipage.dup #becomes the default value
+end
+align=@vars[:align].dup
+if align.empty?
+  align=scene.align
+else
+  scene.align=align.dup #becomes the default value
+end
+quoi=@vars[:what]
+quand=CqlsBeamer.when(@vars[:when],scene)
+ou=@vars[:where]
+if ou=="nil" or ou.strip.empty?
+  ou = nil
+else
+  ou.gsub!(/\{[^\{]*\}/){|elt| CqlsBeamer::Actor[elt[1...-1]].where}
+  ou=CqlsBeamer.where(ou,sceneName)
+end
+CqlsBeamer::Actor.new(name,quoi,quand,ou,align,#{mode})
+CqlsBeamer::Actor[name].minipage=minipage.dup
+scene << name if scene
+[#}
+
+{#var] lastwhere[0,1] [#,] lastwidth[5.5cm] [#,] lastheight[5.5cm] [#}
+
+%%%width et height sont 
+{#def]Image[#,]name[][#,]when[]
+[#,] width[#{lastwidth}] [#,] height[#{lastheight}] [#,]where[#{lastwhere}] [#,] scene[#{lastscene}] [#,] mode[:only] [#,] align[left,top]
+[#rb<]
+sceneName,name="#{name}".split(":")
+if name
+  scene=CqlsBeamer::Scene[sceneName]
+else
+  name,scene,sceneName=sceneName,#{scene}View,"#{scene}"
+end
+vname=File.basename(name,".*")
+fname=File.join(File.dirname(name),vname)
+quoi=["\\pgfimage[interpolate=true,width=#{width},height=#{height}]{"+fname+"}"]
+quand=CqlsBeamer.when(@vars[:when],scene)
+ou=@vars[:where]
+CqlsBeamer::Actor.new(vname,quoi,quand,ou,"#{align}")
+scene << vname if scene
+{#hide][#=] lastwhere![#{where}] [#=]lastwidth![#{width}] [#=]lastheight![#{height}][#}
+[#}
+
+{#def]ImageR[#,]name[][#,]size[][#,]when[][#,]where[][#,]rcode[][#,]scene[#{lastscene}] [#,]optR[]
+[#rb<]
+sceneName,name="#{name}".split(":")
+if name
+  scene=CqlsBeamer::Scene[sceneName]
+else
+  name,scene,sceneName=sceneName,#{scene}View,"#{scene}"
+end
+vname=File.basename(name,".*")
+fname=File.join(File.dirname(name),vname)
+size=[#{size}]
+quoi=["\\pgfuseimage{#{vname}}"]
+quand=CqlsBeamer.when(@vars[:when],scene)
+ou=@vars[:where]
+if ou=="nil" or ou.strip.empty?
+  ou = nil
+else
+  ou.gsub!(/\{[^\{]*\}/){|elt| CqlsBeamer::Actor[elt[1...-1]].where}
+  ou=CqlsBeamer.where(ou,sceneName)
+end
+CqlsBeamer::Actor.new(vname,quoi,quand,ou,"left,bottom")
+CqlsBeamer::Actor[vname].isR=#{size}
+scene << vname if scene
+[#<]{#RFig]#Rb{name}[#,]new[TRUE][#width]480*#Rb{size[0]}/#Rb{size[1]}[#xyKey]#Rb{vname}[#optR]#{optR}[#}
+[#>]\pgfdeclareimage[width=#Rb{size[0]}cm,height=#Rb{size[1]}cm,interpolate=true]{#Rb{vname}}{#Rb{fname}}
+[#}
+
+{#def]ActorWhen[#,]actor[][#,]when[][#rb<]
+quand=CqlsBeamer.when(@vars[:when])
+CqlsBeamer::Actor[@vars[:actor]].when += ","+quand
+[#}
+
+{#def]ActorWhat[#,]actor[][#,]when[][#,]what[] [#,]eol[true] [#rb<]
+p @vars[:what]
+CqlsBeamer::Actor[@vars[:actor]].what += ( #{eol} ? "\n" : "")+@vars[:what]
+unless @vars[:when].empty?
+  quand=CqlsBeamer.when(@vars[:when])
+  CqlsBeamer::Actor[@vars[:actor]].when += ","+quand
+end
+[#}
+
+{#def]ActorLast[#,]name[#,] :scene[#{lastscene}] 
+[#rb<]
+sceneName,name="#{name}".split(":")
+if name
+  scene=CqlsBeamer::Scene[sceneName]
+else
+  name,scene,sceneName=sceneName,#{scene}View,"#{scene}"
+end
+scene.scene.move_last(name)
+[#}
+
+%%Modifier pour changer les autres arguments!
+{#def]ActorClone[#,]name,when[#,] scene[#{lastscene}] 
+[#rb<]
+sceneName,name="#{name}".split(":")
+if name
+  scene=CqlsBeamer::Scene[sceneName]
+else
+  name,scene,sceneName=sceneName,#{scene}View,"#{scene}"
+end
+quand=CqlsBeamer.when(@vars[:when])
+scene << [name,{:when=> quand}]
+[#}
+
+{#hide]
+[#hide}

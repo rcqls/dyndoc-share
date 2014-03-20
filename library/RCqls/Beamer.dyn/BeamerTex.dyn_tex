@@ -1,0 +1,38 @@
+[#main]{#set] _DOCUMENTCLASS_![#>]beamer[#}
+[#>]beamerCfg.theme?[JuanLesPins]
+[#>]beamerCfg.fontTheme?[structurebold]
+[#>]beamerCfg.covered?[transparent=5]
+[#>]beamerCfg.atBeginSection?[
+\begin{frame}<beamer>
+	\frametitle{Plan}
+    \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+]
+[#package]
+\usepackage{pgf,pgfarrows,pgfnodes}
+[#preamble]
+\mode<article>{\usepackage{fullpage}}
+\usefonttheme{#{beamerCfg.fontTheme}}
+[#?]#{+?beamerCfg.colorTheme?}[#>]\usecolortheme{#{beamerCfg.colorTheme?}}[#?]end[#>]
+
+\definecolor{VertFonce}{rgb}{0,.4,.0}
+
+\mode<presentation>
+{
+  %\usetheme{Warsaw}
+  % or ...
+\usetheme{#{beamerCfg.theme}}
+
+  \setbeamercovered{#{beamerCfg.covered}}
+  % or whatever (possibly just delete it)
+}
+%\setbeamercovered{dynamic}
+
+
+\subject{Talks}
+
+\AtBeginSection[]
+{
+  #{beamerCfg.atBeginSection}
+}
+[#main][#tag]beamer:handout[#rb<] _optclass_<< "handout"
