@@ -1,0 +1,84 @@
+\newcommand{\VRE}{V^R}
+\newcommand{\WRE}{W^R}
+\newcommand{\VR}[1]{\VRE\left(#1\right)}
+\newcommand{\WR}[2]{\WRE\left(#1,#2\right)}
+\newcommand{\VRI}[2]{\VRE\left(#1|#2\right)}
+\newcommand{\VRD}[3][\Lambda]{\VRE_{#1}\left(#2|#3\right)}
+
+\newcommand{\VE}{V}
+\newcommand{\WE}{W}
+\newcommand{\Par}{\theta}                    % paramètre
+\newcommand{\ParV}{\Vect{\theta}}            % paramètre vectoriel
+\newcommand{\ParVi}[1]{\Vect{\theta}^{(#1)}}            % paramètre vectoriel
+\newcommand{\Pari}[1]{{\theta}^{(#1)}}           
+\newcommand{\ParVT}{\Vect{\theta}^\star}     % paramètre vectoriel Vrai
+\newcommand{\SpPar}{\Vect{\Theta}}           % espace des paramètres
+\newcommand{\Vois}{\mathcal{\Vect{V}}}
+
+\newcommand{\PL}[3]{PL_{#1} \left( #2;#3 \right)}
+\newcommand{\LPL}[3]{LPL_{#1} \left( #2;#3 \right)}
+
+
+\newcommand{\Dom}[1]{\Lambda_{(#1)}}
+
+\newcommand{\V}[1]{\VE\left(#1\right)}
+\newcommand{\W}[2]{\WE\left(#1,#2\right)}
+\newcommand{\VI}[2]{\VE\left(#1|#2\right)}
+\newcommand{\VD}[3][\Lambda]{\VE_{#1}\left(#2|#3\right)}
+
+\newcommand{\VEPar}[1]{V(#1)}
+\newcommand{\VPar}[2]{\VE \left(#1 ; #2  \right)}
+\newcommand{\VIPar}[3]{\VE \left(#1|#2  ; #3 \right)}
+
+\newcommand{\dVIPar}[4]{\frac{\partial \VE}{\partial \Par_{#1}} \left(#2|#3  ; #4 \right)}
+\newcommand{\ddVIPar}[5]{\frac{\partial^2 \VE}{\partial \Par_{#1} \partial \Par_{#2}  } \left(#3|#4  ; #5 \right)}
+
+
+\newcommand{\dPL}[3]{ \mathbf{PL}_{\Lambda_{#1}}^{(1)} \left( #2 ; #3  \right) }
+\newcommand{\dPLt}[2]{ \mathbf{PL}_{\widetilde{\Lambda}}^{(1)} \left( #1 ; #2 \right) }
+
+\newcommand{\dLPL}[3]{ \mathbf{LPL}_{\Lambda_{#1}}^{(1)} \left( #2 ; #3  \right) }
+\newcommand{\dLPLt}[2]{ \mathbf{LPL}_{\widetilde{\Lambda}}^{(1)} \left( #1 ; #2 \right) }
+
+\newcommand{\Estn}[1]{ \widehat{#1}_n }
+
+
+\newcommand{\SEx}[2]{u_{#1}(#2)}
+\newcommand{\SExI}[3]{u_{#1}(#2|#3)}
+\newcommand{\VSEx}[1]{\Vect{u}(#1)}                  %% pour les statistiques exhaustives
+\newcommand{\VSExI}[2]{\Vect{u} \left(#1 | #2  \right)}
+
+\newcommand{\Dt}{\widetilde{D}}
+
+
+\newcommand{\MEPar}[3]{W_{#1}\left(#2,#3\right)}
+%% \newcommand{\VDPar}[3]{\VEPar{#1}\left(#2|#3\right)} is the same than the previous \VIPar
+
+\newcommand{\Dp}[2]{\left( #1 | #2 \right) }
+
+\newcommand{\intConf}[2][z]{\oint_{#2}^{#1}}
+\newcommand{\partFuncE}[2][z]{Z^{#1}_{#2}}
+\newcommand{\partFunc}[3][z]{Z^{#1}_{#2}\left(#3\right)}
+\newcommand{\corrFuncE}[3][z]{\rho^{#1}_{#2}\left(#3\right)}
+\newcommand{\corrFunc}[4][z]{\rho^{#1}_{#2}\left(#3|#4\right)}
+
+%%%%%%%%% Neighbourhood of graph
+%% [G]raph 
+\newcommand{\G}[1]{\ensuremath{\mathcal{G}\left(#1\right)}}
+%% Induced [G]raph of order
+\newcommand{\Gk}[2]{\ensuremath{\mathcal{G}^{(#1)}\!\left(#2\right)}}
+%% [N]eighbourhood of vertex [v] on the graph
+\newcommand{\Nv}[2]{\ensuremath{\mathcal{N}\left(#1|#2\right)}}
+%% [N]eighbourhood on the induced graph of order [k] of vertex [v]
+\newcommand{\Nkv}[3]{\ensuremath{\mathcal{N}^{(#1)}\!\left(#2|#3\right)}}
+%% [C]lique of order [l] on the graph
+\newcommand{\Cl}[2]{\ensuremath{\mathcal{C}_{#1}\!\left(#2\right)}}
+%% [C]lique of order [l] on the induced graph of order [k]
+\newcommand{\Clk}[3]{\ensuremath{\mathcal{C}_{#1}^{(#2)}\!\left(#3\right)}}
+%% [C]lique of order [l] on the graph containing vertex [v]
+\newcommand{\Clv}[4]{\ensuremath{\mathcal{C}_{#1}\!\left(#2|#3\right)}}
+%% [C]lique of order [l] on the induced graph of order [k] containing vertex [v]
+\newcommand{\Clkv}[4]{\ensuremath{\mathcal{C}_{#1}^{(#2)}\!\left(#3|#4\right)}}
+%% [sum] with [M]ultilines [I]ndexes
+\newcommand{\sumMI}[1]{\sum_{\begin{array}{c}#1\end{array}}}
+%\newcommand{\Var}{\mbox{Var}}

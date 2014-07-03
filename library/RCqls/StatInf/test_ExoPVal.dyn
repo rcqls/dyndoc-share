@@ -1,0 +1,48 @@
+[#require]HypoTest_PVal
+Tex/Cqls
+[#main]
+[#<] Contexte
+{#new]muECNotes[#of]ParamFrame[#in]muECNotes[#,]m[#,]a[#,].nomPb[EC][#,].yR[yExamC][#r<]
+attach('~/cqls/data/notes.RData')
+yExamC<-notes$yExamC
+detach()
+[#}
+{#new]muECNotesTest[#of]TestParam[#in]muECNotes[#,]:muECNotes[#,].theta0R[12][#,].side[>][#,].assertion[la note moyenne de l'examen de la section~C est strictement supérieure à 12][#.indic]q[#}
+
+{#new]muDNotes[#of]ParamFrame[#in]muDNotes[#,]md[#,]a[#,].nom1Pb[CC][#,].y1R[yContC][#,].nom2Pb[EC][#,].y2R[yExamC][#r<]
+attach('~/cqls/data/notes.RData')
+yContC<-notes$yContC
+yExamC<-notes$yExamC
+detach()
+[#}
+{#new]muDNotesTest[#of]TestParam[#in]muDNotes[#,]:muDNotes[#,].theta0R[0][#,].side[>][#,].assertion[la différence de notes entre contrôle continu et examen final (des étudiants de la section~C) est en moyenne strictement positive][#.indic]q[#}
+
+
+
+{#new]dmuNotes[#of]ParamFrame[#in]dmuNotes[#,]dm[#,]a[#,].nom1Pb[EC][#,].y1R[yExamC][#,].nom2Pb[ED][#,].y2R[yExamD][#r<]
+attach('~/cqls/data/notes.RData')
+yExamD<-notes$yExamD
+yExamC<-notes$yExamC
+detach()
+[#}
+
+{#new]dmuNotesTest[#of]TestParam[#in]dmuNotes[#,]:dmuNotes[#,].theta0R[1][#,].side[>][#,].assertion[la note moyenne de la section~C est de plus d'un point supérieure à la note moyenne de la section~D][#}
+
+ 
+{#new]dvarNotes[#of]ParamFrame[#in]dvarNotes[#,]dv[#,]a[#,].nom1Pb[EC][#,].y1R[yExamC][#,].nom2Pb[ED][#,].y2R[yExamD][#r<]
+attach('~/cqls/data/notes.RData')
+yExamD<-notes$yExamD
+yExamC<-notes$yExamC
+detach()
+[#}
+{#new]dvarNotesTest[#of]TestParam[#in]dvarNotes[#,]:dvarNotes[#,].theta0R[0][#,].side[!=][#,].assertion[les niveaux des étudiants en section~C et~D sont hétérogènes][#}
+{#hide][#hide}
+[#<]{#opt]enonce[#}
+[#>]
+
+{#new]exoPVal[#of]ExoPVal[#.test][<<[:dvarNotesTest]<<[:dmuNotesTest]<<[:dvarNotesTest]<<[:dmuNotesTest]] [#}
+
+{#tab]exoPVal[#.filter]1,2,3,4[#.order]3,1,2,4[#}
+
+{#graph]exoPVal[#.order]1,3,2,4[#}
+

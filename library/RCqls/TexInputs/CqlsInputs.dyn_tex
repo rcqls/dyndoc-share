@@ -1,0 +1,5 @@
+{#set]_PREAMBLE_!+
+[#>]
+\input Cours/cqlsInclude
+\input Cours/testInclude
+[#}

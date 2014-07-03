@@ -1,0 +1,4 @@
+[#require]RCqls/StatInf/HypoTest
+Tex/Cqls
+[#main][#=]::Tex.Converter[MathJax]
+[#=]::Math.NotR[\stackrel{R}{=}]

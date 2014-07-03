@@ -1,0 +1,16 @@
+\usepackage{ifthen,keyval}
+\input Cours/cqlsInclude
+%%Macro pour les estimateurs
+% les arguments : type, paramtex, datatex
+\define@key{pb}{param}[mean]{
+  \ifthenelse{\equal{#1}{mean}}{
+    \def\Est
+  }{ \ifthenelse{\equal{#1}{prop}}
+}
+
+\newcommand{loiSousH0}[2][mean]{
+  \ifthenelse{\equal{#1}{mean}}{
+    \def\Est
+  }{ \ifthenelse{\equal{#1}{prop}}
+  }
+}

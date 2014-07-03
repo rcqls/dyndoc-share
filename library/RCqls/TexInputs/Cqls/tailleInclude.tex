@@ -1,0 +1,35 @@
+\newcommand{\LargPapier}[1]
+{
+  \setlength{\paperwidth}{\widthof{#1}}
+  \setlength{\textwidth}{\paperwidth}
+}
+\newcommand{\HautPapier}[1]
+{
+  \setlength{\paperheight}{\heightof{#1}} 
+  \setlength{\textheight}{\paperheight}
+}
+\newcommand{\TaillePapierAPartirDe}[1]
+{
+  \LargPapier{#1}
+  \HautPapier{#1}
+}
+
+\newcommand{\TaillePapierAPartirDePlus}[3]
+{
+  \LargPapier{#1}
+  \HautPapier{#1}
+  \addtolength{\paperwidth}{#2}
+  \addtolength{\textwidth}{\paperwidth}
+  \addtolength{\paperheight}{#3} 
+  \addtolength{\textheight}{\paperheight}
+}
+
+\newcommand{\TaillePapierEgaleA}[2]
+{
+  \setlength{\paperwidth}{#1}
+  \setlength{\textwidth}{\paperwidth}
+  \setlength{\paperheight}{#2} 
+  \setlength{\textheight}{\paperheight}
+}
+
+

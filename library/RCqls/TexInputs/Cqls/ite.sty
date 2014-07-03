@@ -1,0 +1,190 @@
+%%
+%% This is file `ite.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ite.dtx  (with options: `package')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from ite.sty.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file ite.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%% Version: 3_1
+%% Time-stamp: <2005-01-09 wolfgang>
+
+\catcode`\@=11
+
+\newif\ifiTeX\iTeXtrue
+
+\def\iTePost(#1 #2 #3 #4){\iTePut(#1 #2){%
+\iTeComment{iTeBeginObject \the\ITEunit}%
+\special{ps:
+   gsave currentpoint currentpoint translate #3 neg rotate
+   #4 dup scale neg exch neg exch translate}%
+\iTeComment{iTeInObject}%
+\box\iTeObjectBox
+\special{ps: grestore}\iTeComment{iTeEndObject}}}
+
+\let\iteinput\input
+\def\input{\@ifnextchar\bgroup\ite@input\ite@@input}
+\def\ite@input#1{\message{ITEKEYOPEN}\iteinput{#1}\message{ITEKEYCLOSE}}
+\def\ite@@input#1 {\message{ITEKEYOPEN}\iteinput#1 \message{ITEKEYCLOSE}}
+
+\let\iteinclude\include
+\def\include#1{\message{ITEKEYOPEN}\iteinclude{#1}\message{ITEKEYCLOSE}}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ite}[1998/12/15]
+
+\DeclareOption{dvi}{\iTeXfalse
+\gdef\iTePost(#1 #2 #3 #4){\iTePut(#1 #2){\box\iTeObjectBox}}}
+
+\DeclareOption{graphics}{\iTeXfalse
+\gdef\iTePost(#1 #2 #3 #4){\iTePut(#1 #2){\rotatebox{#3}{\scalebox{#4}%
+{\box\iTeObjectBox}}}}}
+\ProcessOptions
+
+\newenvironment{iteblock}{\beginiteblock}{\enditeblock}
+\newenvironment{itebind}{\beginitebind}{\enditebind}
+
+\def\grabber#1{{\unitlength=1pt\circle{4}}\hskip-2.0pt
+\vrule height0.4pt depth0.4pt width#1mm}
+
+
+\def\iTeLogKey#1{ITEKEY#1}
+\immediate\write-1{\iTeLogKey{VERSION} 3_1\space}
+
+\newdimen\ITEunit\ITEunit=0.5pt
+
+\newdimen\iTeW\newdimen\iTeU
+\newdimen\iTeH\newdimen\iTeD
+
+\newbox\iTeBlockBox
+
+\newbox\iTeObjectBox
+
+\newif\ifiTeArgP
+
+\newcount\iTeBlockCount\iTeBlockCount=0
+
+\def\beginitebind{\iTeXfalse}
+\def\enditebind{\iTeXtrue}
+
+\newtoks\everyite
+
+\newlinechar`\^^J
+\catcode`\%=12
+\def\iTeComment#1{\ifiTeX\special{ps:^^J%#1^^J}\fi}
+\catcode`\%=14
+
+\def\beginiteblock{%
+\ifiTeX
+\global\advance\iTeBlockCount by 1
+\immediate\write-1{\iTeLogKey{BLOCK} \the\iTeBlockCount}%
+\fi%
+\futurelet\iTeArg\iTeCond}
+
+\def\iTeCond{\ifx\iTeArg(\let\iTeNext=\iTeBlockYes\iTeArgPtrue\else
+\let\iTeNext=\iTeBlockNo\iTeArgPfalse\fi\iTeNext}
+
+\def\iTeBlockYes(#1,#2){\setbox\iTeBlockBox=\hbox\bgroup\the\everyite
+\color@setgroup
+\iTeW=#1\iTeH=#2\iTeD=0pt\iTeU=0pt
+\iTeComment{iTeBeginBlock \the\iTeBlockCount\space
+\the\iTeW\space\the\iTeH}%
+\setbox\iTeObjectBox=\hbox\bgroup\color@setgroup}
+
+\def\iTeBlockNo{%
+\@ifundefined{CalculateCos}{%
+\PackageError{ite}{%
+Package trig required
+}{%
+Package trig is required whenever an iteblock environment
+is used without the optional dimensional argument.
+}}{\relax}%
+\setbox\iTeBlockBox=\hbox\bgroup\the\everyite\color@setgroup
+\iTeW=-16000pt\iTeU=-16000pt\iTeH=-16000pt\iTeD=-16000pt
+\iTeComment{iTeBeginBlock \the\iTeBlockCount\space}%
+\setbox\iTeObjectBox=\hbox\bgroup\color@setgroup}
+
+\def\enditeblock{\unskip\color@endgroup\egroup% Close last object.
+\xdef\iTeResize{%
+\ht\iTeBlockBox\the\iTeH\dp\iTeBlockBox\the\iTeD
+\wd\iTeBlockBox\the\iTeW\hskip\the\iTeU}%
+\color@endgroup\egroup\iTeResize%Close and resize block.
+\box\iTeBlockBox
+\iTeComment{iTeEndBlock}%
+}
+
+\def\ite{\ITE(0 0 0 1)}
+\def\ITE(#1 #2 #3 #4){%
+\unskip\color@endgroup\egroup% does an implicit '\iTeCloseObject'.
+\def\iTeCoord{(#1 #2 #3 #4)}%
+\setbox\iTeObjectBox=\hbox\bgroup\aftergroup\iTeCloseObject\color@setgroup}
+
+\def\iTeCloseObject{\ifiTeArgP\relax\else\expandafter\iTeBbox\iTeCoord\fi
+\wd\iTeObjectBox=0pt
+\ht\iTeObjectBox=0pt
+\dp\iTeObjectBox=0pt
+\expandafter\iTePost\iTeCoord}
+
+\def\iTePut(#1 #2)#3{\rlap{\kern#1\ITEunit\raise#2\ITEunit\hbox{#3}}}
+
+\def\iTeMax#1#2#3{\ifdim#1<0pt#1=-#1\fi
+\ifdim#2<0pt#2=-#2\fi%
+\ifdim#1<#2#3=#2\else#3=#1\fi}
+
+\def\iTeBbox(#1 #2 #3 #4){%
+\CalculateCos{#3}\CalculateSin{#3}%
+\edef\c{\UseCos{#3}}\edef\s{\UseSin{#3}}%
+\dimendef\w=0\dimendef\u=1%
+\dimendef\h=2\dimendef\d=3%
+\dimendef\ra=4\dimendef\rb=5%
+\dimendef\wp=6\dimendef\hp=7%
+\dimendef\tx=8\dimendef\ty=9%
+\w=#4\wd\iTeObjectBox
+\h=#4\ht\iTeObjectBox
+\d=#4\dp\iTeObjectBox
+\tx=0.5\w
+\ty=0.5\h\advance\ty by -0.5\d
+\advance\w by -\tx
+\advance\h by -\ty
+\ra=\c\w\rb=\ra
+\advance\ra by -\s\h
+\advance\rb by \s\h
+\iTeMax\ra\rb\wp
+\ra=\s\w\rb=\ra
+\advance\ra by \c\h
+\advance\rb by -\c\h
+\iTeMax\ra\rb\hp
+\w=\wp\u=\wp\h=\hp\d=\hp
+\ra=\c\tx\advance\ra by -\s\ty
+\rb=\s\tx\advance\rb by \c\ty
+\tx=\ra\ty=\rb
+\advance\tx by #1\ITEunit
+\advance\ty by #2\ITEunit
+\advance\w by \tx
+\advance\u by -\tx
+\advance\h by \ty
+\advance\d by -\ty
+\ifdim\iTeW<\w\iTeW=\w\fi
+\ifdim\iTeU<\u\iTeU=\u\fi
+\ifdim\iTeH<\h\iTeH=\h\fi
+\ifdim\iTeD<\d\iTeD=\d\fi}
+
+\catcode`\@=12
+
+\endinput
+%%
+%% End of file `ite.sty'.

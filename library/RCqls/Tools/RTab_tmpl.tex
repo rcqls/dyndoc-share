@@ -1,0 +1,46 @@
+%%% Rmk: main, header could be define to be used as main title and header
+%%% highlight:ligne
+{#def]RTab
+[#,] tab[] [#,] main[] [#,] header[] [#,] center[] [#,] length[3]
+[#,] end[#R{NROW(#{tab})}]
+[#,] normalcolor[0,0,0]
+[#,] highcolor[1,0,0]
+[#,] highlight[false]
+[#,] hline[false]
+[#<] {#document][#package]
+\usepackage{color}
+\usepackage{colortbl}
+[#}
+[#r<]
+bi<-max(#{center}-#{length},1)
+bs<-min(#{center}+#{length},#{end})
+ind<-bi:bs
+print(ind)
+i<-0
+[#>] [{\color[rgb]{#{normalcolor}}
+     |\begin{tabular}{#R{paste("|",paste(rep("c",NCOL(#{tab})),collapse="|"),"|",sep="")}}\hline]
+[#?] vars["main"].length>0 [#>]
+[\multicolumn{#R{as.integer(NCOL(#{tab}))}}{|c|}{
+#{main}
+} \\\hline
+]
+[#?] vars["header"].length>0 [#>]
+[#{header}\\\hline]
+[#?] #R{ind[1]>1} [#>]
+[#R{paste(rep("\\vdots",NCOL(#{tab})),collapse=" & ")}\\{#if] #{hline} [\hline][#}
+[#?]true[#>]
+{#loop]
+[#r<] ok<-ind[i<-i+1]==#{center};tmpcollapse=" & "
+[#?] #R{ok} and #{highlight} [#r<]
+tmpcollapse<-"} & {\\color[rgb]{#{highcolor}} "
+[#?] #{highlight} and #R{ok} [#>] [{\color[rgb]{#{highcolor}}]
+[#?] true [#>] #R{paste(#{tab}[ind[i],],collapse=tmpcollapse)}
+[#?] #{highlight} and #R{ok} [#>] [}]
+[#?] true [#>] [\\] [#?] #{hline} [#>] [\hline]
+[#break] [#R{i==length(ind)]
+[#}
+[#?] #R{ind[length(ind)]<#{end}} [#>] [#R{paste(rep("\\vdots",NCOL(#{tab})),collapse=" & ")}\\]
+[#?] true [#>] \hline
+\end{tabular}
+}
+[#}

@@ -1,0 +1,130 @@
+%%ttm:\def\nless{>}
+%%ttm:\def\leadsto{\sim>}
+
+\newcommand{\IndicR}{
+\noindent \underline{\bf Indication(s) R :}
+}
+
+\newcommand{\IndicGenR}{
+\noindent \underline{\bf Liste d'instructions annexes :}
+}
+
+\newcommand{\QuestionTitre}[1][]{%
+\noindent \textbf{\underline{Question {#1}~:}~}%
+}
+
+\newcommand{\Question}[2][]{%
+\noindent \textbf{\underline{Question {#1}~:}~}%
+\textit{#2}%
+}
+
+\newcommand{\PrA}[1]{
+\noindent \textbf{\underline{Exemple produit~A~:}} 
+{\em #1}
+}
+
+\newlength{\hauteur}
+\newlength{\profond}
+\newcommand{\Barre}[1]
+{
+\setlength{\hauteur}{\heightof{#1}}
+\addtolength{\hauteur}{\depthof{#1}}
+\settodepth{\profond}{#1}
+\rule[-\profond]{2pt}{\hauteur}
+#1
+}
+
+\newcommand{\Gen}[1]{
+\noindent \textbf{\underline{G{\'e}n{\'e}ralit{\'e}s~:}} 
+#1
+}
+
+\newcommand{\General}[2]{
+\Barre{
+\begin{minipage}{#1}{
+\noindent \textbf{\underline{G{\'e}n{\'e}ralit{\'e}s~:}} 
+#2
+}
+\end{minipage}
+}
+}
+
+\newcommand{\Gene}[1]{
+\General{15cm}{#1}
+}
+
+\newcommand{\SuitApprox}{
+\stackrel{approx.}{\leadsto}
+}
+
+
+\newcommand{\Reponse}[1]{
+\noindent {\bf R{\'e}ponse  } \hrulefill%
+
+\vspace*{#1}
+
+\noindent \hrulefill Fin
+
+\vspace*{.5cm}
+
+}
+
+\newcommand{\ReponseC}[1]{
+\noindent {\bf R{\'e}ponse } \hrulefill%
+
+#1
+
+\noindent \hrulefill Fin
+
+\vspace*{.5cm}
+
+}
+
+\newenvironment{Correction}{
+\noindent {\bf R{\'e}ponse } \hrulefill%
+
+}
+{
+
+\noindent \hrulefill Fin
+\vspace*{.5cm}
+
+}
+
+
+\newenvironment{IndicList}[1] {
+\hspace*{-2cm}\begin{minipage}{\textwidth+2.5cm}
+\noindent\hspace*{0.5cm}\rule[-.2cm]{.1pt}{.2cm}\rule{1cm}{.1pt}\fbox{\textbf{#1}}\hrulefill\rule[-.2cm]{.1pt}{.2cm}%
+
+\hspace*{.0cm}\begin{minipage}{\textwidth}
+
+\begin{list}{$\bullet$}{}
+\setlength{\itemsep}{.1cm}%
+\setlength{\parskip}{0cm}%
+
+}
+{
+
+\end{list}
+\end{minipage}
+\noindent \hspace*{0.5cm}\rule{.1pt}{.2cm}\hrulefill \fbox{\textbf{Fin}}\rule{1cm}{.1pt}\rule{.1pt}{.2cm}
+\end{minipage}
+\vspace*{.5cm}
+}
+
+\newenvironment{Indication}[1] {
+\begin{minipage}{\textwidth}
+\noindent\rule[-.2cm]{.1pt}{.2cm}\rule{1cm}{.1pt}\fbox{\textbf{#1}}\hrulefill\rule[-.2cm]{.1pt}{.2cm}%
+
+\hspace*{.25cm}\begin{minipage}{\textwidth-.5cm}
+
+}
+{
+
+\end{minipage}
+
+\noindent \rule{.1pt}{.2cm}\hrulefill \rule{.1pt}{.2cm}
+\end{minipage}
+\vspace*{.5cm}
+}
+

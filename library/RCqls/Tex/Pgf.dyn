@@ -1,0 +1,115 @@
+[#preamble]\usepackage{tikz}
+[#main][#%]
+each object has to know its parent (where purpose) and if the parent is the scene then the field is created.
+each object has to fill the field scene and this is done because each parent is created before.
+Pb: many objects may have many 
+Is it necessary to save this piece of information?
+[#rb<]
+$dyn_pgf_scene=0
+$dyn_pgf_rfig=0
+[#<]
+{#meth]new.PGFScene[#,].size[<<[0]<<[0]<<[10]<<[10]][#,].key[][#,].unit[cm]
+[#>].Class[#{.Class}]
+[#rb<]$dyn_pgf_actor=-1
+[#?]#{0?.key}[#>].key[scene:{$dyn_pgf_scene+=1}]
+[#<]
+  {#new].content[#of]PGFGroup
+  [#,][\begin{pgfpicture}{#{.size.0}#{.unit}}{#{.size.1}#{.unit}}{#{.size.2}#{.unit}}{#{.size.3}#{.unit}}]
+  [#,][\end{pgfpicture}]
+  [#}
+  [#>].content.scene[#{.ObjectName}] [#%]ONLY THE NAME BECAUSE OF BUG OTHERWISE!
+[#}
+
+{#meth]add.PGFScene[#,]_actor[][#,]_where[0.0,0.0][#,]_align[left,bottom][#<]{#add].content[#}[#}
+
+{#meth]print.PGFScene[#>]{#print]:.content[#}[#}
+
+{#meth]where.PGFScene[#,]where[]
+[#rb<]
+  from,ou=#{=where}.split(":")
+  ou,from=from,ou unless ou
+#p ou;p from
+[#?]ou[#r<]ou<-c(:{ou})[#?]else[#r<]ou<-c(0.0,0.0)[#?]end
+[#<]
+  {#if]from
+  [#r<]orig<-c(#{#{.keys.:{from}}.where})
+  [#<]
+    {#if] #{=:{from}.type}=="imgR"[#r<]
+      ou<-xyFromInfo(ou,":{from}")
+      zoom<-as.numeric(#{=:{from}.size})
+    [#else][#r<]zoom<-c(1,1)
+    [#}
+    [#r<]
+     ou<-orig+ou*zoom
+  [#}
+[#>][:r{=ou}]
+[#} 
+
+{#meth]new.PGFGroup[#,].first[][#,].last[][#<][#}
+
+{#meth]print.PGFGroup[#>]scene[#{.scene}] [#%]declare the scene name to be used inside the apply loop!
+[#>]
+[#{.first}
+%print here the actors
+{#apply].actors[#,]actor
+[#?]#{=actor.where}.split(":").length>1[#>]actor.where[{#where]#{scene}[#,]#{actor.where}[#}][#?]end
+[#>][\pgfputat{\pgfxy(#{actor.where})}{\pgfbox[#{actor.align}]{{#print]actor.elt[#}}}<\n>]
+[#}
+#{.last}]
+[#}
+
+{#meth]add.PGFGroup[#,]_actor[][#,]_where[0.0,0.0][#,]_align[left,bottom]
+[#rb<]$dyn_pgf_actor +=1
+[#>]actor[.actors.:{$dyn_pgf_actor}]
+[#%]To remember where is the _actor in the list of actors
+[#=].keys.#{_actor.ObjectName}[.actors.:{$dyn_pgf_actor}]
+[#=]#{actor}.elt[:_actor]
+[#>]_actor.scene[{#objname]self[#}]
+[#>]#{actor}.where[#{_where}]
+[#>]#{actor}.align[#{_align}]
+[#}
+
+{#meth]new.PGFImg[#,].size[<<[10]]<<[10]][#,].img[]
+[#,]rcode[][#,]deviceR[png][#,] widthR[#{.size.0}*1.5] [#,] heightR[#{.size.1}*1.5] [#,] optR[][#,] newR[TRUE] [#,]Renvir[Global]
+[#,].type[img]
+[#>].Class[#{.Class}]
+[#%]If rcode provided => this is a imgR
+[#?]#{+?rcode}[#>].type[imgR]
+[#?]#{0?.img}[#>].img[rfig-#{.ObjectName}.#{deviceR}][#?]end
+[#?]#{=.type}=="imgR"[#<]
+{#rfig][#{rcode}
+par.save<-par()
+assign("info",list(xyInch=c(par.save[["pin"]][1]/diff(par.save[["usr"]][1:2]),par.save[["pin"]][2]/diff(par.save[["usr"]][3:4])),
+  xyOrig=par.save[["usr"]][c(1,3)],
+  xyFig=par.save[["din"]],
+  xyMarg=par.save[["mai"]][2:1]),envir=.GlobalEnv)
+local({
+  if(!exists("infoXY")) infoXY<-list()
+  infoXY[["#{.ObjectName}"]] <-info
+  xyFromInfo<-function(xy,key) {
+    info<-infoXY[[key]] 
+    ((xy-info[["xyOrig"]])*info[["xyInch"]]+info[["xyMarg"]])/info[["xyFig"]]
+  }
+},envir=.GlobalEnv)]
+[#,]img[:.img][#Renvir]#{Renvir}[#}
+[#?]end
+[#%]common treatments
+[#rb>].fname[File.join(File.dirname(#{=.img}),#{=.ObjectName})]
+[#>][\pgfdeclareimage[width=#{.size.0}cm,height=#{.size.1}cm,interpolate=true]{#{.ObjectName}}{#{.img}}]
+[#}
+
+{#meth]print.PGFImg[#>]\pgfuseimage{#{.ObjectName}}[#}
+
+{#meth]new.PGFMiniPage[#,].content[][#,].size[10cm][#<][#}
+
+{#meth]print.PGFMiniPage[#>]
+[\begin{minipage}{#{.size}}
+#{.content}
+\end{minipage}]
+[#}
+
+{#meth]new.PGFRaw[#,].content[][#<][#}
+
+{#meth]print.PGFRaw[#>]
+[ #{.content}]
+[#}

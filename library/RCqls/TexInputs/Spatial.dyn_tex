@@ -1,0 +1,103 @@
+[#preamble]
+\newcommand{\BAR}{|}
+\newcommand{\VE}{V}
+\newcommand{\WE}{W}
+\newcommand{\V}[1]{\VE\left(#1\right)}
+\newcommand{\W}[2]{\WE\left(#1,#2\right)}
+\newcommand{\VI}[2]{\VE\left(#1|#2\right)}
+\newcommand{\VD}[4][\widetilde{\Lambda}]{\VE^{#1}_{#2}\left(#3|#4\right)}
+\newcommand{\intConf}[2][z]{\oint_{#2}^{#1}}
+%\newcommand{\partFuncE}[2][z]{Z^{#1}_{#2}}
+\newcommand{\partFunc}[3][z]{Z^{#1}_{#2|#3}}
+%\newcommand{\corrFuncE}[3][z]{\rho^{#1}_{#2}\left(#3\right)}
+\newcommand{\corrFunc}[4][z]{\rho^{#1}_{#2|#4}\left(#3\right)}
+\newcommand{\spLE}[2][]{\Pi^{#1}_{#2}}
+\newcommand{\spL}[3][]{\Pi^{#1}_{#2}\left(#3\right)}
+\newcommand{\spVE}[1][\Lambda]{V_{#1}}
+\newcommand{\spV}[2][\Lambda]{V_{#1}\left(#2\right)}
+{#var]
+  :intConf_def_ ==> for any measurable function $f$ and any positive real~$z$
+  :intConf_def ==>
+\[ 
+\intConf{\Lambda} d\varphi f(\varphi)=\sum_{n=0}^{+\infty}\frac{z^n}{n!}\int_{\Lambda^n}dx_1\ldots dx_n f(\underbrace{\{x_1,\ldots,x_n\}}_{\varphi}).
+\]
+[#}
+
+%%%%%%%%%%%%%%% VI et VI_as_diffV
+{#def]VI [#,]in[\varphi] [#,] out[\varphi^o][#,]sub[][#,]sup[] [#>]
+  [V@{ifEmpty(sup| | ^#{sup} )}@{ifEmpty(sub||_#{sub} )}\left(#{in}|#{out}\right)]
+[#}
+
+{#def]VI_as_diffV[#,] out[\varphi^o][#,]sub[][#,]sup[] [#>]
+  [V@{ifEmpty(sup||^#{sup})}@{ifEmpty(sub||_#{sub})}\left(#{in} \cup #{out} \right)- V@{ifEmpty(sup||^#{sup})}@{ifEmpty(sub||_#{sub})}\left(#{out}\right)]
+[#}
+
+$@{VI}=@{VI_as_diffV}$
+
+%%%%%%%%%%%%%%% VD, VD_as_diffV et VD_as_VI
+{#def]VD[#,]ref[][#,]dom[\Lambda][#,]in[\varphi][#,]out[\varphi^o][#>]V^{#{ref}}_{#{dom}}\left(#{in}|#{out}\right)[#}
+
+{#def]VD_as_diffV[#,]ref[][#,]dom[\Lambda][#,]in[\varphi][#,]out[\varphi^o][#>]
+  [V\left(#{in}_{#{dom} @{ifEmpty(ref||\cap)} #{ref}}\cup #{out}_{#{dom}^c @{ifEmpty(ref||\cap)} #{ref}}\right)- V\left(#{out}_{#{dom}^c @{ifEmpty(ref||\cap)} #{ref}}\right)]
+[#}
+
+{#def]VD_as_VI [#,]ref[][#,]dom[\Lambda][#,]in[\varphi][#,]out[\varphi^o][#>]
+  [V\left(#{in}_{#{dom}@{ifEmpty(ref||\cap)} #{ref}} | #{out}_{#{dom}^c @{ifEmpty(ref||\cap)} #{ref}}\right)]
+[#}
+
+$@{VD(\Delta^c)}=@{VD_as_VI(\Delta^c)}=@{VD_as_diffV(\Delta^c)}$
+
+$@{VD}=@{VD_as_VI}=@{VD_as_diffV}$
+
+$@{VD(in=\psi)}$
+
+%%%%%%%%%%%%%%% Del, ZIDel  et VideR
+ {#def]RLoc[#,] type[10] [#,] R[R] [#>]$[#if]#{type}==0|\ocircle[#if]#{type}==1|\oplus[#if]#{type}==2|\boxplus[#if]#{type}==3|\boxtimes[#if]#{type}==10|\star[#end] #{R}$-[#}
+
+{#def]_RLoc[#,] type[10] [#,] R[R]
+[#>]^{[#if]#{type}==0|\ocircle[#if]#{type}==1|\oplus[#if]#{type}==2|\boxplus[#if]#{type}==3|\boxtimes[#if]#{type}==10|\star[#end]}_{#{R}}[#}
+
+{#def]Del_sym[#,] type[10]
+[#>]{#case]#{type}[#when]0[#>]\ocircle[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#when]11[#>]\bullet[#}[#}
+
+{#def]Del[#,] type[-1][#,] phi[\varphi] [#,] order[2] [#,] R[R] [#<]
+  [[#var] :sup[?], :sub[?] | :empty[?] => false[#end]]
+[#>]Del_{#{order}{#if]#{type}>=0[#>],#{R}[#if]!("#{sub}"=="")[#>]#{sub}[#}}^{{#case]#{type}[#when]0[#>]\ocircle[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#when]11[#>]\bullet[#}{#if]!("#{sup}"=="")[#>]#{sup}[#}}{#if]!#{empty}[#>]\left( #{phi} \right)[#}[#}
+
+
+
+{#def]Del_nom[#,] type[-1] [#,] R[R] [#,] graph[true] 
+[#>]${#case]#{type}[#when]0[#>]\ocircle[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#when]11[#>]\bullet[#} #{R}$-local Delaunay {#if]#{graph}[#>]graph[#}[#}
+
+{#def]Dom[#,] type[10] [#,] R[R] [#>]\ensuremath{\mathcal{D}^{{#case]#{type}[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#}}_{#{R}}}[#}
+
+{#def]BDom[#,] type[10] [#,] R[R] 
+[#>]\ensuremath{\mathcal{B}^{{#case]#{type}[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#}}_{#{R}}}[#}
+
+{#def]VDel[#,] type[0] [#,] R[R] 
+[#>]V_{#{R}}^{{#case]#{type}[#when]0[#>]\ocircle[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#when]11[#>]\bullet[#}}[#}
+
+{#def]WDel[#,] type[0] [#,] R[R]
+[#>]W_{#{R}}^{{#case]#{type}[#when]0[#>]\ocircle[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#when]11[#>]\bullet[#}}[#}
+
+{#def]VDel_nom[#,] type[0] [#,] R[R] 
+[#>]${#case]#{type}[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#when]11[#>]\bullet[#} #{R}$-energy[#}
+
+{#def]ZIDel[#,] xi[\xi] [#,] phi[\varphi]
+[#>]Z_{#{phi}}\left( #{xi} \right)[#}
+
+
+{#def]BDel[#,] xi[\xi] [#,] phi[\varphi]
+[#>]\mathcal{Z}_{#{phi}}\left( #{xi} \right)[#}
+
+
+
+{#def]Vide[#,] type[1] [#,] phi[\varphi] [#,] R[R] [#,] partial[false]
+[#>]\emptyset_{#{R}}^{{#case]#{type}[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#}{#if]#{partial}[#>],\partial[#}} \left( #{phi} \right)[#}
+
+{#def]Vide_nom[#,]type[1][#,]phi[\varphi][#,]R[R][#,]empty[false]
+[#>]${#case]#{type}[#when]1[#>]\oplus[#when]2[#>]\boxplus[#when]3[#>]\boxtimes[#when]10[#>]\star[#} #{R}$-vacuum {#if]!#{empty}[#>] of $#{phi}$[#}[#}
+
+$@{Del}$, $@{Del(0)}$, $@{Del(1)}$, $@{Del(2)}$, $@{Del(3)}$, $@{Del(order=d+1)}$, $@{Del( phi=\varphi\cup \{z\})}$
+
+$@{Vide}$, $@{Vide(2)}$, $@{Vide(3)}$

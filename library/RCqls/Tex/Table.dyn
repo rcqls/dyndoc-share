@@ -1,0 +1,41 @@
+{#meth]new.Style4Table2way
+[#,].header[<<beg[]<<mid[]<<end[]]
+[#,].firstRow[<<beg[]<<mid[]<<end[]]
+[#,].curRow[<<beg[]<<mid[]<<end[]]
+[#,].lastRow[<<beg[]<<mid[]<<end[]]
+[#}
+
+{#new]table[#of]Style4Table2way[#,]
+.header[
+<<beg[\begin{tabular}{{#rep]|c"[#,]:{#{nc}+1}[#}|}\cline{2-:{#{nc}+1}}]
+<<mid[]
+<<end[]
+]
+[#}
+
+{#meth]table.Style4Table2way[#,]table[]
+[#>]
+{#dyn]#{.header.beg}[#}{#dyn]#{.header.beg}[#}
+[#}
+
+
+
+
+{#meth]new.Table2way[#,]rname[#,]cname[#,]hr[][#,]hc[][#,]cells[][#,]style[]
+[#>] nr [#{#hr}] [#>] nc [#{#hc}]
+[#tag]tex[#>]
+[\begin{tabular}{:{"|c"*#{nc}}|}\cline{2-#{nc}}
+\multicolumn{1}{c}{}& \multicolumn{:{#{nc}-1}}{|c|}{#{cname}} \\ \cline{2-#{nc}}
+\multicolumn{1}{c}{}& \multicolumn{3}{|c}{NS} & \multicolumn{3}{|c}{L} & \multicolumn{3}{|c}{M} & \multicolumn{3}{|c|}{H} \\ \hline
+Score #rb{"& Nb & Moy & ET "*4} \\ \hline
+{#loop]
+#r{names(res[[quest]])[i<-i+1]} & #r{res[[quest]][[i]]$nb[["zero"]]} & #r{round(res[[quest]][[i]]$mean[["zero"]],dig)} & #r{round(res[[quest]][[i]]$sd[["zero"]],dig)} & 
+#r{round(res[[quest]][[i]]$nb[["low"]],dig)} & #r{round(res[[quest]][[i]]$mean[["low"]],dig)} & #r{round(res[[quest]][[i]]$sd[["low"]],dig)} & 
+#r{round(res[[quest]][[i]]$nb[["medium"]],dig)} & #r{round(res[[quest]][[i]]$mean[["medium"]],dig)} & #r{round(res[[quest]][[i]]$sd[["medium"]],dig)} & 
+#r{round(res[[quest]][[i]]$nb[["high"]],dig)} & #r{round(res[[quest]][[i]]$mean[["high"]],dig)} & #r{round(res[[quest]][[i]]$sd[["high"]],dig)} \\
+[#break]#r{i==length(names(res[[quest]]))}
+[#}
+\hline
+\end{tabular}]
+[#tag]odt[#>]
+[#}

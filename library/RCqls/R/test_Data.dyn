@@ -1,4 +1,4 @@
-[#require]Import/R/Data[#main][#<]
+[#require]RCqls/R/Data[#main][#<]
 {#new]data[#of]Data[#in]data[#,]chomage[#,]~/cqls/data/chomage.RData[#}
 {#begin]:data[#r<]require(car)[#}
 [#>]:r{data:paste(search(),collapse="\\\\")}

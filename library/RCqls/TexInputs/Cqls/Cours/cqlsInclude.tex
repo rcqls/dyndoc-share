@@ -1,0 +1,185 @@
+\usepackage{mathtools}
+\usepackage{amssymb}
+%\VV replaced by \Var since \VV already exists
+
+\newcommand{\cqlsbm}[1]{\mbox{\boldmath$#1$}}
+
+\newcommand{\cqlshat}[1]{\widehat{#1}} 
+%but modified in mode website in utils.dyn
+
+\newcommand{\dataEmp}[2][n]{
+{\left({#2}\right)}_{#1}
+}
+
+\newcommand{\meanEmp}[2][n]{
+\overline{\left({#2}\right)}_{#1}
+}
+
+\newcommand{\sdEmp}[2][n]{
+\overleftrightarrow{\left({#2}\right)}_{#1}
+}
+
+\newcommand{\quantEmp}[3][n]{
+q_{#3}\left( \left( #2\right)_{#1} \right)
+}
+
+\newcommand{\quant}[2]{
+q_{#2}\left( {#1} \right)
+}
+
+
+
+
+
+
+\newcommand{\Var}{
+        \mathbb{V}\mbox{ar}
+}
+%\CC replaced by \Cov
+\newcommand{\Cov}{
+        \mathbb{C}ov
+}
+
+\newcommand{\Mat}[1]{
+  \underline{\cqlsbm{#1}}
+}
+
+\newcommand{\Head}[1]{\centerline{\fbox{#1}}}
+
+\newcommand{\tr}[1]{
+ {#1}^{\!  T}
+}
+
+%\Vec replaced by \Vect since \Vec already exists
+\newcommand{\Vect}[1]{
+  \cqlsbm{#1}
+}
+
+\newcommand{\Esp}{
+  \cqlsbm{E}
+}
+
+\newcommand{\FBox}[1]{
+  \[ \mbox{ \fbox{$#1$}} \]
+}
+
+\newcommand{\EqBox}[2]{
+\centerline{\fbox{\begin{minipage}{#1}\vspace*{-.4cm}
+#2
+\end{minipage}}}
+}
+
+\newcommand{\Proj}{
+  \underline{\cqlsbm{\mathcal{P}}}
+}
+
+\newcommand{\EV}{
+        \mathcal{L}
+}
+
+
+\newcommand{\Def}{
+  \stackrel{\tiny \mbox{D{\'e}f.}}{=}
+}
+
+\newcommand{\Prob}[1]{
+ \mathbb{P}\left( #1 \right)
+}
+
+\newcommand{\ProbH}[2]{
+ \mathbb{P}_{#1} \left( #2 \right)
+}
+
+\newcommand{\NotR}{
+\ensuremath{\stackrel{\texttt{R}}{=}}
+}
+
+\newcommand{\Not}{
+  \stackrel{\tiny \mbox{Not.}}{=}
+}
+
+\newcommand{\From}[1]{
+\! \left(\Vect #1\right)
+}
+
+\newcommand{\Dep}[2]{
+\!  \left(\Vect #1 | \Mat #2\right)
+}
+
+\newcommand{\U}[2]{  % nouvelle notation 2003!
+  u_{\scriptscriptstyle  #2}\!
+}
+
+\newcommand{\Del}[2]{  % nouvelle notation 2003-2004! et rechang� en 2006
+  \cqlshat{\delta}_{\scriptscriptstyle #1,#2}\!
+}
+
+\newcommand{\DelLim}[2][\alpha]{  % nouvelle notation  2006
+  \delta^{#2}_{lim,\scriptscriptstyle #1}\!
+}
+
+\newcommand{\Ex}[2]{
+  \noindent \underline{\textbf{Exemple #1~:}}
+   #2 
+   \relax
+}
+
+
+
+\newcommand{\Com}[1]{
+  \noindent \underline{Commentaires de l'{\'e}tudiant~:} \textit{#1} \\
+}
+
+\newcommand{\Rem}[1]{
+  \noindent \underline{\textbf{Remarque~:}}#1 \\
+}
+
+\newcommand{\Cas}[1]{
+  \noindent \underline{\textbf{Cas particulier d'un seul r{\'e}gresseur ($p=1$)~:}}#1 \\
+}
+
+
+\newcommand{\Est}[2]{
+  \cqlshat{#1}\left(\cqlsbm{#2}\right)
+}
+
+\newcommand{\Int}[3]{
+  \widetilde{{#1}}_{#2}\left(\cqlsbm{#3}\right)
+}
+
+
+\newcommand{\PPP}[1]{
+ \mathbb{P}\left( #1 \right)
+}
+
+
+\newcommand{\EEE}[1]{
+ \mathbb{E}\left( #1 \right) 
+}
+
+\newcommand{\VVV}[1]{
+ \mathbb{V}ar\left( #1 \right) 
+}
+
+\newcommand{\Indic}{
+        \large 1
+}
+
+\newcommand{\PR}[1]{
+\textit{Produit #1}
+}
+
+\newcommand{\POP}[1][\bullet]{\ensuremath{\cqlsbm{\mathcal{Y}}^{#1}}}
+
+
+\def\RR{\hbox{I\kern-.1em\hbox{R}}}
+\def\NN{\hbox{I\kern-.1em\hbox{N}}}
+\def\ZZ{\hbox{Z\kern-.3em\hbox{Z}}}
+\def\PP{\hbox{P\kern-.8em\hbox{P}}}
+
+\newtheorem{thm}{Th�or�me}
+\newtheorem{prop}{Proposition}
+\newtheorem{dfn}{D�finition}
+\newtheorem{rmq}{Remarque}
+\newtheorem{lm}{Lemme}
+\newtheorem{exercice}{Exercice}

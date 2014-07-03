@@ -1,0 +1,2 @@
+# pour Latex :
+export TEXINPUTS="~/cqls:./texinputs:~/cqls/texinputs:~/tex:./img:~/cqls/img:$TEXINPUTS"

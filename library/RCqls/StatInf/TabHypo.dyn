@@ -1,0 +1,30 @@
+[#r<]
+percentFilter<-function(v,dec=2) {paste("{\\color{blue}",round(v*100,dec),"\\% }",sep="")}
+percent2Filter<-function(v,dec=2) {paste("{\\color{red}",round(v*100,dec),"\\% }",sep="")}
+vector2texTab<-function(vec,vec2,select="no",select2="darkgray",select3="darkgray",filter=percentFilter,filter2=percent2Filter,...) {
+color<-""
+if(is.null(vec2)) vec2<-"{\\color{red}???}"
+else {
+  if(select!="no") {
+    color<-paste("\\cellcolor{",c(select,select2,select3),"}",sep="")
+    color<-color[cut(vec2,c(-.1,.051,.95,1.1))]
+  }
+  vec2<-filter2(vec2,...)
+}
+vec<-filter(vec,...)
+paste(color,"$",paste(vec,"\\simeq",vec2),"$",collapse=" & ")
+}
+[#<]
+
+{#def]TabHead_Prod[#,] val1[15\%] [#,] val2[17\%] [#,] val3[20\%]  [#,] par[p] [#,] lim[p] [#>]
+[\begin{tabular}{|>{\columncolor{red}}c|c|c|c|}\hline
+ & \multicolumn{3}{>{\columncolor{yellow}}c|}{$#{lim}_{lim}$} \\\cline{2-4}
+$#{par}$ & \multicolumn{1}{>{\columncolor{yellow}}c|}{#{val1}}& \multicolumn{1}{>{\columncolor{yellow}}c|}{#{val2}} & \multicolumn{1}{>{\columncolor{yellow}}c|}{#{val3}} \\\hline]
+[#}
+
+
+{#def]TabLine_Prod[#,] first[10\%] [#,] plim[plim] [#,] aep[pAEst01] [#,] amp[Y1] [#,] sel[no] [#,] sel2[darkgray] [#,] sel3[darkgray][#>]
+[#{first} & #r{vector2texTab(sapply(#{plim},function(p) mean(#{aep}>p)),if(is.null(#{amp})) NULL else 1-FF(#{amp},#{plim}),"#{sel}","#{sel2}","#{sel3}")} \\\hline] 
+[#}
+
+{#def]TabEnd[#>] [\end{tabular}][#}

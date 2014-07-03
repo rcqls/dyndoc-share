@@ -1,0 +1,106 @@
+[#rb<]require "{#pwd#}/TabAEP.rb"
+[#<]
+[#%]make an object instead![#<]
+{#meth]new.InstrProba[#,]y[<<R[y]<<AEP[y]<<AMP[Y]][#,]what[][#,]m[m]
+[#=].y[:y]
+[#<]{#init]self[#}
+[#meth}
+
+{#meth]init.InstrProba[#,]what[][#,]m[m]
+[#=].m[#{m}]
+[#>].what[#{what}]
+[#rb<]
+  what=#{=what}.split(",").map{|e| 
+    CqlsProba.parseProba(e,:r=>".yyAEP",:aep=>#{=.y.AEP},:amp=>#{=.y.AMP},:m=>#{=.m})
+  #CqlsProba.parseLoiProba(e,{:r=>".yyAEP",:aep=>#{=.y.AEP},:amp=>#{=.y.AMP}},m=#{=.m})
+  }.compact
+nb=what.length
+cpt=-1
+[#=].nb[:{nb}]
+[#=].expr[<<[]]
+[#<]{#loop][#rb<]cpt+=1
+[#=].expr.:{cpt}.type[:{what[cpt][:type].to_s}]
+[#=].expr.:{cpt}.R[:{what[cpt][:r]}]
+[#=].expr.:{cpt}.AEP[:{what[cpt][:aep]}]
+[#=].expr.:{cpt}.AMP[:{what[cpt][:amp]}]
+[#break]cpt==nb-1
+[#loop}
+[#meth}
+
+{#meth]beginTab.InstrProba[#,]first[0][#,]last[0][#>]\begin{tabular}{|:{"c|"*(#{.nb}+#{first}+#{last})}}\hline[#meth}
+
+{#meth]endTab.InstrProba[#>]\end{tabular}[#meth}
+
+{#meth]headAEP.InstrProba[#,]first[][#,]last[][#,]what[]
+[#?]#{+?what}[#>]whatSave[#{.what}][#<]{#init]self[#}
+[#?]#{+?first}[#>][#{first} &][#?]end
+[#%]content
+[#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
+[#>]\phantom{$\Big($}$#{.expr.:{cpt}.AEP}$[#?]cpt<#{.nb}-1[#>][&]
+[#break]cpt==#{.nb}-1
+[#loop}
+[#?]#{+?last}[#>][ & #{last}][#?]end
+[#>][\\\hline]
+[#?]#{+?what}[#>]what[#{whatSave}][#<]{#init]self[#}
+[#meth}
+
+{#meth]rowAEP.InstrProba[#,]first[][#,]last[][#,]yR[][#,]what[]
+[#?]#{+?what}[#>]whatSave[#{.what}][#<]{#init]self[#}
+[#?]#{+?first}[#>][#{first} &][#?]end
+[#%]content
+[#?]#{0?yR}[#=]yR[#{.y.R}][#?]end
+[#r<].yyAEP<-#{yR}
+[#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
+[#>][\phantom{$\Big($}]
+[#?]#{=.expr.:{cpt}.type}=="p"[#>][$][#>]:r{round(#{.expr.:{cpt}.R}*100,2)}[#>][\%$]
+[#?]else[#>][$:r{round(#{.expr.:{cpt}.R},4)}$]
+[#?]cpt<#{.nb}-1[#>][&]
+[#break]cpt==#{.nb}-1
+[#loop}
+[#?]#{+?last}[#>][ & #{last}][#?]end
+[#>][\\\hline]
+[#?]#{+?what}[#>]what[#{whatSave}][#<]{#init]self[#}
+[#meth}
+ 
+
+{#meth]headAMP.InstrProba[#,]first[][#,]last[][#,]what[]
+[#?]#{+?what}[#>]whatSave[#{.what}][#<]{#init]self[#}
+[#?]#{+?first}[#>][#{first} &][#?]end
+[#%]content
+[#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
+[#>]\phantom{$\Big($}$#{.expr.:{cpt}.AMP}$[#?]cpt<#{.nb}-1[#>][&]
+[#break]cpt==#{.nb}-1
+[#loop}
+[#?]#{+?last}[#>][ & #{last}][#?]end
+[#>][\\\hline]
+[#?]#{+?what}[#>]what[#{whatSave}][#<]{#init]self[#}
+[#meth}
+
+{#meth]rowAMP.InstrProba[#,]valR[][#,]first[][#,]last[]
+[#?]#{+?first}[#>][#{first} &][#?]end
+[#?]#{=valR}.include? "," and #{=valR}[0,2]!="c("[#>]valR[c(#{valR})][#?]end
+[#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
+[#>][\phantom{$\Big($}]
+[#?]#{=.expr.:{cpt}.type}=="p"[#>][$][#>]:r{round(#{valR}[:{cpt}+1]*100,2)}[#>][\%$]
+[#?]else[#>][$:r{round((#{valR})[:{cpt}+1],4)}$]
+[#?]cpt<#{.nb}-1[#>][&]
+[#break]cpt==#{.nb}-1
+[#loop}
+[#?]#{+?last}[#>][ & #{last}][#?]end
+[#>][\\\hline]
+[#meth}
+
+
+{#meth]tabAEP.InstrProba[#,]yR[]
+[#>]{#beginTab]self[#}
+{#headAEP]self[#}
+{#rowAEP]self[#}
+{#endTab]self[#}
+[#meth}
+
+{#meth]tabAMP.InstrProba[#,]valR[]
+[#>]{#beginTab]self[#}
+{#headAMP]self[#}
+{#rowAMP]self[#}
+{#endTab]self[#}
+[#meth}

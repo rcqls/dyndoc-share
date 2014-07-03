@@ -1,0 +1,87 @@
+[#require]RCqls/StatInf/HypoTest
+RCqls/Tex/Pgf
+[#main][#<]
+# to provide .filter and .test
+
+{#meth]new.ExoPVal[#,]init[true]
+  [#yield]default
+  [#?]#{init}[#>]{#init]self[#}
+[#}
+
+{#meth]init.ExoPVal[#,]who[Le professeur de statistique][#>]
+[#{who} tape dans son logiciel préféré (à préciser) les quatre instructions \texttt{R} suivantes calculant des \textbf{p$-$valeurs} associées à une question particuli{\`e}re qu'il se pose.
+
+
+{#Rems]
+# test 1
+self.test.0:{#pvalR]:.test.0[#}
+# test 2
+self.test.1:{#pvalR]:.test.1[#}
+# test 3
+self.test.2:{#pvalR]:.test.2[#}
+# test 4
+self.test.3:{#pvalR]:.test.3[#}
+[#Rems}]
+[#meth}
+
+
+{#meth]tab.ExoPVal[#,]hspace[-1.3cm][#,]minipage[7cm]
+[#rb<]filter=[#{.filter}]
+[#>]A la seule lecture de ces quatre instructions compl{\'e}tez le tableau suivant (\textbf{SANS} justification).\\
+\hspace*{#{hspace}}\begin{tabular}{|c|c|c|c|}\hline 
+Test  & hypoth{\`e}se $H_1$ & Expression litt{\'e}rale de $H_1$ & {\small{Acceptation de $H_1$ }} \\
+\hline \hline
+{#for]test in [#{.order}][#=]test[:.test.:{test-1}][#>]{#for]col in 0..3
+[#>]result[{#case]:{col}
+[#when]0[#>][test:{test}]
+[#when]1[#>][$\mathbf{H_1}$: $#{test.frame.thetaTex}{#if]#{+?test.frame.thetaExprTex}[#>]:=#{test.frame.thetaExprTex}[#if}#{test.side}#{test.theta0Tex}$]
+[#when]2[#>]
+[\begin{minipage}{#{minipage}}
+#{test.assertion}
+\end{minipage}]
+[#when]3[#>][{#if]:r{test:pval<#{test.alphaR}}[#>]oui[#else]non[#}]
+[#case}]
+[#>]
+[{#tags][#when]exam[#>]{#if](col+1) == filter[test-1][#>]#{result}[#else]\phantom{#{result}}[#if}[#when]reponse[#>]{#if]true[#>]#{result}[#if}[#tags}{#if]:{col}!=3[#>] & [#}]
+[#for}\\\hline
+[#for}\end{tabular}
+[#meth}
+
+
+{#meth]graph.ExoPVal[#,]exam[std][#,]delta[false][#,]justif[true][#rb<]order=[#{.order}][#>]
+{#new]:pgf[#of]PGFScene[#,][<<[0]<<[0]<<[15]<<[15]][#}
+
+{#new]:img1[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.0[#}][#Renvir]#{.test.0.Renvir}[#}
+
+{#new]:img2[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.1[#}][#Renvir]#{.test.1.Renvir}[#}
+
+{#new]:img3[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.2[#}][#Renvir]#{.test.2.Renvir}[#}
+
+{#new]:img4[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.3[#}][#Renvir]#{.test.3.Renvir}[#}
+
+[#>]
+\vspace*{1cm}Associez {\`a} chacun des tests (1 {\`a} 4) pr{\'e}c{\'e}dents le graphique repr{\'e}sentant la r{\`e}gle de d{\'e}cision trac{\'e}e au seuil de 5\% bas{\'e}e sur $\Est{\delta_{\theta,\theta_0}}{y}$ not{\'e}e \texttt{deltaEst.H0} en \texttt{R} ({#if]#{justif}[#>]\textbf{AVEC}[#else]\textbf{SANS}[#if} justification).
+
+
+{#add]:pgf[#,]:img:{order[0]}[#,]0,7.5[#}
+{#add]:pgf[#,]:img:{order[1]}[#,]7.5,7.5[#}
+{#add]:pgf[#,]:img:{order[2]}[#,]0,0[#}
+{#add]:pgf[#,]:img:{order[3]}[#,]7.5,0[#}
+
+{#new]:h1[#of]PGFRaw[#,]Graphique 1[#}{#add]:pgf[#,]:h1[#,]3.75,14[#,]center,center[#}
+{#new]:h2[#of]PGFRaw[#,]Graphique 2[#}{#add]:pgf[#,]:h2[#,]11.25,14[#,]center,center[#}
+{#new]:h3[#of]PGFRaw[#,]Graphique 3[#}{#add]:pgf[#,]:h3[#,]3.75,6.5[#,]center,center[#}
+{#new]:h4[#of]PGFRaw[#,]Graphique 4[#}{#add]:pgf[#,]:h4[#,]11.25,6.5[#,]center,center[#}
+[#?]#{delta}[#<]
+{#new]:txt1[#of]PGFRaw[#,] \texttt{deltaEst.H0=:r{self.test.0:deltaEst.H0}}[#}
+{#new]:txt2[#of]PGFRaw[#,] \texttt{deltaEst.H0=:r{self.test.1:deltaEst.H0}}[#}
+{#new]:txt3[#of]PGFRaw[#,] \texttt{deltaEst.H0=:r{self.test.2:deltaEst.H0}}[#}
+{#new]:txt4[#of]PGFRaw[#,] \texttt{deltaEst.H0=:r{self.test.3:deltaEst.H0}}[#}
+{#add]:pgf[#,]:txt:{order[0]}[#,]3.75,13.5[#,]center,center[#}
+{#add]:pgf[#,]:txt:{order[1]}[#,]11.25,13.5[#,]center,center[#}
+{#add]:pgf[#,]:txt:{order[2]}[#,]3.75,6[#,]center,center[#}
+{#add]:pgf[#,]:txt:{order[3]}[#,]11.25,6[#,]center,center[#}
+[#?]end[#>]
+{#print]:pgf[#}
+{#Exam]#{exam}[#}
+[#meth}

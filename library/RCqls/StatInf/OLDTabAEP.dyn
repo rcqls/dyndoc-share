@@ -1,0 +1,141 @@
+{#meth]tableAEP.InstrProba
+[#rb<]nb=#{#.expr}
+[#>]\begin{tabular}{|:{"c|"*nb}}\hline
+[#%]ligne1
+[#>]{#for]i in 0...nb
+[#>]\phantom{$\Big($}$#{.expr.:{i}.AEP}$[#?]i<nb-1[#>][&]
+[#for}[#>]\\\hline
+[#%]ligne2
+[#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
+[#>][\phantom{$\Big($}]
+[#?]#{=.expr.:{cpt}.type}=="p"[#>][$][#r>]round(#{.expr.:{cpt}.R}*100,2)[#>][\%$]
+[#?]else[#>][$:r{round(#{.expr.:{cpt}.R},4)}$]
+[#?]cpt<nb-1[#>][&]
+[#break]cpt==nb-1
+[#loop}[#>]\\\hline
+{#hide]DOES NOT WORK! But to fix!!!
+[#>]{#apply]self.expr[#,]expr[#>][\phantom{$\Big($}]
+[#?]#{=expr.type}=="p"[#>][$:r{round(#{expr.R}*100,2)}\%$]
+[#?]else[#>][$:r{round(#{expr.R},4)}$]
+[#?]#{ind_expr}<nb-1[#>][&][#}[#>]\\\hline
+{#for]i in 0...nb[#>]\phantom{$\Big($}[#>]expr[#{.expr.:{i}.R}]
+[#?]#{=.expr.:{i}.type}=="p"[#>][$][#r>]round(#{expr}*100,2)[#>][\%$]
+[#?]else[#>][$:r{round(#{expr},4)}$]
+[#?]i<nb-1[#>][&][#for}
+\\\hline
+[#hide}
+\end{tabular}
+[#meth}
+
+
+{#meth]tableAMP.InstrProba[#,]valR[]
+[#?]#{=valR}.include? "," and #{=valR}[0,2]!="c("[#>]valR[c(#{valR})][#?]end
+[#rb<]nb=#{#.expr}
+[#>]\begin{tabular}{|:{"c|"*nb}}\hline
+[#%]ligne1
+[#>]{#for]i in 0...nb
+[#>]\phantom{$\Big($}$#{.expr.:{i}.AMP}$[#?]i<nb-1[#>][&]
+[#for}[#>]\\\hline
+[#%]ligne2
+[#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
+[#>][\phantom{$\Big($}]
+[#?]#{=.expr.:{cpt}.type}=="p"[#>][$][#r>]round(#{valR}[:{cpt}+1]*100,2)[#>][\%$]
+[#?]else[#>][$:r{round((#{valR})[:{cpt}+1],4)}$]
+[#?]cpt<nb-1[#>][&]
+[#break]cpt==nb-1
+[#loop}[#>]\\\hline
+\end{tabular}
+[#meth}
+
+[#%]OLD Format
+[#<]
+{#def]TabAEP[#,]y[<<R[rnorm(100)]<<AEP[y]<<AMP[Y]][#,]what[p]2;3],p2],p]1,p2,p[1;3[,mean,sd,var,q0.95]
+[#,]expr[]
+[#r<]yy<-#{y.R}
+[#rb<]
+  def pretty_num(val)
+    if val.to_i==val.to_f
+      val.to_i.to_s
+    else
+      val.to_f.to_s
+    end
+  end
+  what=#{=what}.split(",").map{|e| e2=e.strip
+  inst=nil
+  if ["mean","m","moy","moyenne"].include? e2
+    {:type=>:m,:r=>"mean(yy)",:aep=>'\meanEmp{#{y.AEP}}',:amp=>'\EEE{#{y.AMP}}'}
+  elsif ["var","v","sigma2","variance"].include? e2
+    {:type=>:v,:r=>"var(yy)",:aep=>'\sdEmp{#{y.AEP}}^2',:amp=>'\VVV{#{y.AMP}}'}
+  elsif ["sd","standard deviation","ecart-type"].include? e2
+    inst={:type=>:s,:r=>"sd(yy)",:aep=>'\sdEmp{#{y.AEP}}',:amp=>'\sigma(#{y.AMP})'}
+  elsif /^q(\-?\d*\.?\d*)(\%?)$/ =~ e2
+    ordre= "("+$1+").to_f"+($2=="%" ? "/100" : "" )
+    ordrePercent=pretty_num(eval(ordre+"*100"))
+    {:type=>:q,:r=>"quantile(yy,"+eval(ordre).to_s+")",:aep=>"\\quantEmp{#{y.AEP}}{"+ordrePercent+"\\%}",:amp=>"\\quant{#{y.AMP}}{"+ordrePercent+"\\%}"}
+  elsif /^p([\[\]]?)(\-?\d*\.?\d*)(;?)(\-?\d*\.?\d*)([\[\]]?)$/ =~ e2
+    instR="mean(";instAEP="\\meanEmp{";instAMP="\\PP("
+    # égalité
+    if $1+$3+$4+$5=="" and $2!=""
+      instR << "yy=="+$2
+      instAEP << "#{y.AEP}="+$2
+      instAMP << "#{y.AMP}="+$2
+    else
+      if "[]".include? $1 and $2!="" and $3+$4+$5=="" 
+        instR << $2+($1=="[" ? "<=" : "<")+"yy"
+        instAEP << "#{y.AEP}"+($1=="[" ? "\\geq" : ">")+$2
+        instAMP << "#{y.AMP}"+($1=="[" ? "\\geq" : ">")+$2
+      elsif "[]".include? $5 and $2!="" and $3+$1+$4=="" 
+        instR << "yy"+($5=="[" ? "<" : "<=")+$2
+        instAEP << "#{y.AEP}"+($5=="[" ? "<" : "\\leq")+$2
+        instAMP << "#{y.AMP}"+($5=="[" ? "<" : "\\leq")+$2
+      elsif "[]".include? $1 and $2!="" and $3==";" and "[]".include? $5 and $4!=""
+        instR << "("+$2+($1=="[" ? "<=" : "<")+"yy) & (yy"+($5=="[" ? "<" : "<=")+$4+")"
+        instAEP << "#{y.AEP}\\in "+$1+$2+","+$4+$5
+        instAMP << "#{y.AMP}\\in "+$1+$2+","+$4+$5
+      end
+    end
+    instR << ")";instAEP << "}";instAMP << ")"
+    {:type=>:p,:r=>instR,:aep=>instAEP,:amp=>instAMP}
+  end
+}.compact
+p what
+nb=what.length
+[#<]{#for]i in 0...nb[#=]expr.:{i}[<<type[:{what[i][:type]}]<<R[:{what[i][:r]}]<<AEP[:{what[i][:aep]}]][#for}
+[#>]\begin{tabular}{|:{"c|"*nb}}\hline
+[#%]ligne1
+[#>]{#for]i in 0...nb
+[#>]\phantom{$\Big($}$:{what[i][:aep]}$[#?]i<nb-1[#>][&]
+[#for}[#>]\\\hline
+[#%]ligne2
+[#>]{#for]i in 0...nb
+[#>]\phantom{$\Big($}$:{what[i][:amp]}$[#?]i<nb-1[#>][&]
+[#for}[#>]\\\hline
+[#%]ligne3
+[#>]{#for]i in 0...nb[#>]\phantom{$\Big($}
+[#?]what[i][:type]==:p[#>][$:r{round(:{what[i][:r]}*100,2)}\%$]
+[#?]else[#>][$:r{round(:{what[i][:r]},4)}$]
+[#?]i<nb-1[#>][&][#for}
+\\\hline
+\end{tabular}
+[#def}
+
+{#def]tabProbAEP[#,]y[<<R[rnorm(100)]<<Tex[y]][#,]breakR[c(-Inf,-2:2,Inf)][#r<]
+br<-#{breakR}
+yy<-#{y.R}
+yyBr<-cut(yy,br)
+freq.yyBr<-table(yyBr)/length(yy)*100
+cpt<-0
+[#rb<]nbBr=:r{length(br)-1};nb=:r{length(yy)}
+[#>]\begin{tabular}{|:{"c|"*nbBr}}\hline
+[#%]ligne1
+[#>]{#for]i in 1..nbBr[#r<]brCur<-c(br[:{i}],br[:{i}+1])
+[#>]\phantom{$\Big($}{#if]:r{brCur[1]==-Inf}[#>][$\overline{\left(#{y.Tex}\leq :r{brCur[2]}\right)}_{:{nb}}$]
+[#elsif]:r{brCur[2]==Inf}[#>][$\overline{\left(#{y.Tex}> :r{brCur[1]}\right)}_{:{nb}}$]
+[#else][#>][$\overline{ \left(:r{brCur[1]}< #{y.Tex}\leq :r{brCur[2]}\right)}_{:{nb}}$]
+[#if}[#?]i<nbBr[#>][&]
+[#for}[#>]\\\hline
+[#%]ligne2
+[#>]{#for]i in 1..nbBr[#>]\phantom{$\Big($}$:r{round(:r{freq.yyBr[:{i}]},4)}\%$[#?]i<nbBr[#>][&][#for}
+\\\hline
+\end{tabular}
+[#def}

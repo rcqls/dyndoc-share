@@ -1,0 +1,148 @@
+{#def]TabChoixUrne[#,]value[#,]urne[2] [#,]length[3] [#,] tab[muEst.sim] [#,]end[10000] 
+[#r<]
+bi<-max(#{value}-#{length},1)
+if(bi==1) bs<-#{length}*2+2
+else bs<-min(#{value}+#{length},#{end})
+if(bs==#{end}) bi<-#{end}-2*#{length}-1
+ind<-bi:bs
+i<-0
+tmp<-muEst.sim[exOrder,#{urne}]
+[#>]
+\begin{tabular}{|c|c|}\hline
+\multicolumn{2}{|c|}{ 
+{#case]#{urne}
+[#when]1[#>] [Urne $U_{0.1}^A$]
+[#when2[#>] [Urne $U_{0.15}^A$]
+[#when]3[#>] [Urne $U_{0.2}^A$]
+[#when]4[#>] [Urne $U_{0.1}^B$]
+[#when]5[#>] [Urne $U_{0.15}^B$]
+[#when]6[#>] [Urne $U_{0.2}^B$]
+[#} 
+} \\\hline
+j & $\Est{\mu^\bullet}{y^\bullet_{[j]}}$\\\hline
+{#if]#R{ind[1]>1}[#>] [$\vdots$ & $\vdots$\\] [#}
+{#loop]
+[#r<]ok<-ind[i<-i+1]==#{value}[#>]
+{#if]#R{ok}[#>] [{\color[rgb]{1,0,0}] [#}
+#R{ind[i]}
+{#if]#R{ok}[#>] [}] [#}
+& 
+{#if]#R{ok}[#>] [{\color[rgb]{1,0,0}] [#}
+{#case]#{urne}
+[#when]1,2,3[#>] [#R{paste(tmp[ind[i]]*100,"\\%",sep="")}] 
+[#when]4,5,6[#>] [#R{tmp[ind[i]]}] 
+[#}
+{#if]#R{ok}[#>] [}] [#}
+\\
+[#break]#R{i==length(ind)} 
+[#}
+{#if]#R{ind[length(ind)]<#{end}}[#>] [$\vdots$ & $\vdots$\\] [#}
+\hline
+\end{tabular}
+[#}
+
+{#def]TabIC[#,]value[#,]urne[6] [#,]length[3] [#,] tab[yy.sim] [#,]end[10000] [#,]alpha[0.05] 
+[#r<]
+bi<-max(#{value}-#{length},1)
+if(bi==1) bs<-#{length}*2+2
+else bs<-min(#{value}+#{length},#{end})
+if(bs==#{end}) bi<-#{end}-2*#{length}-1
+ind<-bi:bs
+i<-0
+if(#{urne}<=3) {
+  tmp<-#{tab}[exOrder,#{urne}]
+  tmp2<-sqrt(#{tab}[exOrder,#{urne}]*(1-#{tab}[exOrder,#{urne}])/1000)*qnorm(1-#{alpha}/2)
+} else {
+  tmp<-#{tab}[exOrder,2*#{urne}-4]
+  tmp2<-#{tab}[exOrder,2*#{urne}-3]/sqrt(1000)*qnorm(1-#{alpha}/2)
+ } 
+switch(#{urne},.1,.15,.2,.1,.15,.2)->mu
+highlight<-function(res) {
+  if(ok) paste("{\\color{red}",res,"}",sep="")
+  else res
+}  
+[#>]
+[\begin{tabular}{|c|c|c|c|c|}\hline
+\multicolumn{5}{|c|}{
+Echantillons générés avec]
+[#>]
+{#case]#{urne}
+[#when]1[#>] [$\mu^\bullet=0.1$]
+[#when]2[#>][$\mu^\bullet=0.15$]
+[#when]3[#>] [$\mu^\bullet=0.2$]
+[#when]4[#>] [$\mu^\bullet=0.1$]
+[#when]5[#>] [$\mu^\bullet=0.15$]
+[#when]6[#>] [$\mu^\bullet=0.2$]
+[#}
+[#>] 
+[~(néanmoins inconnu du statisticien)
+} \\\hline
+j & $\Est{\mu^\bullet}{y_{[j]}}$ & $\Int{\mu^\bullet}{\inf}{y_{[j]}}$ & $\Int{\mu^\bullet}{\sup}{y_{[j]}}$ & {\scriptsize$\mu^\bullet \!\in\! [\!\Int{\mu^\bullet}{\inf}{y_{[j]}}\!,\!\Int{\mu^\bullet}{\sup}{y_{[j]}}\!]\!$?} \\\hline
+{#if]#R{ind[1]>1}[#>] [$\vdots$ & $\vdots$ &$\vdots$ & $\vdots$ &$\vdots$ \\] [#}
+{#loop]
+[#r<] ok<-ind[i<-i+1]==#{value}[#>] #R{highlight(ind[i])}
+&
+{#case]#{urne}
+[#when]1,2,3[#>]
+[#R{highlight(paste(round(tmp[ind[i]]*100,2),"\\%",sep=""))}
+ &
+#R{highlight(paste(round((tmp[ind[i]]-tmp2[ind[i]])*100,2),"\\%",sep=""))}
+&
+#R{highlight(paste(round((tmp[ind[i]]+tmp2[ind[i]])*100,2),"\\%",sep=""))}]
+[#when]4,5,6[#>]
+[#R{highlight(round(tmp[ind[i]],3))}
+& 
+#R{highlight(round(tmp[ind[i]]-tmp2[ind[i]],3))}
+& 
+#R{highlight(round(tmp[ind[i]]+tmp2[ind[i]],3))}]
+[#}
+&
+#R{highlight(as.integer((tmp[ind[i]]-tmp2[ind[i]]<=mu) & (mu<=tmp[ind[i]]+tmp2[ind[i]])))}
+\\
+[#break]#R{i==length(ind)} 
+[#}
+{#if] #R{ind[length(ind)]<#{end}} [#>] [$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$\\] [#}\hline
+\multicolumn{4}{|r|}{${\scriptsize \Prob{\mu^\bullet\in[\Int{\mu^\bullet}{\inf}{Y},\Int{\mu^\bullet}{\sup}{Y}]}} \simeq $Taux de succès$=$}
+&
+#R{paste(round(mean((tmp-tmp2)<=mu & mu<=(tmp+tmp2))*100,5),"\\%",sep="")}
+\\\hline
+\end{tabular}
+[#}
+
+{#def]dataAEP [#,] data [] [#,] echo [false] [#>]
+[@{VerbDeb}
+@{VerbFilterR(#{data}|echo.rcode=#{echo})}
+@{VerbFin}]
+[#}
+
+{#def]TabAEP3 [#,] data[] [#,] bound[.1686] [#,] color[blue] [#,] compare[>] [#,] widthR[45] [#,] in[#{compare}#{bound}] [#,] infilter[function(x) x #{in}] [#,] outfilter[function(x) paste("\\textcolor{#{color}}{\\underline{",x,"}}",sep="")]
+[#>] [@{initFilterR(#{infilter}|#{outfilter})}
+\begin{tabular}{|c|c|c|}\hline
+{\scriptsize
+\begin{minipage}{5.5cm}[#r]oldwidth<-options()[["width"]];options(width=#{widthR})[#end]
+@{dataAEP(#{data}[1:(m<-200),1])}
+\end{minipage}}&
+{\scriptsize\begin{minipage}{5.5cm}
+@{dataAEP(#{data}[1:m,2])}
+\end{minipage}}&
+{\scriptsize\begin{minipage}{5.5cm}
+@{dataAEP(#{data}[1:m,3])}
+\end{minipage}}\\\hline
+#r{mean(#{data}[1:m,1]#{in})*100}\% & #r{mean(#{data}[1:m,2]#{in})*100}\% & #r{mean(#{data}[1:m,3]#{in})*100}\%\\\hline
+#r{mean(#{data}[1:(m<-1000),1]#{in})*100}\% & #r{mean(#{data}[1:m,2]#{in})*100}\% & #r{mean(#{data}[1:m,3]#{in})*100}\%\\\hline
+#r{mean(#{data}[1:(m<-10000),1]#{in})*100}\% & #r{mean(#{data}[1:m,2]#{in})*100}\% & #r{mean(#{data}[1:m,3]#{in})*100}\%\\\hline
+\end{tabular}]
+[#r<]options(width=oldwidth)
+[#}
+
+{#hide]
+{#def]DataAEP [#,] data [] [#,] bound[.1686] [#,] color[blue] [#,] compare[>] [#,] widthR[45] [#,] echo [false] [#<]
+|[#var] :in[?] => #{compare}#{bound} | :infilter[?]=> function(x) x #{in} | :outfilter[?]=> function(x) paste("\\textcolor{#{color}}{\\underline{",x,"}}",sep="") [#r]
+oldwidth<-options()[["width"]]
+options(width=#{widthR})
+[#end]|
+%> [@{initFilterR(#{infilter}|#{outfilter})}
+@{dataAEP(#{data})}]
+%< |[#r]options(width=oldwidth)[#end]|
+[#}
+[#hide}

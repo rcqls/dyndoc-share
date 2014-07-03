@@ -1,0 +1,8 @@
+{#def]reponse[#,]size[2cm]
+[#tag]exam[#>]\Reponse{#{size}}
+[#}
+
+{#def]Exam[#,]cm[std]
+[#<]{#case]#{cm}[#when]a,abr[#>]cm[5cm][#when]s,std[#>]cm[8cm][#when]pre,prelim[#>]cm[10cm][#case}
+[#tag]exam[#>]\Reponse{#{cm}}
+[#}

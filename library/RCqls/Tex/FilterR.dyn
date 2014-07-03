@@ -1,0 +1,52 @@
+{#def]FilterRVerb[#,] rcode [rnorm(10)] [#,] in [function(x) x>1] 
+[#,] out [function(x) paste("\\textcolor{blue}{",x,"}",sep="")] 
+[#>]
+[\begin{Verbatim}[fontfamily=tt,fontshape=n,commandchars=\\\{\}]
+{#if]#{echo.rcode}[#>]> #{rcode}[#}
+#R{filter.capture.output(#{rcode},filter=list(#{in},#{out}))}
+\end{Verbatim}]
+[#}
+
+{#def]VerbDeb [#,] optVerb [fontfamily=tt,fontshape=n,commandchars=\\\{\}] 
+[#>]
+[\begin{Verbatim}[#{optVerb}]]
+[#}
+
+{#def]VerbFin [#>] [\end{Verbatim}] [#}
+
+{#def]VerbFilterR[#,] rcode [rnorm(10)] [#,] in [function(x) x>1] 
+[#,] out [function(x) paste("\\textcolor{blue}{",x,"}",sep="")] [#,] echo.rcode[true] 
+[#r<]
+init.filter.capture(#{in},#{out})
+[#>]
+{#if] #{echo.rcode}[#>] 
+[> #{rcode}
+][#}
+[#>] [#R{filter.capture.output(#{rcode},filter=.filter.capture)}]
+[#}
+
+{#def]initFilterR[#,] in [function(x) x>1] 
+[#,] out [function(x) paste("\\textcolor{blue}{",x,"}",sep="")] [#,] echo.rcode[true] [#r<]
+init.filter.capture(#{in},#{out})
+print(.filter.capture)
+[#}
+
+[#R<]
+applyFilter<-function(res,filter=.filter.capture) {
+  if(!is.null(filter[[1]])) {
+    res.in<-if(is.function(filter[[1]])) sapply(res,filter[[1]])
+            else filter[[1]]
+    res[res.in]<-sapply(res[res.in],filter[[2]])
+  }
+  return(res)
+}
+
+[#<]
+
+
+{#def]DataFilter[#,] data [] [#,] bound[.1686] [#,] color[blue] [#,] compare[>]
+[#=]in[#{compare}#{bound}]
+[#=]infilter?[function(x) x #{in}]
+[#=]outfilter?[function(x) paste("\\textcolor{#{color}}{\\underline{",x,"}}",sep="")]
+[#>][:{#r{=applyFilter(#{data},list(#{infilter},#{outfilter}))}.join(", ")}]
+[#}

@@ -1,0 +1,176 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                   Cours                                       % 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Documentation (sommaire) :
+% Ce document compilé à partir de pdflatex génère un document dynamique pdf au format transparent 
+% Ce même document compilé avec latex génère un document dvi en double colonne dans le but de l'imprimer.
+% Ceci est rendu possible en suivant les instructions suivantes :
+% - placer la commande  ``\input inputCours.tex'' en préambule du document tex
+% - juste après (resp. avant) \begin{document} (resp. \end{document}) inclure 
+% la commande ``\begin{Cours}'' (resp. ``\end{Cours}''.
+%
+% - Description des commandes suivantes :
+% - \QueTransparent{} (resp. \QuePapier{}) : sorties exclusives transparent pdf (resp. document dvi)
+% - \NewPage remplace le rôle de \newpage dans le but de ne générer le saut de page que dans le cas 
+% de document transparent (pdf)
+% - \Cible{nomCible}, \Lien{nomCible}{texteInteractif} sont utilisés pour faire des hyperliens (nomCible et 
+% texteInteractif) étant bien entendu à renommer pour chaque hyperlien.
+% - \Boite{\ldots} ,\BoiteCentre{\ldots} (i.e. \centerline{\Boite{\ldots}): permettent de mettre en valeur une ligne 
+% ou une partie de ligne.
+% - \BoiteGrosse{\ldots} : correspond à BoiteCentre{\minipage{10cm}{\ldots}\end{minipage})
+% - RougeClair, VertClair, Vert, BleuClair, RougeFonce, VertFonce, BleuFonce sont des couleurs utilisables 
+% pour la définition des commandes ci-dessous.
+% - \BoiteCouleur{couleur}{\ldots}, \BoiteCentreCouleur{couleur}{\ldots}, \BoiteGrosseCouleur{couleur}{\ldots} : extensions 
+% colorisées de  \Boite{\ldots} ,\BoiteCentre{\ldots} et \BoiteGrosse{\ldots}
+% - \BoiteCouleurTaille{couleur}{taille}{\ldots} : équivalent de \BoiteGrosseCouleur{couleur}{\ldots} avec possibilité 
+% de changement de la taille 10cm par ``taille''.
+%
+% Autre remarque : les packages suivants sont appelés par cet input :
+% - ifthen, geometry,multicol, lscape, mathenv, color, graphicx et hyperref
+% dans cet ordre. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{ifthen}
+\ifthenelse{\isundefined{\pdfoutput}}{\def\papier{}}{}
+\ifthenelse{\isundefined{\papier}}
+{\usepackage[
+pdftex=true,
+paperheight=9cm,
+paperwidth=12cm,
+nohead,
+nofoot,
+left=0.5cm,
+right=.5cm
+]{geometry}
+}{
+\usepackage[
+a4paper,
+%landscape,
+nohead,
+nofoot,
+left=2cm,
+right=2cm
+]
+{geometry}
+\usepackage{multicol}
+\setlength\columnseprule{.4pt}
+\usepackage{lscape}
+
+}
+
+
+%\usepackage{amsmath,amssymb}
+
+\ifthenelse{\isundefined{\papier}}
+{\def\linkcolor{RougeFonce}}{\def\linkcolor{blue}}
+%include pour cours20001
+\usepackage{color} %pour définir les couleurs
+\usepackage{graphicx}
+\usepackage[colorlinks=true,linkcolor=\linkcolor]{hyperref} %à décommenter pour pdf
+%\input tcilatex.tex
+
+%%%% Macros
+
+%%\newcommand{\PR}[1]{\textit{Produit~{#1}}}
+
+%%\def\RR{\hbox{I\kern-.1em\hbox{R}}}
+%%\def\NN{\hbox{I\kern-.1em\hbox{N}}}
+%%\def\ZZ{\hbox{Z\kern-.3em\hbox{Z}}}
+%%\def\PP{\hbox{P\kern-.8em\hbox{P}}}
+
+%%\newtheorem{thm}{Théorème}
+%%\newtheorem{prop}{Proposition}
+%%\newtheorem{dfn}{Définition}
+%%\newtheorem{rmq}{Remarque}
+%%\newtheorem{lm}{Lemme}
+%%\newtheorem{exercice}{Exercice}
+
+
+%definition de couleur
+\definecolor{Blanc}{rgb}{1,1,1}
+\definecolor{RougeClair}{rgb}{1,.9,.9}
+\definecolor{VertClair}{rgb}{.9,1,.9}
+\definecolor{Vert}{rgb}{.4,.8,.4}
+\definecolor{BleuClair}{rgb}{.9,.9,1}
+\definecolor{Titrepale}{rgb}{.95,.95,.1}
+\definecolor{RougeFonce}{rgb}{.9,0,0}
+\definecolor{VertFonce}{rgb}{0,.4,.0}
+\definecolor{BleuFonce}{rgb}{0,0,.5}
+
+\newcommand{\heading}[1]{
+  \noindent \underline{\bf $\rightarrow$ #1}
+  \vspace{1ex minus 1ex}}
+
+\newcommand{\mainheading}[2][Blanc]{
+  \begin{center}
+    \large\bf
+    \fcolorbox{black}{#1} {\color{BleuFonce} #2}
+  \end{center}
+\vspace{1ex minus 1ex}}
+
+\newcommand{\Couleur}[2]{{\color{#1} #2}}
+\newcommand{\CouleurGras}[2]{\textbf{\color{#1} #2}}
+\newcommand{\BoiteCentre}[1]
+{
+  \centerline{\fcolorbox{RougeFonce}{BleuClair}{#1}}
+}
+
+\newcommand{\Boite}[1]
+{
+  \fcolorbox{RougeFonce}{VertClair}{#1}
+}
+
+\newcommand{\BoiteCentreCouleur}[2]
+{
+  \centerline{\fcolorbox{RougeFonce}{#1}{#2}}
+}
+
+\newcommand{\BoiteCouleur}[2]
+{
+  \fcolorbox{RougeFonce}{#1}{#2}
+}
+
+\newcommand{\BoiteGrosseCouleur}[2]
+{
+\BoiteCentreCouleur{#1}{\begin{minipage}{10cm}{#2}\end{minipage}}
+}
+
+\newcommand{\BoiteGrosse}[1]
+{
+\BoiteCentre{\begin{minipage}{10cm}{#1}\end{minipage}}
+}
+
+\newcommand{\BoiteCouleurTaille}[3]
+{
+\BoiteCentreCouleur{#1}{\begin{minipage}{#2}{#3}\end{minipage}}
+}
+
+\newcommand{\Lien}[2]{\hyperlink{lien:#1}{#2}}
+
+\newcommand{\Cible}[1]{\hypertarget{lien:#1}{}}
+
+\ifthenelse{\isundefined{\papier}}{
+\newcommand{\Retour}[1]{ \begin{flushright}\BoiteCouleur{RougeClair}{\hyperlink{lien:#1}{{\small {\color{black}Retour}}}}\end{flushright}}
+}{
+\newcommand{\Retour}[1]{}
+}
+
+\ifthenelse{\isundefined{\papier}}{
+\newcommand{\NewPage}{\newpage}}
+{\newcommand{\NewPage}{\bigskip \hrulefill}}
+
+\newcommand{\QuePapier}[1]{
+\ifthenelse{\isundefined{\papier}}{}{#1}}
+\newcommand{\QueTransparent}[1]{
+\ifthenelse{\isundefined{\papier}}{#1}{}}
+
+
+\newcommand{\FigureTranspPapier}[3]{
+\ifthenelse{\isundefined{\papier}}{\includegraphics[width=#1,height=#2]{#3.png}}{ \includegraphics[width=#1,height=#2]{#3.eps}}}
+
+
+
+
+\def\DebutCours{\ifthenelse{\isundefined{\papier}}{}{\begin{landscape}\begin{multicols*}{2}  }}
+\def\FinCours{\ifthenelse{\isundefined{\papier}}{}{\end{multicols*}\end{landscape}}}
+
+\newenvironment{Cours}{\DebutCours}{\FinCours}

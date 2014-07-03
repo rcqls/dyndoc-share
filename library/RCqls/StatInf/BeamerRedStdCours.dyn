@@ -1,0 +1,95 @@
+[#preamble]\definecolor{darkgreen}{rgb}{0,.4,.0}
+[#require]RCqls/StatInf/HypoTest
+[#main][#<]
+
+{#meth]RedStdBeamer.TestParam[#,]pb[][#,]titre[Rédaction Standard][#,]prelim[true]
+[#<][#%] Prob #{pb} -> redStd[#<]
+{#Actor]head:#{pb}_tit[#,]:1-11[#,]0.5,0.5[#,]align[center,center][#,] [\textbf{\large #{titre}}][#}
+{#Actor]def:#{pb}_q1_redStd[#,]:1-2[#,]0.5,1.0[#,]align[center,top][#,]minipage[11cm][#,]
+[\textbf{Question } Comment s'écrit l'assertion d'intérêt $\mathbf{H_1}$ en fonction des paramètres d'intérêt et d'écart~?@{ONLY(:1)}{\\\textbf{Assertion d'intérêt}~: #{.assertion}}@{ONLY(:2)}{\\ \centerline{$\mathbf{H_1}$:{#H1Theta]self[#,]true[#} $\Longleftrightarrow$ {#H1Delta]self[#}}}
+][#}
+{#Actor]def:#{pb}_q2_redStd[#,]:3-4[#,]0.5,1.0[#,]
+[\textbf{Question }: Quelle est la pire des situations, i.e. parmi toutes les situations quelle est celle qui engendre le plus grand risque d'erreur de première espèce~?][#}
+{#Actor]def:#{pb}_q3_redStd[#,]:5-6[#,]0.5,1.0[#,]
+[\textbf{Question }: Quelle est l'information du mathématicien quant au comportement de ${#deltaEstH0Tex]self[#}$ dans la pire des situations~?] [#}
+{#Actor]def:#{pb}_q4_redStd[#,]:7-8[#,]0.5,1.0[#,]
+[\textbf{Question }: Comment s'écrit la règle de décision ne produisant pas plus de #{.alphaTex} d'erreur de première espèce~? \\
+\textbf{Indic \texttt{R}}~: {#case]#{.indic}
+[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})}$\simeq$ \texttt{#r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}}
+[#}][#}
+
+{#Actor]def:#{pb}_q5_redStd[#,]:9-11[#,]0.5,1.0[#,]
+[\textbf{Question }: Comment conclueriez-vous au vu des données {#if]#{.frame.nbEch}==2[#>] [\texttt{#{.frame.y1R}} et \texttt{#{.frame.y2R}}][#else][\texttt{#{.frame.yR}}][#} en \texttt{R}~?\\
+\textbf{Indic \texttt{R}}~: {#case]#{.indic}
+[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})}$\simeq$ \texttt{#r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}} 
+[#}]
+[#}
+{#Actor]ex:#{pb}_redStd[#,]:1-11[#,]0.5,1.0[#,]align[center,top][#,]minipage[11cm][#,]
+[@{ONLY(:1)}{\textbf{Indications \texttt{R}}~:\\\texttt{{#if]#{.frame.nbEch}==2[#>]
+[> c(length(#{.frame.y1R}),length(#{.frame.y2R}))\\
+$[1]$ #r{length(#{.frame.y1R})} #r{length(#{.frame.y2R})}\\
+> #{.frame.thetaEstFctR}(#{.frame.y1R})\\
+$[1]$ #r{#{.frame.thetaEstFctR}(#{.frame.y1R})}\\
+> #{.frame.thetaEstFctR}(#{.frame.y2R})\\
+$[1]$ #r{#{.frame.thetaEstFctR}(#{.frame.y2R})}]
+[#else]
+[> length(#{.frame.yR})\\
+$[1]$ #r{length(#{.frame.yR})}\\
+> #{.frame.thetaEstR}\\
+$[1]$ #r{#{.frame.thetaEstR}}]
+[#if}\\
+{#case]#{.indic}
+[#when]p[#>]
+[> p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})\\
+$[1]$ #r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}]
+[#when]q[#>]
+[> deltaEst.H0 \# instruction R à fournir\\
+$[1]$ #r{deltaEst.H0}\\
+> q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})\\
+$[1]$ #r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}]
+[#}}}@{VIEW(:2-11)}{\noindent\textbf{Hypothèses de test~:}}@{VIEW(:4-11)}{ {\small {#H0]self[#}} vs } @{VIEW(:2-11)}{{#H1]self[#}}\\|
+{#if]#{prelim}[#>]@{ONLY(:2)}{\\{#redTestPre]self[#}}[#}|
+@{VIEW(:6-11)}{\noindent\textbf{Statistique de test sous $\mathbf{H_0}$~:}\\
+\centerline{${#deltaEstH0Tex]self[#}= {#deltaEstH0ExprTex]self[#}
+  {#case]#{.frame.cadre}[#when]a[#>][\SuitApprox] [#else] [\leadsto] [#}#{.loiStatTex} $}\newline}
+@{VIEW(:8-11)}{\noindent\textbf{Règle de Décision}~:\\
+\centerline{Accepter $\mathbf{H_1}$ si {#case]#{.indic}
+  [#when]p[#>]
+    [{@{COLOR(:10|orange)}p-valeur {#case]#{.side}[#when]<[#>][(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(biltatérale)] [#}} < {@{COLOR(:10|blue)}#{.alphaTex}}]
+  [#when]q[#>]
+    [{#case]#{.side}
+    [#when]<[#>] [${@{COLOR(:10|orange)}{#deltaEstH0Tex]self[#,]false[#}} < {@{COLOR(:10|darkgreen)}{#deltaLimTex]self[#,]-[#}}$]
+    [#when]>[#>] [${@{COLOR(:10|orange)}{#deltaEstH0Tex]self[#,]false[#}} > {@{COLOR(:10|darkgreen)}{#deltaLimTex]self[#,]+[#}}$]
+    [#when]!=,\neq[#>] [${@{COLOR(:10|orange)}{#deltaEstH0Tex]self[#,]false[#}} < {@{COLOR(:10|darkgreen)}{#deltaLimTex]self[#,]-[#}}$ ou ${@{COLOR(:10|orange)}{#deltaEstH0Tex]self[#,]false[#}} > {@{COLOR(:10|darkgreen)}{#deltaLimTex]self[#,]+[#}}$]
+    [#}]
+  [#}}\newline}
+@{VIEW(:10-11)}{\small\noindent\textbf{Conclusion}~: puisqu'au vu des données,
+{#case]#{.indic}
+  [#when]p[#r<]pval<-{#pvalR]self[#};okH1<-pval<#{.alphaR}[#>] 
+[\\ \texttt{p-valeur}$\NotR{@{COLOR(:10|orange)}\mathtt{{#pvalR]self[#}}}$\\ \phantom{\texttt{p-valeur}}${@{COLOR(:10|orange)}\simeq #R{round(({#pvalR]self[#})*100,2)}\%}#R{ifelse(pval<#{.alphaR},"<","\\nless")}{@{COLOR(:10|blue)}#{.alphaTex}}$\\]
+[#when]q[#>]
+  [\\${#deltaEstH0Tex]self[#,]false[#}\!\NotR\! {@{COLOR(:10|orange)}\mbox{\scriptsize\texttt{#{.deltaH0R}}}\!\simeq\! #R{formatC(deltaEst.H0)}}$\\]
+  [#>]
+    [\phantom{$\!{#deltaEstH0Tex]self[#,]false[#}\!$}$\!{#case]#{.side}
+    [#when]<[#>] [#R{ifelse(pval<#{.alphaR},"<","\\nless")}  {#deltaLimTex]self[#,]-[#}]
+    [#when]>[#>] [#R{ifelse(pval<#{.alphaR},">","\\ngtr")} {#deltaLimTex]self[#,]+[#}]
+    [#when]!=,\neq[#>]
+      [{#if]#R{leftpval<.5}[#>] 
+        [#R{ifelse(okH1,"<","\\nless")} {#deltaLimTex]self[#,]-[#}]
+      [#else] 
+        [#R{ifelse(okH1,">","\\ngtr")} {#deltaLimTex]self[#,]+[#}]
+      [#}]
+    [#}\!
+\NotR\!{@{COLOR(:10|darkgreen)}\mathtt{{#deltaLimR]self[#}\!\simeq\!#R{formatC({#deltaLimR]self[#})}}}\!$\\]
+[#}
+{#if]#R{okH1}[#>] [ on peut] [#else] [ on ne peut pas] [#} plutôt penser (avec un risque de #{.alphaTex}) que #{.assertion}.}] 
+[#}
+{#renv]#{.Renvir}+[#}
+[#?]"pq".include? #{=.indic}[#>]{#ImageR]ex:img/pval#{pb}.png[#,]8,4[#,]:10[#,]0.15,0.65[#optR]type="cairo",bg="#ffffffcc"[#,]
+{#pvalRCode]self[#}
+[#}[#?]end
+[#<]
+{#renv]#{.Renvir}-[#}
+[#<]{#incCpt]11[#}
+[#meth}
+
