@@ -1,0 +1,507 @@
+
+{#def]LM_InitData [#,] rdata[data/chomage.RData] [#,] data[chomage] [#,] formula[chom~txpib+deppub+pfisc+salva+infl] 
+[#<] {#var] :modelvars[?] ==>   #{formula} [#}
+[#r<]
+attach('#{rdata}')
+attach(#{data})
+require(car)
+[#}
+
+%% Ajout de l'option log???
+{#def]LM1_Model[#,] y[] [#,] x[] [#,] data[] [#,] log[false] [#>]
+[On envisage un modèle linéaire expliquant la variable \texttt{#{y}} en fonction de la seule variable  \texttt{#{x}}. On tente une modélisation #Rb{#{log} ? "log-" : ""}linéaire du type~:
+$$ (#{y})_i = \beta_0+\beta_1 (#{x})_i+\varepsilon_i, \qquad i=1,\ldots,#R{NROW(#{data})}$$]
+[#}
+
+{#def]LM1_Calculable [#>]
+[\Question{Pourquoi les paramètres $\beta_0$ et $\beta_1$ ne sont pas calculables~?}
+[#tag]exam[#>]reponse?[2cm]
+[#>]\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction}
+Pour pouvoir évaluer les paramètres $\beta_0$ et $\beta_1$ il faudrait ``en théorie'' une infinité de données. Ces paramètres ne sont donc pas évaluables mais simplement estimables à partir d'un nombre fini de données.
+\end{Correction}]
+[#}
+
+{#def]LM1_Estim [#,] y[] [#,] x[] [#>]
+[\Question{On s'intéresse tout naturellement à l'estimation des paramètres $\beta_0$  et $\beta_1$. Déterminez les estimations obtenues par la méthode des moindres carrés.}
+
+On rappelle {\`a} titre indicatif que
+\begin{list}{$\bullet$}{}
+\item $var(\Vect{x})= \overline{x^2}- \overline{x}^2$
+\item $cov(\Vect{x},\Vect{y})=\overline{x \times y} - \overline{x} \times \overline{y}.$
+\end{list}]
+[#>]mx[mean(#{x})]
+[#>]mx2[mean(#{x}^2)]
+[#>]my[mean(#{y})]
+[#>]my2[mean(#{y}^2)]
+[#>]mxy[mean(#{x}*#{y})]
+[#>]beta1R[(#{mxy}-#{mx}*#{my})/(#{mx2}-#{mx}^2)]
+[#>]beta0R[#{my} - beta1Est*#{mx}]
+[#>]
+{#rverb]
+#{mx}
+#{mx2}
+#{my}
+#{my2}
+#{mxy}
+[#}
+[#tag]exam[#>]reponse?[5cm][#>]\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction}
+En notant $\Vect{y}=\Vect{#{y}}$ et $\Mat{x}=(\Vect{1},\Vect{x^{(1)}}:=\Vect{#{x}})$,
+
+\begin{eqnarray*}
+\Est{\beta_1}{\Vect{y}|\Mat{x}}&=& \frac{cov(\Vect{y},\Vect{x^{(1)}})}{var(\Vect{x^{(1)}})}
+=\frac{#r{#{mxy}}-(#r{#{mx}})*(#r{#{my}})}{#r{#{mx2}} - #r{#{mx}}^2}
+\simeq#r{beta1Est<- #{beta1R}}\\
+\Est{\beta_0}{\Vect{y}|\Mat{x}}&=& \overline{\Vect{y}}-\Est{\beta_1}{\Vect{y}|\Mat{x}} \overline{\Vect{x^{(1)}}}
+=#r{#{my}} - #r{beta1Est}\times #r{#{mx}}
+\simeq #r{ #{beta0R}}.
+\end{eqnarray*}
+Vérification en \texttt{R}~:
+{#rverb]
+beta1Est<- #{beta1R}
+beta1Est
+#{beta0R}
+[#}
+\end{Correction}
+[#}
+
+{#def]LM1_CorrLin[#,] y[] [#,] x[] [#>]
+[\Question{D{\'e}terminez le coefficient de détermination lin{\'e}aire ($R^2$) (puis le coefficient de corrélation linéaire ($R$)) 
+entre \texttt{#{x}} et \texttt{#{y}}, et donnez-en une interpr{\'e}tation.}]
+[#tag]exam[#>]reponse?[6cm][#>]\Reponse{#{reponse}}
+[#tag]reponse
+[#>] mx[mean(#{x})]
+:mx2 => mean(#{x}^2)]
+:my => mean(#{y})]
+:my2 => mean(#{y}^2)]
+:mxy => mean(#{x}*#{y})]
+:cxy => (#{mxy}-#{mx}*#{my})/sqrt((#{mx2}-#{mx}^2)*(#{my2}-#{my}^2))]
+[#>]\begin{Correction}
+Dans le cadre de la régression simple, $R^2$ vaut le carré du coefficient de corrélation linéaire~:
+\[
+R^2 = \frac{cov(\Vect{y},\Vect{x^{(1)}})^2}{var(\Vect{y}) \times var(\Vect{x^{(1)}}) } 
+=\frac{(#r{#{mxy}}-(#r{#{mx}})*(#r{#{my}}))^2}{(#r{#{mx2}} - #r{#{mx}}^2) (#r{#{my2}} - #r{#{my}}^2)}
+\simeq #r{(tmp<-#{cxy})^2}.
+\]
+D'où $corr(\Vect{x},\Vect{y})=#R{ifelse(tmp<0, "-", "+")}\sqrt{#r{tmp^2}}\simeq #r{tmp}$ qui a en particulier le même signe que $\Est{\beta_1}{\Vect{y}|\Mat{x}}$. Plus $|corr(\Vect{x},\Vect{y})|$ est proche de 1 et plus la dispersion des points autour de la droite ajustée est faible.
+\end{Correction}]
+[#}
+
+{#def]LM1_CorrLin2[#,] y[] [#,] x[] [#>]
+[\Question{D{\'e}terminez le coefficient de corrélation linéaire
+entre \texttt{#{x}} et \texttt{#{y}} et donnez-en une interpr{\'e}tation.}
+{#tag]exam[#>]{#var]:reponse[?] => 6cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]{#var]
+:mx => mean(#{x})
+:mx2 => mean(#{x}^2)
+:my => mean(#{y})
+:my2 => mean(#{y}^2)
+:mxy => mean(#{x}*#{y})
+:cxy => (#{mxy}-#{mx}*#{my})/sqrt((#{mx2}-#{mx}^2)*(#{my2}-#{my}^2))
+[#}\begin{Correction}
+Le coefficient de corrélation linéaire vaut
+\[
+corr(\Vect{y},\Vect{x}) = \frac{cov(\Vect{y},\Vect{x^{(1)}})}{\sqrt{var(\Vect{y}) \times var(\Vect{x^{(1)}})} } =\frac{#r{#{mxy}}-(#r{#{mx}})*(#r{#{my}})}{\sqrt{(#r{#{mx2}} - #r{#{mx}}^2) (#r{#{my2}} - #r{#{my}}^2)}}
+\simeq #r{#{cxy}},
+\]
+et  plus il est proche de 1 en valeur absolue plus la dispersion des points autour de la droite ajustée est faible.
+\end{Correction}
+[#}]
+[#}
+
+{#def]LM1_SummaryLm[#,] y[] [#,] x[] [#>]
+[\Question{Rappelez brièvement à quoi correspondent chacune des quatre colonnes de la matrice ``Coefficients'' de la sortie ci-dessous. 
+Retrouvez les résultats des deux questions précédentes.}
+]
+[#r<]summary(lm(#{y}~#{x})->tmpLm)->tmpSumLm
+[#>]{#rverb]
+summary(lm(#{y}~#{x}))
+sqrt(#r{tmpSumLm$r.sq})
+[#}
+{#tag]exam[#>]{#var]:reponse[?] => 4cm[#}\Reponse{#{reponse}}[#}
+[#}
+
+{#def]LM1_SummaryLm2[#,] y[] [#,] x[] [#>]
+[\Question{Retrouvez les résultats des deux questions précédentes. Analysez brièvement les résultats obtenus.}
+]
+[#r<]summary(lm(#{y}~#{x})->tmpLm)->tmpSumLm
+[#>]{#rverb]
+summary(lm(#{y}~#{x}))
+sqrt(#r{tmpSumLm$r.sq})
+[#}
+{#tag]exam[#>]{#var]:reponse[?] => 4cm[#end]\Reponse{#{reponse}}
+[#tag]reponse[#>]
+[\begin{Correction}
+On retrouve les résultats des deux questions précédentes. En particulier, la colonne \texttt{Estimate} fournit les estimations des paramètres $\beta_0$ et $\beta_1$ et \texttt{Multiple R-squared} le $R^2$. Notons que la dernière colonne du tableau \texttt{Coefficients} fournit les p$-$valeurs des tests de significativité locales des paramètres $\beta_0$ et $\beta_1$. La dernière laisse en particulier apparaître que la variable \texttt{#{x}} semble apporter de l'information dans l'explication de la variable \texttt{#{y}}.
+\end{Correction}]
+[#}
+[#}
+
+{#var] :append[+] [#}
+{#def]LM1_makeGraphique[#,] y[] [#,] x[] [#,] append[] [#,] file[img/FigLMSimple.jpg]
+[#r<]
+jpeg('#{file}')
+plot(#{y}~#{x},xlab='#{x}',ylab='#{y}')
+{#tag]reponse[#>]abline(lm(#{y}~#{x}),lwd=2)[#}
+#{append}
+graphics.off()
+[#}
+
+
+{#def]LM1_Graphique[#,] y[] [#,] x[] [#,] append[] 
+[#,] file[img/FigLMSimple.jpg] [#,] scale[.6] [#>]
+[\Question{Sur le graphique ci-dessous reportez la droite ajustée (même approximativement) et illustrez la notion de valeur ajustée et de résidu.}
+
+{#LM1_makeGraphique#}
+
+\centerline{\includegraphics[scale=#{scale}]{#{file}}}
+
+{#tag]reponse[#>]Les notions de résidu et de valeur ajustée sont illustrés dans le polycopié p.23.\\
+
+[#}]
+[#}
+
+{#def]LM1_Signif[#,] y[] [#,] x[]  [#>]
+[\Question{Peut-on penser au vu des données que la variable \texttt{#{x}} apporte de l'information pour expliquer
+la variable \texttt{#{y}} (indication~: fournir la p$-$valeur associée puis conclure.)}
+
+{#tag]exam[#>]{#var] :reponse[?] => 3cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction}
+Pour pouvoir accepter $\mathbf{H_1}: \beta_1\neq 0$, i.e. le régresseur \texttt{#{x}} apporte de l'information pour expliquer la variable \texttt{#{y}}, le risque à encourir est de l'ordre de $#r{tmpSumLm$coeff[2,4]}$.
+\end{Correction}
+[#}]
+[#}
+
+{#def]LM1_Quali[#,] y[] [#,] x[] [#,] qualiTex[] [#,] quali[c(rep(0,round(length(#{x})/2)),rep(1,length(#{x})-round(length(#{x})/2)))] [#>]
+[\Question{Quelle variable nommée \texttt{X} dans la sortie suivante a été introduite~? Comparez les résultats obtenus avec ceux du précédent modèle. Représentez sur le graphique précédent ce nouveau modèle dont on précisera l'équation. Peut-on alors penser que \texttt{#{x}} a un pouvoir explicatif sur \texttt{#{y}}~?}
+][#r<]X<-#{quali}
+[#>]{#rverb]
+summary(lm(#{y}~#{x}*X))
+[#}
+{#tag]exam[#>]{#var]:reponse[?] => 10cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]%Dessin à refaire!
+[#r<]
+summary(lm(#{y}~#{x}*X)->tmpLmQ)->tmpSumLmQ
+coeffEst<-tmpLmQ$coefficients
+[#>]{#LM1_makeGraphique] [#,]
+append[abline(a=coeffEst[1],b=coeffEst[2],lwd=2,lty=3)
+abline(a=(coeffEst[1]+coeffEst[3]),b=(coeffEst[2]+coeffEst[4]),lwd=2,lty=3)]
+[#}
+
+\begin{Correction}
+La variable nommée $X$ correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
+$$
+(#{y})_i = \beta_0 + \beta_1 (#{x})_i + \beta_2 (X)_i + \beta_3 (#{x}*X)_i + \varepsilon_i.
+$$
+Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $X=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)}\[#,] soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-tmpSumLm$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{X}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{y}}.
+\end{Correction}
+[#}
+[#}
+
+
+%%%\noindent \underline{\bf Partie II : modèle linéaire multiple}
+
+%%%VARS{
+%%  :formula => chom~txpib+deppub+pfisc+salva+infl
+%%%VARS}
+
+{#def]LM_Model[#,] formula[] [#,] data[] [#,] modelvars[]
+[#r<]
+tmp<-as.character(#{formula})
+tmpModel<-as.character(#{modelvars})
+yvar<-tmp[2]
+ymodelvar<-tmpModel[2]
+xvars<-strsplit(tmp[3]," \\+ ")[[1]]
+xmodelvars<-strsplit(tmpModel[3]," \\+ ")[[1]]
+omodelvars<-setdiff(names(#{data}),c(ymodelvar,xmodelvars))
+[#>]y[#R{ymodelvar}]
+[#>]
+[On envisage un modèle #Rb{#{log} ? "log-" : ""}linéaire multiple expliquant la variable \texttt{#{y}} en fonction de tous les régresseurs du jeu de 
+{#case]#R{length(omodelvars)}
+[#when]0[#>]
+[données.{#var]:df[?]==> #{data}[#}]
+[#when]1[#>]
+[données (exceptée la variable \texttt{#R{omodelvars}}).
+{#var] :df[?]==> "#{data}[-#R{which(names(#{data})%in% omodelvars)}]"[#}]
+[#else]
+[données (exceptées les variables \texttt{#R{omodelvars}}).
+{#var]:df[?]==> "#{data}[-c(#R{which(names(#{data})%in%omodelvars)})]"[#}]
+[#}
+{#if]#{log}[#<] {#var] :df ==> log(#{df})[#} [#}\\]
+[#}
+
+{#def]LM_MatCorr[#,] df[] [#,] seuil[.3] [#>]
+[\Question{A la vue de la matrice de corrélation ci-après, quels sont les régresseurs qui vous semblent être les plus explicatifs~?}
+
+{#rverb]cor(#{df})[#}
+{#tag]exam[#>]{#var]:reponse[?] => 5cm[#end}\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction}
+[#rb<] tmp="rev(names(#{df})[-1][order((tmp<-abs(cor(#{df})[1,][-1]))[tmp>#{seuil}])])".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#>]A la vue de la matrice de corrélation, les régresseurs les plus explicatifs de la variabilité de la variable \texttt{#{y}} semblent être dans l'ordre
+:{tmp} (en ne tenant compte que des régresseurs ayant un coefficient de corrélation avec \texttt{#{y}} en valeur absolue supérieur à #R{#{seuil}*100}\%).
+\end{Correction}
+[#}] 
+[#}
+
+{#def]LM_SummaryLm[#,] formula[] [#,] seuilR[.05] [#>]
+[\Question{Interprétez la sortie ci-dessous, en particulier les p$-$valeurs des tests de significativité locale, le $R^2$.}
+
+{#rverb]summary(lm(#{formula}))[#}
+
+{#tag]exam[#>]{#var]:reponse[?] => 5cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#r<]
+summary(lm(#{formula})->tmpLm)->tmpSumLm
+tmpCoeff<-tmpSumLm$coeff[,4][-1]
+[#rb<]
+tmp="names(sort(tmpCoeff[tmpCoeff<#{seuilR}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#>]
+\begin{Correction}
+Les régresseurs  :{tmp} sont significatifs au seuil de #r{#{seuilR}*100}\%.  Enfin, le pouvoir explicatif de ce modèle, mesuré par la part de variance $R^2$ expliquée par celui-ci, est particulièrement bon puisqu'il est de l'ordre de #r{tmpSumLm$r.sq*100}\%.
+\end{Correction}
+[#}]
+[#}
+
+{#def]LM_Colin[#>]
+[\Question{Rappelez les effets indésirables sur les tests de significativité locale s'il y a colinéarité entre les régresseurs.}
+
+{#tag]exam[#>]{#var]:reponse[?] => 3cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction} 
+La colinéarité entre régresseurs peut entraîner artificiellement une augmentation de l'erreur standard des paramètres des régresseurs et par voie de fait une diminution de la statistique de test de significativité locale et donc une augmentation de la p$-$valeur de ce même test.
+\end{Correction} 
+[#}]
+[#}
+
+{#def]LM_ColinCorr[#>]
+[\Question{A la lumière de la matrice de corrélation associée au jeu de données, peut-on suspecter de la colinéarité entre les régresseurs~?}
+
+{#tag]exam[#>]{#var]:reponse[?] => 3cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>] \begin{Correction} \end{Correction}[#}]
+[#}
+
+{#def]LM_Vif[#,] formula[] [#,] seuilR[10] [#>]
+[\Question{Rappelez la définition du VIF, et son interprétation générale. Ensuite, interprétez-les quant au jeu de données étudié.}
+
+{#rverb]vif(lm(#{formula}))[#}
+
+{#tag]exam[#>]{#var]:reponse[?] => 6cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#r<] 
+tmpVif<-vif(lm(#{formula}))
+[#rb<]
+tmp="names(sort(tmpVif[tmpVif>#{seuilR}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#>]\begin{Correction} 
+Par définition, $VIF_j = \frac{1}{1-R_j^2}$ où $R_j^2$ est le coefficient de détermination multiple au carré lorsque l'on régresse le $j-$ème régresseur sur tous les autres. Par ailleurs, on sait d'après le cours que l'erreur standard de l'estimateur de $\beta_j$ est proportionnelle au $VIF_j$. Par conséquent, plus le $j-$ème régresseur est corrélé avec les autres, plus $R^2_j$ est proche de 1, plus l'erreur standard de l'estimateur de $\beta_j$ sera grande et plus il sera difficile de montrer que ce régresseur apporte de l'information. 
+{#if]tmp.length>1[#>]Les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{seuilR}. 
+[#elsif]tmp.length==1[#>]Le VIF de :{tmp} est relativement important, ici supérieur à #{seuilR}. 
+[#elsif]tmp.length==0[#>]Aucun VIF est relativement important, ici supérieur à #{seuilR}.
+[#}
+Quand il existe un VIF relativement important, cela traduit une forte colinéarité entre régresseurs.
+\end{Correction} 
+[#}]
+[#}
+
+{#def]LM_VifCorr[#,] df[] [#,] formula[] [#r<]
+[maxvif<-xmodelvars[match(names(rev(sort(vif(lm(#{formula}))))),xvars,0)]]
+[#<]
+{#var]v1[#R{maxvif[1]}][#,] v2[#R{maxvif[2]}][#}
+[#>]
+[\Question{(\textbf{Relation avec la matrice de corrélation}) Justifier l'ordre de grandeur des VIFs des covariables
+{#case]#{log}
+[#when]true[#>] [\texttt{log(#{v1})} et \texttt{log(#{v2})}]
+[#else] [\texttt{#{v1}} et \texttt{#{v2}}]
+[#}
+en utilisant  l'instruction suivante.}
+
+{#rverb]1/(1-(#R{round(cor(#{df})["#{v1}","#{v2}"],9)})^2)[#}
+
+{#tag]exam[#>]{#var]:reponse[?] => 3cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#r<]round(cor(#{df})["#{v1}","#{v2}"],9) -> tmp
+[#>]\begin{Correction} 
+Il est connu que lorsque l'on ajoute des régresseurs le coefficient $R^2$ augmente nécessairement. Ainsi par exemple, le $R^2$ obtenu en régressant \texttt{#{v1}} sur tous les autres ou \texttt{#{v2}} sur tous les autres est nécessairement supérieurs au $R^2$ obtenu en régressant simplement \texttt{#{v1}} sur \texttt{#{v2}} (de l'ordre de $#R{tmp}^2$). Par conséquent les VIF associées à ces deux régresseurs sont nécessairement supérieurs à $#r{1/(1-tmp^2)}$.
+\end{Correction} 
+[#}
+[#}
+
+{#def]LM_Desc[#,] formula[] [#,] alpha[.05] [#>]
+[\Question{Quelle est la stratégie qui a été adoptée dans la série d'instructions ci-dessous~? A la dernière étape, précisez l'équation du modèle sélectionné et analysez brièvement les sorties.}]
+[#r<]
+i<-0
+form<-#{formula}
+xvarsTmp<-attributes(terms(form))$term.labels
+[#>]
+[#Rb{BEGINVERB}
+{#loop]
+[#r<]
+tmp<-names(which.max(summary(lm(form))$coeff[-1,4]))[1]
+pvalmax<-summary(lm(form))$coeff[tmp,4]
+if(pvalmax>#{alpha}) {#ne modifier le modèle que si nécessaire
+xvarsTmp<-setdiff(xvarsTmp,tmp)
+form<-as.formula(formch<-paste(yvar,paste(xvarsTmp,collapse="+"),sep="~"))
+} else {
+xvars<-xvarsTmp
+}
+[#break][#R{pvalmax<#{alpha} || length(xvars)<=2}]
+[#>]{#rtex]
+## Etape #R{as.integer(i<-i+1)}
+summary(lm(#R{formch}))
+vif(lm(#R{formch}))
+[#}
+[#}#Rb{ENDVERB}
+{#tag]exam[#>]{#var]:reponse[?] => 8cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction} 
+
+\end{Correction} 
+[#}
+[#}
+
+{#require]RCqls/LM/SummaryLM[#}
+
+{#def]LM_UneEtape[#,] formula[] [#,] blanc[NULL] [#,] highlight[NULL] [#,] indVIF[NULL] [#>]
+[\Question{Quelle est la stratégie à adopter pour soigner la colinéarité~? En particulier, rappelez son effet sur les erreurs standard. Après une seule étape voici les résultats du \texttt{summary(lm(...))} présentés sous une forme spécialement adaptée aux notations du cours. Complétez les 
+{#if]#R{!is.null(#{blanc})}[#>] [#R{nrow(#{blanc})}] [#}
+\textbf{cases manquantes} 
+{#if]#R{!is.null(#{indVIF})}[#>] [en vous aidant des indications (à la suite du tableau)] [#}. Justifiez qu'il n'est pas nécessaire d'effectuer d'étape supplémentaire et précisez l'équation du modèle sélectionné.}\\
+
+{#tag]reponse[#>]{#var] :highlight=> #{blanc} | :blanc => NULL [#}
+[#tag]enonce[#>]
+{#summaryLM]entete[false] [#,]
+  rcodeAp[if(!is.null(#{blanc})) sumlm[#{blanc}]<-NA;if(!is.null(#{highlight})) sumlm[#{highlight}]<-paste('{\\bf ',sumlm[#{highlight}],'}',sep='')]
+[#}
+{#if][#R{!is.null(#{indVIF})}] [#>] [
+\noindent \textbf{Indications}~:
+][#r<]
+if(!exists("form")) form <- #{formula}
+tmpsumlm<-summary(tmplm<-lm(form))
+[#>]$R^2=#R{round(tmpsumlm$r.sq,4)*100}$\%, 
+ $\widehat{\sigma}_{\varepsilon}(\mathbf{y}|\underline{\mathbf{x}})\simeq #R{round(tmpsumlm$sigma,4)}$ et $VIF_{#R{xvars[#{indVIF}]}}\simeq #R{round(vif(tmplm),4)[#{indVIF}]}$.[#}
+\\
+[#tag]exam[#>]{#var]:reponse[?] => 10cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction} 
+Une stratégie possible consiste à supprimer un à un les régresseurs dont on ne parvient pas à prouver leur significativité locale. On a supprimé donc du précédent modèle le régresseur \texttt{Interet}. Ainsi, le régresseur $\Vect{x^{(3)}}$ correspond à \texttt{Obligations}. Pour calculer l'erreur standard estimée $\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x})$, il suffit de se rappeler que
+$$
+\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x}) = \frac{\widehat{\sigma}_{\varepsilon}(\Vect{y}|\Mat{x})}{s_{Revenu}\times \sqrt{n}} \times \sqrt{VIF_{Revenu}},
+$$
+où $s_{Revenu}$ correspond à l'écart-type du régresseur \texttt{Revenu} qui d'après la première partie vaut $s_{Revenu} \stackrel{R}{=} \mathtt{ sqrt( mean(Revenu^2)-mean(Revenu)^2 )} \simeq #R{vRev<-round(sqrt(mean(Revenu^2)-mean(Revenu)^2),5)}$. Ainsi,
+$\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x})\simeq 1.0528/(1700.97*\sqrt{30})\times\sqrt{7.7484} \simeq {\bf #R{round(tmpsumlm$sigma/(vRev*sqrt(30))*sqrt(7.7484),5)}}$. Par la suite, il vient
+$$
+\Est{\delta_{\beta_1,0}}{\Vect{y}|\Mat{x}} = \frac{\Est{\beta_1}{\Vect{y}|\Mat{x}} }{\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x})} \simeq -0.00245/0.00031 \simeq {\bf  #R{round(tmpsumlm[['coeff']][2,1]/tmpsumlm[['coeff']][2,2],5)}}.
+$$
+On notera d'une part qu'il n'est plus nécessaire d'effectuer d'étape supplémentaire car tous les régresseurs sont significatifs au seuil de 5\% et d'autre part que le modèle final dont l'équation est
+$$
+(Epargne)_i= \beta_0 + \beta_1 (Revenu)_i + \beta_2 (Inflation)_i + \beta_3 ( Obligations)_i +\varepsilon_i
+$$
+a un pouvoir explicatif assez fort ($R^2= 87.45\%$). Remarquons également que le $R^2$ n'a diminué que de 1\%!!
+\end{Correction} 
+[#}]
+[#}
+
+{#def]LM_Accroissement[#>]
+[\Question{Etant donnée la modélisation adoptée, complétez la phrase ci-dessous~: lorsque \texttt{#{x}} \_\_\_\_\_\_\_\_\_\_\_\_\_ de 10\%\, on peut s'attendre à ce que \texttt{#{y}} \_\_\_\_\_\_\_\_\_\_\_ de \_\_\_\_.}
+\bigskip\\]
+[#}
+
+{#def]LM_DeltaH0Asymp[#,] formula[] [#,] indVar[1] [#,] betaRef[1] [#,]   side[<] [#,] alphaR[.05] [#,] alphaTex[5\%] [#,] round[5] [#>]
+[\Question{A partir de cette question, nous ne considèrerons que le modèle final. Peut-on montrer au vu des données que le paramètre $\beta_#{indVar}#{side}#{betaRef}$ au seuil de #{alphaTex}~?}
+][#r<]
+if(!exists("form")) form <- #{formula}
+sumreg<-summary(lm(form))
+[#>]{#rverb]
+(#R{round(sumreg$coeff[#{indVar}+1,1],#{round})}-(#{betaRef}))/#R{round(sumreg$coef[#{indVar}+1,2],#{round})}
+[#}
+
+{#tag]exam[#>]{#var] :reponse[?] => 5cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#r<](#R{round(sumreg$coef[#{indVar}+1,1],#{round})}-(#{betaRef}))/#R{round(sumreg$coef[#{indVar}+1,2],#{round})}->tmp
+tmpLim<-qnorm(#{alphaR})
+[#>]\begin{Correction} 
+D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{indVar}< #{betaRef}$ évaluée sur les données correspond justement au calcul fourni et vaut donc approximativement $#r{tmp}$. Sous $\mathbf{H_0}$ on sait également que la statistique de test sur les futures données suit approximativement une loi $\mathcal{N}(0,1)$. Par conséquent, puisque $\Est{\delta_{\beta_#{indVar},#{betaRef}}}{\Vect{y}|\Mat{x}}\simeq #r{tmp} #R{ifelse(tmp<tmpLim,"<",">")} \delta_{lim,#{alphaTex}}^- \stackrel{R}{=}\mathtt{qnorm(#{alphaR})}\simeq #r{qnorm(#{alphaR})}$, on 
+[#r<]pnorm(tmp)->tmpPVal;tmpPVal<-ifelse("#{side}"=="<",tmpPVal,ifelse("#{side}"==">",1-tmpPVal,2*min(tmpPVal,1-tmpPVal)))
+[#>]{#if]#R{tmpPVal}<#R{#{alphaR}}[#>] peut [#else] ne peut pas [#} 
+plutôt penser avec un risque de #{alphaTex} que l'assertion d'intérêt  $\mathbf{H_1}: \beta_#{indVar}< #{betaRef}$ est vraie.
+\end{Correction} 
+[#}]
+[#}
+
+
+ICIIII!
+
+{#def]LM_PValAsymp[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5\%] [#>] 
+[\Question{A partir de l'instruction \texttt{R} suivante, que peut-on avancer au vu des données comme assertion(s) d'intérêt au seuil #{alphaTex}~?}
+
+[#rverb]
+pnorm((#R{round(sumreg$coef[#{indVar}+1,1],5)}-(#{betaRef}))/#R{round(sumreg$coef[#{indVar}+1,2],5)})
+[#end]
+
+%(exam)
+[#var]:reponse[?] => 3cm[#end]\Reponse{#{reponse}}
+%(reponse) 
+\begin{Correction} 
+L'instruction fournie correspond à la p$-$valeur (gauche) du test $\mathbf{H_1}: \beta_2<0.3$. Par conséquent puisque la p$-$valeur du test $\mathbf{H_1}: \beta_2>0.3$ qui vaut approximativement $2.8\%$ est inférieure à 5\% , on peut plutôt penser que l'assertion $\mathbf{H_1}: \beta_2>0.3$ est vraie. Notons, qu'il n'est pas possible de penser que $\mathbf{H_1}: \beta_2\neq 0.3$ est vraie car la p$-$valeur de ce test vaut approximativement $2\times 2.8\%=5.6\%$.
+\end{Correction} 
+%(enonce)]
+[#}
+
+{#def]LM_ICAsymp[#,] indVar[2] [#,] alphaP[5] [#>]
+[\Question{Déduisez de l'instruction ci-dessous un intervalle de confiance à $#R{as.integer(100-#{alphaP})}\%$ pour le paramètre $\beta_#{indVar}$ et interprétez-le (via l'approche expérimentale).  Quelle relation y-a-t-il entre cet intervalle et le test de significativité locale du paramètre $\beta_#{indVar}$~?}
+[#rverb]
+#R{round(sumreg$coef[#{indVar}+1,1],5)}+c(-1,1)*qnorm(#R{1-#{alphaP}/200})*#R{round(sumreg$coef[#{indVar}+1,2],5)}
+[#end]
+
+%(exam)
+[#var]:reponse[?] => 7cm[#end]\Reponse{#{reponse}}
+%(reponse) \begin{Correction} \end{Correction} %(enonce)]
+[#}
+
+{#def]LM_IPAsymp[#,]  indVar[an] [#,] indiv[34] [#,] alphaP[5] [#,]  temps[true] [#>]
+[\Question{Supposons que l'on ne connaisse pas la valeur de \texttt{#R{yvar}} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{data}[#{indiv},"#{indVar}"])}. 
+Pourriez-vous prévoir sa valeur, calculer un intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%~? Quelle était la valeur observée de  \texttt{#R{yvar}} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{data}[#{indiv},"#{indVar}"])} et est-ce surprenant~?}
+
+[#rverb]
+xTau <- data.frame(#R{paste(paste(xmodelvars,#{data}[#{indiv},xmodelvars],sep="="),collapse=",")})
+predict(lm(#R{formch}),xTau,interval="prediction")
+[#end]
+
+%(exam)
+[#var]:reponse[?] => 4cm[#end]\Reponse{#{reponse}}
+%(reponse) 
+\begin{Correction} 
+
+\end{Correction} 
+%(enonce)]
+[#}
+
+{#def]LM_IPAsymp_NewData[#,] newData[] [#,] model[] [#,] indVar[an] 
+[#,] indNew[#R{as.character(#{data}[NROW(#{data}),"#{indVar}"]+1)}] [#,] alphaP[5] [#,] temps[true] [#<]
+[[#r]
+modelsTmp<-list(#{model})
+predictTmp<-paste(sapply( modelsTmp,function(l) paste('predict(lm(',deparse(l),'),xTau,interval="prediction")')),collapse="\n")
+[#end]]
+[#>]
+[\Question{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs 
+mais pas encore la valeur de \texttt{#R{yvar}}.
+#R{ifelse(length(modelsTmp)>1,"Pour chacun des modèles traités","Pour le modèle traité")} dans la sortie \texttt{R} ci-dessous, pourriez-vous prévoir sa valeur puis calculer son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%~?}
+
+[#rverb]
+xTau <- #{newData}
+#R{predictTmp}
+[r]rm(modelsTmp,predictTmp)[#end]
+
+%(exam)
+[#var]:reponse[?] => 4cm[#end]\Reponse{#{reponse}}
+%(reponse) 
+\begin{Correction} 
+Pour chacun des modèles, la prévision est donnée par la variable notée \texttt{fit}, la borne inférieure de l'intervalle de prévision au niveau 95\% par la variable \texttt{lwr} et la borne supérieure par \texttt{upr}.
+\end{Correction} 
+%(enonce)]
+[#}
+
+
+{#def]LM_PresData[#,] data[] [#,] out[] [#>]
+[\noindent \textbf{Jeu de données}~:
+[#rverb]
+#{out}
+#{data}
+[#end]]
+[#}

@@ -1,0 +1,20 @@
+{#def]Data[#,]rdata[][#,]in[]
+[#>]rdata.Class[Data]
+[#?]#{+?in}[#>]rdata.Renvir[#{in}]
+[#}
+
+{#meth]new.Data[#,] .objR[] [#,].rdata[] [#<][#}
+
+{#meth]begin.Data
+  [#yield]default
+  [#rb>].rdata[#{=.rdata}.strip]
+  [#rb>].objR[#{=.objR}.strip]
+  [#?]#{+?.rdata}[#r<]attach('#{.rdata}') 
+  [#?]#{+?.objR}[#r<]attach(#{.objR})
+[#}
+
+{#meth]end.Data
+  [#?]#{+?.objR}[#r<]detach(#{.objR})
+  [#?]#{+?.rdata}[#r<]detach('file:#{.rdata}')[#?]end
+  [#yield]default
+[#}

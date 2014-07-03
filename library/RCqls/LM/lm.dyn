@@ -1,0 +1,65 @@
+[#require]RCqls/R/Data
+[#main][#<]
+{#meth]new.LM[#,] .formula[] [#,] .data[] [#,] _objsR[]
+  [#>].objsR[#{.ObjectName}]
+  [#?] #{+?_objsR}[#>].objsR[#{_objsR}][#?]end
+  [#<]{#begin].data[#r<]require(car)[#}
+  [#yield]default
+  [#>].keyR[#{.objsR}$key]
+  [#>].objR[#{.objsR}[[#{.keyR}]]]
+  [#<]{#add]self[#}
+[#}
+
+{#meth]end.LM
+  [#yield]default
+  [#<]{#end].data[#r<]detach("package:car")[#}
+[#}
+
+{#meth]init.LM
+  [#r<]
+  #{.objR}<-list()
+  #{.objR}[["data.vars"]]<-all.vars(#{.formula})
+  #{.objR}[["vars"]]<-as.character(attr(terms(#{.formula}),"var"))[-1]
+  #{.objR}[["log"]]<-all(paste("log(",#{.objR}$data.vars,")",sep="")==#{.objR}$vars)
+  #{.objR}[["data.vars.ext"]]<-c()
+  if(is.data.frame(#{.data.objR})) {
+    #{.objR}[["data.vars.ext"]]<-setdiff(names(#{.data.objR}),#{.objR}[["data.vars"]])
+  }
+  #{.objR}[["model"]]<-lm(#{.formula})
+  #{.objR}[["summary"]]<-summary(lm(#{.formula}))
+  try(#{.objR}[["vif"]]<-vif(lm(#{.formula})),TRUE)
+[#}
+
+{#meth]add.LM[#,]formula[]
+  [#?]#{+?formula}[#>].formula[#{formula}][#?]end
+  [#r<]
+    if(!exists("#{.objsR}")) #{.objsR}<-list()
+cat("New FORMULA:\n");print(#{.formula})
+    #{.objsR}$key<-as.character(expression(#{.formula}))
+  [#?]:r{is.null(#{.objR})}[#<]{#init]self[#}
+[#}
+
+{#meth]summary.LM[#,] rcodeAv[] [#,] rcodeAp[] [#,] prelim[true] [#,] round[5] [#,] filter[function(e) ifelse(e=="0","$\\simeq 0$",e)] 
+[#r<]
+[#{rcodeAv}
+sumlm<-round(#{.objR}[["summary"]]$coeff,#{round})
+rowlm<-rownames(sumlm)
+rowlm[1]<-'$\\mathbf{1}$'
+sumlm<-cbind(rowlm,sumlm)
+cpt<-0
+#{rcodeAp}]
+[#?]#{prelim}[#>]
+[\noindent \textbf{Régression linéaire}~: \verb$#{.formula}$ \texttt{(data=#{.data.objR})}\\][#?]end
+[#>]\begin{tabular}{|c|c|c|c|c|}\hline
+$\mathbf{x}^{(j)}$ & $\widehat{\beta_j}(\mathbf{y}|\underline{\mathbf{x}})$ 
+& $\widehat{\sigma}_{\widehat{\beta_j}}(\mathbf{y}|\underline{\mathbf{x}})$ 
+& $\widehat{\delta_{\beta_j,0}}(\mathbf{y}|\underline{\mathbf{x}})$ 
+&$p$-valeur bilatérale\\\hline
+{#loop][#r<]
+cpt<-cpt+1
+ligne<-sapply(sumlm[cpt,],function(e) ifelse(is.na(e),"",e))
+ligne<-sapply(ligne,#{filter}) 
+[#>][#R{paste(ligne,collapse=' & ')} \\ \hline<\n>]
+[#break]#R{cpt>=nrow(sumlm)} 
+[#}\end{tabular}
+[#}

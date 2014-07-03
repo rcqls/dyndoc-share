@@ -1,0 +1,59 @@
+
+\documentclass[]{article}
+%Packages
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{aeguill}
+\usepackage{amssymb}
+\usepackage[a4paper,pdftex=true]{geometry}
+\usepackage{fancyvrb}
+
+%Preamble
+
+%Styles
+
+%Title
+
+\begin{document}
+
+
+
+\begin{verbatim}
+Class: [LM]
+ObjectName: [lm1]
+True variable content: 
+lm1.Class: [LM]
+lm1.ObjectName: [lm1]
+lm1.Renvir: [lm1]
+lm1.data.Class: [Data]
+lm1.data.ObjectName: [data]
+lm1.data.Renvir: [lm1]
+lm1.data.objR: [chomage]
+lm1.data.rdata: [~/cqls/data/chomage.RData]
+lm1.formula: [chom~txpib+deppub+pfisc+salva+infl]
+lm1.keyR: [lm1$key]
+lm1.objR: [lm1[[lm1$key]]]
+lm1.objsR: [lm1]
+\end{verbatim}
+.GlobalEnv\\chomage\\file:~/cqls/data/chomage.RData\\package:car\\package:rb4R\\package:dyndoc\\package:stats\\package:graphics\\package:grDevices\\package:utils\\package:datasets\\package:methods\\Autoloads\\package:base
+\noindent \textbf{Régression linéaire}~: \verb$chom~txpib+deppub+pfisc+salva+infl$ \texttt{(data=chomage)}\\\begin{tabular}{|c|c|c|c|c|}\hline
+$\mathbf{x}^{(j)}$ & $\widehat{\beta_j}(\mathbf{y}|\underline{\mathbf{x}})$ 
+& $\widehat{\sigma}_{\widehat{\beta_j}}(\mathbf{y}|\underline{\mathbf{x}})$ 
+& $\widehat{\delta_{\beta_j,0}}(\mathbf{y}|\underline{\mathbf{x}})$ 
+&$p$-valeur bilatérale\\\hline
+$\mathbf{1}$ & -5.80283 & 3.86147 & -1.50275 & 0.1441 \\ \hline
+txpib & -0.07188 & 0.07753 & -0.92706 & 0.36182 \\ \hline
+deppub & 0.35855 & 0.12702 & 2.82281 & 0.00866 \\ \hline
+pfisc & 0.22751 & 0.14324 & 1.58837 & 0.12343 \\ \hline
+salva & -0.19195 & 0.05079 & -3.77917 & 0.00076 \\ \hline
+infl & -0.03131 & 0.03961 & -0.79051 & 0.43587 \\ \hline
+\end{tabular}
+
+.GlobalEnv\\package:rb4R\\package:dyndoc\\package:stats\\package:graphics\\package:grDevices\\package:utils\\package:datasets\\package:methods\\Autoloads\\package:base
+
+
+\end{document}
+
+

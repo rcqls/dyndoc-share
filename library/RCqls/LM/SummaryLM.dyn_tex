@@ -1,0 +1,33 @@
+{#def]summaryLM[#,]formula[] [#,] data[] [#,] rcodeAv[] [#,] rcodeAp[] [#,]
+  entete[true] [#,] round[5] [#,] filter[function(e) ifelse(e=="0","$\\simeq 0$",e)] 
+[#r<]
+[#{rcodeAv}
+sumlm<-if("#{data}"=="")  summary(lm(#{formula}))$coeff
+else summary(lm(#{formula},data=#{data}))$coeff
+rowlm<-rownames(sumlm)
+rowlm[1]<-'$\\mathbf\{1\}$'
+sumlm<-round(sumlm,#{round})
+sumlm<-cbind(rowlm,sumlm)
+cpt<-0
+#{rcodeAp}]
+[#>]
+{#if]#{entete}[#>]
+[\noindent \textbf{Régression linéaire}~: \verb$#{formula}$
+\texttt{(data=#{data})}\\]
+[#}
+\begin{tabular}{|c|c|c|c|c|}\hline
+$\mathbf{x}^{(j)}$ & $\widehat{\beta_j}(\mathbf{y}|\underline{\mathbf{x}})$ 
+& $\widehat{\sigma}_{\widehat{\beta_j}}(\mathbf{y}|\underline{\mathbf{x}})$ 
+& $\widehat{\delta_{\beta_j,0}}(\mathbf{y}|\underline{\mathbf{x}})$ 
+&$p$-valeur bilatérale\\\hline
+{#loop]
+[{#r]
+cpt<-cpt+1
+ligne<-sapply(sumlm[cpt,],function(e) ifelse(is.na(e),"",e))
+ligne<-sapply(ligne,#{filter}) 
+[#}
+#R{paste(ligne,collapse=' & ')} \\ \hline]
+[#break]#R{cpt>=nrow(sumlm)} 
+[#}
+\end{tabular}
+[#}

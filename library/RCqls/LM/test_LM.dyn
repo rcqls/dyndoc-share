@@ -1,0 +1,13 @@
+[#require]
+RCqls/LM/lm
+[#main][#<]
+{#new]data[#of]Data[#in]lm1[#,]chomage[#,]~/cqls/data/chomage.RData[#}
+[#r<]print("chomage")
+{#new]lm1[#of]LM[#in]lm1[#,]chom~txpib+deppub+pfisc+salva+infl[#,]:data[#}
+[#>]
+{#inspect]lm1[#}
+:r{lm1:paste(search(),collapse="\\\\")}
+{#summary]lm1[#}
+[#<]{#end]lm1[#}
+[#>]:r{lm1:paste(search(),collapse="\\\\")}
+[#r<]ls(all=T)

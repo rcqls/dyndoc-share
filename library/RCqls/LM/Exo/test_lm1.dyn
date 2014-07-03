@@ -1,0 +1,31 @@
+[#require]RCqls/LM/Exo/lm1
+Tex/Cqls
+[#package]
+\usepackage{here}
+\usepackage{fichetd}
+\usepackage{mathenv}
+[#main][#<]
+{#new]lm1[#of]ExoLM1[#,]log(CONSO)[#,]log(REVENU)[#,]canada[#}
+[#r<]print(lm1.model);print(search())
+[#<]{#inspect]:lm1[#}
+[#>]
+  [{#model]lm1[#}
+  |
+  |{#calculable]lm1[#}
+  |
+  |{#estim]lm1[#}
+  |
+  |{#corr]lm1[#}
+  |
+  |{#corr]lm1[#,]true[#}
+  |
+  |{#summary]lm1[#}
+  |
+  |{#summary]lm1[#,]true[#}
+  |
+  |{#graph]lm1[#}
+  |
+  |{#signif]lm1[#}
+  |
+  |{#quali]lm1[#}]
+[#<]{#end]lm1.model[#}

@@ -1,0 +1,63 @@
+
+
+{#var] :append[+] [#}
+{#def]LM1_makeGraphique[#,] y[] [#,] x[] [#,] append[] [#,] file[img/FigLMSimple.jpg]
+[#r<]
+jpeg('#{file}')
+plot(#{y}~#{x},xlab='#{x}',ylab='#{y}')
+{#tag]reponse[#>]abline(lm(#{y}~#{x}),lwd=2)[#}
+#{append}
+graphics.off()
+[#}
+
+
+{#def]LM1_Graphique[#,] y[] [#,] x[] [#,] append[] 
+[#,] file[img/FigLMSimple.jpg] [#,] scale[.6] [#>]
+[\Question{Sur le graphique ci-dessous reportez la droite ajustée (même approximativement) et illustrez la notion de valeur ajustée et de résidu.}
+
+{#LM1_makeGraphique#}
+
+\centerline{\includegraphics[scale=#{scale}]{#{file}}}
+
+{#tag]reponse[#>]Les notions de résidu et de valeur ajustée sont illustrés dans le polycopié p.23.\\
+
+[#}]
+[#}
+
+{#def]LM1_Signif[#,] y[] [#,] x[]  [#>]
+[\Question{Peut-on penser au vu des données que la variable \texttt{#{x}} apporte de l'information pour expliquer
+la variable \texttt{#{y}} (indication~: fournir la p$-$valeur associée puis conclure.)}
+
+{#tag]exam[#>]{#var] :reponse[?] => 3cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]\begin{Correction}
+Pour pouvoir accepter $\mathbf{H_1}: \beta_1\neq 0$, i.e. le régresseur \texttt{#{x}} apporte de l'information pour expliquer la variable \texttt{#{y}}, le risque à encourir est de l'ordre de $#r{tmpSumLm$coeff[2,4]}$.
+\end{Correction}
+[#}]
+[#}
+
+{#def]LM1_Quali[#,] y[] [#,] x[] [#,] qualiTex[] [#,] quali[c(rep(0,round(length(#{x})/2)),rep(1,length(#{x})-round(length(#{x})/2)))] [#>]
+[\Question{Quelle variable nommée \texttt{X} dans la sortie suivante a été introduite~? Comparez les résultats obtenus avec ceux du précédent modèle. Représentez sur le graphique précédent ce nouveau modèle dont on précisera l'équation. Peut-on alors penser que \texttt{#{x}} a un pouvoir explicatif sur \texttt{#{y}}~?}
+][#r<]X<-#{quali}
+[#>]{#rverb]
+summary(lm(#{y}~#{x}*X))
+[#}
+{#tag]exam[#>]{#var]:reponse[?] => 10cm[#}\Reponse{#{reponse}}
+[#tag]reponse[#>]%Dessin à refaire!
+[#r<]
+summary(lm(#{y}~#{x}*X)->tmpLmQ)->tmpSumLmQ
+coeffEst<-tmpLmQ$coefficients
+[#>]{#LM1_makeGraphique] [#,]
+append[abline(a=coeffEst[1],b=coeffEst[2],lwd=2,lty=3)
+abline(a=(coeffEst[1]+coeffEst[3]),b=(coeffEst[2]+coeffEst[4]),lwd=2,lty=3)]
+[#}
+
+\begin{Correction}
+La variable nommée $X$ correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
+$$
+(#{y})_i = \beta_0 + \beta_1 (#{x})_i + \beta_2 (X)_i + \beta_3 (#{x}*X)_i + \varepsilon_i.
+$$
+Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $X=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)}\[#,] soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-tmpSumLm$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{X}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{y}}.
+\end{Correction}
+[#}
+[#}
+[#}

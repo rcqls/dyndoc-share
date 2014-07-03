@@ -1,0 +1,14 @@
+[#require]Import/R/Data[#main][#<]
+{#new]data[#of]Data[#in]data[#,]chomage[#,]~/cqls/data/chomage.RData[#}
+{#begin]:data[#r<]require(car)[#}
+[#>]:r{data:paste(search(),collapse="\\\\")}
+[#<]{#end]:data[#r<]detach(package:car)[#}
+[#>]:r{data:paste(search(),collapse="\\\\")}
+[#=]data2[<<objR[chomage]<<rdata[~/cqls/data/chomage.RData]]
+[#<]{#Data]:data2[#,]data2[#}
+{#begin]:data2[#r<]require(car)[#}
+[#>] :r{data2:paste(search(),collapse="\\\\")}
+[#<]{#end]:data2[#r<]detach(package:car)[#}
+[#>]
+{#inspect]data[#}
+{#inspect]data2[#}
