@@ -486,7 +486,7 @@ indic=indic.uniq.join(",nl,")]
 [#}
 
 {#meth]pvalRCode.TestParam[#,]lwd[7][#,]lwda[5]
-[#>]require(CqlsRandom)
+[#>]require(CqlsEAP)
 Y<-{#case]#{.loiStatR}[#when]norm[#>]Norm[#when]t[#>]St[#when]chisq[#>]Chi2[#when]f[#>]Fisher[#}(:{#{=.paramLoiStatExprR}[1..-1]})
 aInf<-.001;aSup<-.999
 {#case]#{.side}
