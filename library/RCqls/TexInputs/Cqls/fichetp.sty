@@ -1,0 +1,55 @@
+
+
+
+%
+%               _______________________________________
+% CHAPITRE  |  
+%          /|   Style Chapitre (gavoille@ens-lyon.fr)
+%           |
+%           |
+%          ---
+%
+
+\typeout{Style "chapitre.sty"  -  C. GAVOILLE}
+
+\def\Chaptername{Fiche T.P.}
+% \appendixname = Appendix/Annexe
+% \@chapapp : nom du chapitre = \chaptername ou \appendixname
+% \thechapter : numéro du chapitre = 1,2 ... ou A,B, ...
+
+\newfont{\chapfonte}{cmr10 scaled 8000}
+% La taille (=hauteur) de la fonte est 10pt * scaled / 1000
+% Remarque : \magstep<n> vaut 1000*(1.2)^n
+% Donc \magstep1 multiplie la fonte par 1.2, ie l'augmente de 20%
+
+\def\haut{18mm}         % Hauteur des chiffres, à ajuster avec 'scaled'
+\def\decal{3.5ex}      % Pour aligner la ligne avec le haut de CHAPITRE
+
+\newlength{\lgnamechap}
+\newlength{\lgnumchap}
+\newlength{\lgall}
+
+\def\@makechapterhead#1{%
+        \thispagestyle{empty}% pas de numéro de page
+        \def\myboxtwo{\mbox{\chapfonte\thechapter}}
+        \ifcat 0\thechapter% chapitre ou annexe ? (\@chapapp ne marche pas !)
+          \def\myboxone{\huge\sf\uppercase\expandafter{\Chaptername}}\else
+          \def\myboxone{\Large\sf\uppercase\expandafter{\appendixname}}\fi
+        \settowidth{\lgnamechap}{\myboxone}
+        \settowidth{\lgnumchap}{\myboxtwo}
+        \addtolength{\lgnumchap}{6mm}
+        \setlength{\lgall}{\textwidth}
+        \addtolength{\lgall}{-\lgnamechap}
+        \addtolength{\lgall}{-\lgnumchap}
+        {\parindent\z@
+        \parbox[t]{\lgnamechap}{\myboxone}
+        \raisebox{\decal}{%
+        \raisebox{-\haut}{\parbox[t]{\lgnumchap}{\hspace{2mm}\myboxtwo}}}
+        \raisebox{\decal}{\parbox[t]{\lgall}{\rule{\lgall}{1mm}\\\Huge\bf{#1}}}
+        \par
+        \nobreak
+        \vskip 20\p@
+        }
+}
+
+\endinput
