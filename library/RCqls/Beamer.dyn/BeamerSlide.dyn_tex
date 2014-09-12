@@ -142,7 +142,7 @@ Elle permet notamment de na pas gérer le compteur
 [#when]simple[#>]
 \begin{frame}<1->
 \setbeamercolor{header}{fg=black,bg=blue!40!white}
- \hspace*{2.5cm}\begin{beamerboxesrounded}[width=6cm,shaded=true,lower=header]{}
+ \hspace*{2.5cm}\begin{beamerboxesrounded}[width=6cm,shadow=true,lower=header]{}
   @{beginScene(head)}
   @{writeScene(head)}
   @{endScene(head)}
