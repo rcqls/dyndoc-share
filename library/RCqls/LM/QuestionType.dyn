@@ -10,7 +10,7 @@ require(car)
 %% Ajout de l'option log???
 {#def]LM1_Model[#,] y[] [#,] x[] [#,] data[] [#,] log[false] [#>]
 [On envisage un modèle linéaire expliquant la variable \texttt{#{y}} en fonction de la seule variable  \texttt{#{x}}. On tente une modélisation #Rb{#{log} ? "log-" : ""}linéaire du type~:
-$$ (#{y})_i = \beta_0+\beta_1 (#{x})_i+\varepsilon_i, \qquad i=1,\ldots,#R{NROW(#{data})}$$]
+$$ (#{y})_i = \beta_0+\beta_1 (#{x})_i+\Bruit_i, \qquad i=1,\ldots,#R{NROW(#{data})}$$]
 [#}
 
 {#def]LM1_Calculable [#>]
@@ -192,7 +192,7 @@ abline(a=(coeffEst[1]+coeffEst[3]),b=(coeffEst[2]+coeffEst[4]),lwd=2,lty=3)]
 \begin{Correction}
 La variable nommée $X$ correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
 $$
-(#{y})_i = \beta_0 + \beta_1 (#{x})_i + \beta_2 (X)_i + \beta_3 (#{x}*X)_i + \varepsilon_i.
+(#{y})_i = \beta_0 + \beta_1 (#{x})_i + \beta_2 (X)_i + \beta_3 (#{x}*X)_i + \Bruit_i.
 $$
 Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $X=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)}\[#,] soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-tmpSumLm$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{X}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{y}}.
 \end{Correction}
@@ -376,13 +376,13 @@ vif(lm(#R{formch}))
 if(!exists("form")) form <- #{formula}
 tmpsumlm<-summary(tmplm<-lm(form))
 [#>]$R^2=#R{round(tmpsumlm$r.sq,4)*100}$\%, 
- $\widehat{\sigma}_{\varepsilon}(\mathbf{y}|\underline{\mathbf{x}})\simeq #R{round(tmpsumlm$sigma,4)}$ et $VIF_{#R{xvars[#{indVIF}]}}\simeq #R{round(vif(tmplm),4)[#{indVIF}]}$.[#}
+ $\widehat{\sigma}_{\Bruit}(\mathbf{y}|\underline{\mathbf{x}})\simeq #R{round(tmpsumlm$sigma,4)}$ et $VIF_{#R{xvars[#{indVIF}]}}\simeq #R{round(vif(tmplm),4)[#{indVIF}]}$.[#}
 \\
 [#tag]exam[#>]{#var]:reponse[?] => 10cm[#}\Reponse{#{reponse}}
 [#tag]reponse[#>]\begin{Correction} 
 Une stratégie possible consiste à supprimer un à un les régresseurs dont on ne parvient pas à prouver leur significativité locale. On a supprimé donc du précédent modèle le régresseur \texttt{Interet}. Ainsi, le régresseur $\Vect{x^{(3)}}$ correspond à \texttt{Obligations}. Pour calculer l'erreur standard estimée $\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x})$, il suffit de se rappeler que
 $$
-\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x}) = \frac{\widehat{\sigma}_{\varepsilon}(\Vect{y}|\Mat{x})}{s_{Revenu}\times \sqrt{n}} \times \sqrt{VIF_{Revenu}},
+\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x}) = \frac{\widehat{\sigma}_{\Bruit}(\Vect{y}|\Mat{x})}{s_{Revenu}\times \sqrt{n}} \times \sqrt{VIF_{Revenu}},
 $$
 où $s_{Revenu}$ correspond à l'écart-type du régresseur \texttt{Revenu} qui d'après la première partie vaut $s_{Revenu} \stackrel{R}{=} \mathtt{ sqrt( mean(Revenu^2)-mean(Revenu)^2 )} \simeq #R{vRev<-round(sqrt(mean(Revenu^2)-mean(Revenu)^2),5)}$. Ainsi,
 $\widehat{\sigma}_{\widehat{\beta}_1}(\Vect{y}|\Mat{x})\simeq 1.0528/(1700.97*\sqrt{30})\times\sqrt{7.7484} \simeq {\bf #R{round(tmpsumlm$sigma/(vRev*sqrt(30))*sqrt(7.7484),5)}}$. Par la suite, il vient
@@ -391,7 +391,7 @@ $$
 $$
 On notera d'une part qu'il n'est plus nécessaire d'effectuer d'étape supplémentaire car tous les régresseurs sont significatifs au seuil de 5\% et d'autre part que le modèle final dont l'équation est
 $$
-(Epargne)_i= \beta_0 + \beta_1 (Revenu)_i + \beta_2 (Inflation)_i + \beta_3 ( Obligations)_i +\varepsilon_i
+(Epargne)_i= \beta_0 + \beta_1 (Revenu)_i + \beta_2 (Inflation)_i + \beta_3 ( Obligations)_i +\Bruit_i
 $$
 a un pouvoir explicatif assez fort ($R^2= 87.45\%$). Remarquons également que le $R^2$ n'a diminué que de 1\%!!
 \end{Correction} 

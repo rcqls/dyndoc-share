@@ -2,10 +2,11 @@
 [#>]beamerCfg.theme?[JuanLesPins]
 [#>]beamerCfg.fontTheme?[structurebold]
 [#>]beamerCfg.covered?[transparent=5]
+[#>]beamerCfg.toc?[currentsection,currentsubsection]
 [#>]beamerCfg.atBeginSection?[
 \begin{frame}<beamer>
 	\frametitle{Plan}
-    \tableofcontents[currentsection,currentsubsection]
+    \tableofcontents[#{beamerCfg.toc}]
 \end{frame}
 ]
 [#package]

@@ -34,7 +34,7 @@ RCqls/Exo/exos
 
 {#meth]model.ExoLM1 [#>]
   [On envisage un modèle linéaire expliquant la variable \texttt{#{.y}} en fonction de la seule variable  \texttt{#{.x}}. On tente une modélisation #Rb{#{.log} ? "log-" : ""}linéaire du type~:
-  |$$ (#{.y})_i = \beta_0+\beta_1 (#{.x})_i+\varepsilon_i, \qquad i=1,\ldots,#R{NROW(#{.data.objR})}$$]
+  |$$ (#{.y})_i = \beta_0+\beta_1 (#{.x})_i+\Bruit_i, \qquad i=1,\ldots,#R{NROW(#{.data.objR})}$$]
 [#}
 
 {#meth]calculable.ExoLM1 [#>]
@@ -227,7 +227,7 @@ for( i in 1:(ltmp <- length(levels(z))-1) ) {
 \begin{Correction}
 La variable nommée $z$ correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
 $$
-(#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \varepsilon_i.
+(#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \Bruit_i.
 $$
 Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $z=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)} soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{z}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{.y}}.
 \end{Correction}
@@ -261,9 +261,9 @@ Pour chacun des modèles, la prévision est donnée par la variable notée \text
 
 \noindent \underline{\textbf{Présentation des modèles~:}} On tente alors les trois modèlisations linéaires suivantes 
 
-\noindent \textit{Modèle A}: $ (#{.y})_i = \beta^{A}_0+\beta^{A}_1 (#{.x})_i+\varepsilon^{A}_i$\\
-\noindent \textit{Modèle B}: $ (#{.y})_i = \beta^{B}_0+\beta^{B}_1 z_i+ \beta^{B}_2 (#{.x})_i+\varepsilon^{B}_i$\\
-\noindent \textit{Modèle C}: $ (#{.y})_i = \beta^{C}_0+\beta^{C}_1 z_i+\beta^{C}_2 (#{.x})_i+ \beta^{C}_3 \big(z_i\times (#{.x})_i\big)+\varepsilon^{C}_i$\\
+\noindent \textit{Modèle A}: $ (#{.y})_i = \beta^{A}_0+\beta^{A}_1 (#{.x})_i+\Bruit^{A}_i$\\
+\noindent \textit{Modèle B}: $ (#{.y})_i = \beta^{B}_0+\beta^{B}_1 z_i+ \beta^{B}_2 (#{.x})_i+\Bruit^{B}_i$\\
+\noindent \textit{Modèle C}: $ (#{.y})_i = \beta^{C}_0+\beta^{C}_1 z_i+\beta^{C}_2 (#{.x})_i+ \beta^{C}_3 \big(z_i\times (#{.x})_i\big)+\Bruit^{C}_i$\\
 pour $i=1,\ldots,#R{NROW(#{.data.objR})}$#{indDescr}.\\
 ]
 [#r<]z<-as.integer(#{z})
@@ -317,7 +317,7 @@ abline(a=tmp[1]+tmp[2],b=tmp[3]+tmp[4],lwd=5)][#}
 \begin{Correction}
 La variable nommée $z$ correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
 $$
-(#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \varepsilon_i.
+(#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \Bruit_i.
 $$
 Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $z=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)} soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{z}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{.y}}.
 \end{Correction}
