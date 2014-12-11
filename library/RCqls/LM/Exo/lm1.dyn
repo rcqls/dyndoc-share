@@ -123,7 +123,8 @@ beta1Est<-tmp[2]
 [#>][{#Question#}{En utilisant le fait que $\displaystyle\sigma_{\widehat{\beta}_1}^2=\frac{\sigma^2} {n\times var(\Vect{x^{(1)}})}$ (dans le cas de la régression simple) et l'instruction \texttt{R} ci-dessous (notation mathématique de la quantité calculée à préciser, avec \texttt{beta0Est} et \texttt{beta1Est} les résultats des estimations en \texttt{R} de $\beta_0$ et $\beta_1$ obtenues précedemment)
 pouvez-vous dire si la variable \texttt{#{.x}} est significative dans l'explication de la variable \texttt{#{.y}} (Rédaction standard)~? 
 }
-{#rverb]sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)[#}]
+{#rverb][sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)]
+[#rverb}]
 [#tag]exam[#>]reponse?[5cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#>]
   [\begin{Correction}
@@ -135,7 +136,7 @@ pouvez-vous dire si la variable \texttt{#{.x}} est significative dans l'explicat
   |beta1Est/sigmaBeta1Est
 [#}
   \end{Correction}]
-[#}
+[#meth}
 
 {#meth]summary.ExoLM1[#,]short[false]
 [#>][{#Question#}{]
@@ -156,6 +157,39 @@ sqrt(#r{#{.objR}$summary$r.sq})
 On retrouve les résultats des deux questions précédentes. En particulier, la colonne \texttt{Estimate} fournit les estimations des paramètres $\beta_0$ et $\beta_1$ et \texttt{Multiple R-squared} le $R^2$. Notons que la dernière colonne du tableau \texttt{Coefficients} fournit les p$-$valeurs des tests de significativité locales des paramètres $\beta_0$ et $\beta_1$. La dernière #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}.
 \end{Correction}]
 [#}
+
+{#meth]signif3.ExoLM1
+[#r<]beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
+beta1Est<-tmp[2]
+[#>][{#Question#}{
+Dans ce qui suit, \texttt{beta0Est} et \texttt{beta1Est} désignent les résultats des estimations en \texttt{R} de $\beta_0$ et $\beta_1$ obtenues précedemment. 
+De plus, nous rappelons que $\displaystyle\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}=\frac{\Est{\sigma^2}{\Vect{y}|\Mat{x}}} {n\times var(\Vect{x^{(1)}})}$ dans le cas particulier de la régression simple.
+\noindent a) Quelles quantités apparaissant dans le ``summary.lm" de la question précédente sont reliées aux 2 expressions \texttt{e1} et \texttt{e2} suivantes~: 
+{#rverb]
+e1 <- sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)
+e1
+e2 <- e/#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2
+e2
+[#rverb}
+Proposer les notation mathématiques utilisées dans ce cours pour les identifier.
+\noindent b) En vous aidant de la sortie ``summary.lm" de la question précédente, fournir la valeur de \texttt{e3} exprimée ci-dessous~:
+{#rverb]
+e3 <- beta1Est/sqrt(e2)
+[#rverb} 
+}
+]
+[#tag]exam[#>]reponse?[5cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]
+  [\begin{Correction}
+  |{#rverb]
+  |summary(lm(#{.y}~#{.x}))
+  |sqrt(#r{#{.objR}$summary$r.sq})
+  |sqrt(sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)) -> sigmaEst;sigmaEst
+  |sigmaEst/sqrt(#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2)) -> sigmaBeta1Est;sigmaBeta1Est
+  |beta1Est/sigmaBeta1Est
+[#}
+  \end{Correction}]
+[#meth}
 
 
 {#meth]make_graph.ExoLM1[#,] .graph.append[]
