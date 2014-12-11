@@ -163,7 +163,7 @@ On retrouve les résultats des deux questions précédentes. En particulier, la 
 beta1Est<-tmp[2]
 [#>][{#Question#}{
 Dans ce qui suit, \texttt{beta0Est} et \texttt{beta1Est} désignent les résultats des estimations en \texttt{R} de $\beta_0$ et $\beta_1$ obtenues précedemment. 
-De plus, nous rappelons que $\displaystyle\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}=\frac{\Est{\sigma^2}{\Vect{y}|\Mat{x}}} {n\times var(\Vect{x^{(1)}})}$ dans le cas particulier de la régression simple.\\
+De plus, nous soulignons que $\displaystyle\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}=\frac{\Est{\sigma^2}{\Vect{y}|\Mat{x}}} {n\times var(\Vect{x^{(1)}})}$ dans le cas particulier de la régression simple.\\
 \noindent a) Quelles quantités apparaissant dans le \texttt{summary(lm(...))} de la question précédente sont reliées aux 2 expressions \texttt{e1} et \texttt{e2} suivantes~: 
 {#rverb]
 e1 <- sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)
@@ -171,7 +171,7 @@ e1
 e2 <- e1/(#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2))
 e2
 [#rverb}
-Proposer les notation mathématiques utilisées dans ce cours pour les identifier.\\
+Proposer les notations mathématiques utilisées dans ce cours pour les identifier.\\
 \noindent b) En vous aidant de la sortie \texttt{summary(lm(...))} de la question précédente, fournir la valeur de \texttt{e3} exprimée ci-dessous~:
 {#rverb]
 e3 <- beta1Est/sqrt(e2)
@@ -183,8 +183,8 @@ e3 <- beta1Est/sqrt(e2)
   [\begin{Correction}
   | \noindent a) \texttt{e1} correspond à $\Est{\sigma^2}{\Vect{y}|\Mat{x}}$ mesurant 
   |l'estimation du niveau de bruit et correspond au carré de \texttt{Residual
-  | standard error} fourni dans \texttt{summary(lm(...))}. \texttt{e2} est d'après la formule fournie le carré de l'erreur standard qui est fournie à la colonne \texttt{std error}.\\ 
-  | \noident b) \texttt{e3} correspond à la statistique de test de significativité locale de $\beta_1$ et vaut donc #{e3} (voir colonne \texttt{t value}).
+  | standard error} fourni dans \texttt{summary(lm(...))}. \texttt{e2} est le résultat de la formule fournie  $\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}$ correspondant au carré de l'erreur standard fournie dans la colonne \texttt{std error}.\\ 
+  | \noindent b) \texttt{e3} correspond à la statistique de test de significativité locale de $\beta_1$ et vaut donc #r{e3} (voir colonne \texttt{t value}).
   \end{Correction}]
 [#meth}
 
