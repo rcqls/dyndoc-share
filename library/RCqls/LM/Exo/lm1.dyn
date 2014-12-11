@@ -229,8 +229,8 @@ la variable \texttt{#{.y}} (indication~: fournir la p$-$valeur associée puis co
 [#}
 
 
-{#meth]quali.ExoLM1[#,] qualiTex[] [#,] qualiR[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]modal[] [#>]
-[{#Question#}{Quelle variable nommée \texttt{z} ][#?]#{+?modal}[#>](ayant pour modalités #{modal})[#?]end[#>] dans la sortie suivante a été introduite~? Comparez les résultats obtenus avec ceux du précédent modèle. Représentez sur le graphique précédent ce nouveau modèle dont on précisera l'équation. Peut-on alors penser que \texttt{#{.x}} a un pouvoir explicatif sur \texttt{#{.y}}~?}
+{#meth]quali.ExoLM1[#,] qualiTex[] [#,] qualiR[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]modal[] [#,]short[false][#>]
+[{#Question#}{Quelle variable nommée \texttt{z} ][#?]#{+?modal}[#>](ayant pour modalités #{modal})[#?]end[#>] dans la sortie suivante a été introduite~? Comparez brièvement les résultats obtenus avec ceux du précédent modèle. Représentez sur le graphique précédent ce nouveau modèle[#?]!#{short}[#>] dont on précisera l'équation[#?]end[#>]. Peut-on alors penser que \texttt{#{.x}} a un pouvoir explicatif sur \texttt{#{.y}}~?}
 [#r<]z<-#{qualiR}
 [#>]{#rverb]
 summary(lm(#{.y}~#{.x}*z))
