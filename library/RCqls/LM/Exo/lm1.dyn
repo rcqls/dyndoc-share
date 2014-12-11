@@ -168,7 +168,7 @@ De plus, nous rappelons que $\displaystyle\Est{\sigma^2_{\widehat{\beta}_1}}{\Ve
 {#rverb]
 e1 <- sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)
 e1
-e2 <- e/#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2
+e2 <- e/#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2)
 e2
 [#rverb}
 Proposer les notation mathématiques utilisées dans ce cours pour les identifier.
