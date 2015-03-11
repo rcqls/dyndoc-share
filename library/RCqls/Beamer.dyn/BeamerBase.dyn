@@ -1,5 +1,5 @@
 {#document]
-[#main][#rb<]require "dyndoc/V1+/plugins/tex/beamer"
+[#main][#rb<]require "dyndoc/plugins/tex/beamer"
 [#>] lastscene[] [#>] lastfrom [1] 
 [#}
 
