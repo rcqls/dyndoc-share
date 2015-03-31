@@ -2,6 +2,23 @@
 [#require]RCqls/StatInf/HypoTest
 [#main][#<] This is a complete version including BeamerRedStdCours!!!
 
+{#meth]deltaLimIndicR.TestParam
+[#>]alphaR[{#case]#{.side}[#when]!=,\neq[#>]#{.alphaR}/2[#else]#{.alphaR}[#}]
+[#>]side[{#case]#{.side}
+        [#when]!=,\neq[#>][{#if]#R{leftpval<.5}[#>]<[#else]>[#}]
+        [#else][#{.side}]
+        [#}]
+[#>]
+[{#case]#{side}
+  [#when]<[#>]
+    [{#case]#{.frame.paramType}-#{.frame.sampleType}
+    [#when]v-g,rv-g[#>] [q#{.loiStatR}(#{alphaR}#{.paramLoiStatR})] 
+    [#else] [-q#{.loiStatR}(1-#{alphaR}#{.paramLoiStatR})][#}]
+  [#when]>[#>]
+    [q#{.loiStatR}(1-#{alphaR}#{.paramLoiStatR})]
+[#}]
+[#meth}
+
 {#meth]RedStdBeamer.TestParam[#,]pb[][#,]titre[Rédaction Standard][#,]prelim[true]
 [#<][#%] Prob #{pb} -> redStd[#<]
 {#Actor]head:#{pb}_tit[#,]:1-11[#,]0.5,0.5[#,]align[center,center][#,] [\textbf{\large #{titre}}][#}
@@ -15,13 +32,13 @@
 {#Actor]def:#{pb}_q4_redStd[#,]:7-8[#,]0.5,1.0[#,]
 [\textbf{Question }: Comment s'écrit la règle de décision ne produisant pas plus de #{.alphaTex} d'erreur de première espèce~? \\
 \textbf{Indic \texttt{R}}~: {#case]#{.indic}
-[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})}$\simeq$ \texttt{#r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}}
+[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{{#deltaLimIndicR]self[#}}$\simeq$ \texttt{#r{{#deltaLimIndicR]self[#}}}
 [#}][#}
 
 {#Actor]def:#{pb}_q5_redStd[#,]:9-11[#,]0.5,1.0[#,]
 [\textbf{Question }: Comment conclueriez-vous au vu des données {#if]#{.frame.nbEch}==2[#>] [\texttt{#{.frame.y1R}} et \texttt{#{.frame.y2R}}][#else][\texttt{#{.frame.yR}}][#} en \texttt{R}~?\\
 \textbf{Indic \texttt{R}}~: {#case]#{.indic}
-[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})}$\simeq$ \texttt{#r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}} 
+[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{{#deltaLimIndicR]self[#}}$\simeq$ \texttt{#r{{#deltaLimIndicR]self[#}}} 
 [#}]
 [#}
 {#Actor]ex:#{pb}_redStd[#,]:1-11[#,]0.5,1.0[#,]align[center,top][#,]minipage[11cm][#,]
@@ -46,8 +63,8 @@
   [#when]q[#>]
     [> deltaEst.H0 \# instruction R à fournir\\
     |$[1]$ #r{deltaEst.H0}\\
-    |> q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})\\
-    |$[1]$ #r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}]
+    |> {#deltaLimIndicR]self[#} \\
+    |$[1]$ #r{{#deltaLimIndicR]self[#}}]
   [#case}}}|
   |@{VIEW(:2-11)}{\noindent\textbf{Hypothèses de test~:}}@{VIEW(:4-11)}{ {\small {#H0]self[#}} vs } @{VIEW(:2-11)}{{#H1]self[#}}\\|
   |{#if]#{prelim}[#>]@{ONLY(:2)}{\\{#redTestPre]self[#}}[#}|
