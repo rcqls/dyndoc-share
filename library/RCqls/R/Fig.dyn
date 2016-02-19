@@ -1,6 +1,6 @@
 {#def]Figure
-[#,] img[] [#,] rcode[] [#,] optdevice[] [#,] device[png] 
-[#,] height[480] [#,] width[480] [#,] scale[1.0] 
+[#,] img[] [#,] rcode[] [#,] optdevice[] [#,] device[png]
+[#,] height[480] [#,] width[480] [#,] scale[1.0]
 [#,] title[R Code]
 [#,] new[TRUE]
 [#,] printverb[true]
@@ -19,14 +19,14 @@
       #{rcode}
       dev.off()
     }
-[#?]#{printverb}[#>] 
+[#?]#{printverb}[#>]
     [\begin{Verbatim}[#{optverb}]
     |#{rrcode}
-    |\end{Verbatim} 
+    |\end{Verbatim}
     |\centerline{\includegraphics[scale=#{scale}]{#{img}}}]
 [#}
 
-{#def]FigureSimple[#,]img[] [#,] rcode[] [#,] beamerFrame[] 
+{#def]FigureSimple[#,]img[] [#,] rcode[] [#,] beamerFrame[]
 [#,] optdevice[] [#,] device[png]
 [#,] height[480] [#,] width[480] [#,] scale[1.0]
 [#,] newR[TRUE] [#,] include[true]
@@ -46,7 +46,7 @@
 [#}
 
 %%% Nouvelle instruction RFig avec paramètres
-%%% spécialement adapté à \[@RFig\] 
+%%% spécialement adapté à \[@RFig\]
 {#def]RFig
 [#,] img[] [#,] rcode[] [#,] beamer[] [#,] optR[] [#,] xyKey[]
 [#,] device[png] [#,] width[480] [#,] height[480] [#,] optTex[scale=1.0]
@@ -56,6 +56,37 @@
     tmp=File.expand_path(File.dirname("#{img}"))
     FileUtils.mkdir_p(tmp) unless File.exists? tmp
     @vars[:img]=File.expand_path(@vars[:img])
+    #Dyndoc.warn "RFig:img",[@vars[:img],@vars[:device],@vars[:optR]]
+{#hide][#%]POUR DECODER! Affiche code executé dans le bloc #r< après le #hide
+[#=]imgcode[
+if(#{new} || !file.exists('#{img}')) {
+  #{device}('#{img}',width=#{width},height=#{height} @{ifEmpty(optR|false=,)} #{optR})
+  #{rcode}
+  if(#{par}) {
+    par.save<-par()
+    infoXY<-list()
+    infoXY[["xyInch"]]<-c(par.save[["pin"]][1]/diff(par.save[["usr"]][1:2]),par.save[["pin"]][2]/diff(par.save[["usr"]][3:4]))
+    infoXY[["xyOrig"]]<-par.save[["usr"]][c(1,3)]
+    infoXY[["xyFig"]]<-par.save[["fin"]]
+    infoXY[["xyMarg"]]<-par.save[["mai"]][2:1]
+    if("#{xyKey}"!="") {
+      if(!exists("infoXYKey")) infoXYKey<-list()
+      infoXYKey[["#{xyKey}"]]=infoXY
+    }
+    xyPercent<-function(xy,key=NULL) {
+      if(is.null(key)) info <- infoXY
+      else info<-infoXYKey[[key]]
+      ((xy-info[["xyOrig"]])*info[["xyInch"]]+info[["xyMarg"]])/info[["xyFig"]]
+    }
+    save(infoXY,xyPercent,file="#{img}.RData")
+  }
+  dev.off()
+} else {
+   load("#{img}.RData")
+}
+]
+[#rb<]puts @vars[:imgcode]
+[#hide}
 [#r<]
     if(#{new} || !file.exists('#{img}')) {
       #{device}('#{img}',width=#{width},height=#{height} @{ifEmpty(optR|false=,)} #{optR})
@@ -73,7 +104,7 @@
         }
         xyPercent<-function(xy,key=NULL) {
           if(is.null(key)) info <- infoXY
-          else info<-infoXYKey[[key]] 
+          else info<-infoXYKey[[key]]
           ((xy-info[["xyOrig"]])*info[["xyInch"]]+info[["xyMarg"]])/info[["xyFig"]]
         }
         save(infoXY,xyPercent,file="#{img}.RData")

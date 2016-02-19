@@ -12,7 +12,7 @@
 [{#case]#{side}
   [#when]<[#>]
     [{#case]#{.frame.paramType}-#{.frame.sampleType}
-    [#when]v-g,rv-g[#>] [q#{.loiStatR}(#{alphaR}#{.paramLoiStatR})] 
+    [#when]v-g,rv-g[#>] [q#{.loiStatR}(#{alphaR}#{.paramLoiStatR})]
     [#else] [-q#{.loiStatR}(1-#{alphaR}#{.paramLoiStatR})][#}]
   [#when]>[#>]
     [q#{.loiStatR}(1-#{alphaR}#{.paramLoiStatR})]
@@ -38,7 +38,7 @@
 {#Actor]def:#{pb}_q5_redStd[#,]:9-11[#,]0.5,1.0[#,]
 [\textbf{Question }: Comment conclueriez-vous au vu des données {#if]#{.frame.nbEch}==2[#>] [\texttt{#{.frame.y1R}} et \texttt{#{.frame.y2R}}][#else][\texttt{#{.frame.yR}}][#} en \texttt{R}~?\\
 \textbf{Indic \texttt{R}}~: {#case]#{.indic}
-[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{{#deltaLimIndicR]self[#}}$\simeq$ \texttt{#r{{#deltaLimIndicR]self[#}}} 
+[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{{#deltaLimIndicR]self[#}}$\simeq$ \texttt{#r{{#deltaLimIndicR]self[#}}}
 [#}]
 [#}
 {#Actor]ex:#{pb}_redStd[#,]:1-11[#,]0.5,1.0[#,]align[center,top][#,]minipage[11cm][#,]
@@ -85,7 +85,7 @@
   [#case}}\newline}
 @{VIEW(:10-11)}{\small\noindent\textbf{Conclusion}~: puisqu'au vu des données,
 {#case]#{.indic}
-  [#when]p[#r<]pval<-{#pvalR]self[#};okH1<-pval<#{.alphaR}[#>] 
+  [#when]p[#r<]pval<-{#pvalR]self[#};okH1<-pval<#{.alphaR}[#>]
 [\\ \texttt{p-valeur}$\NotR{@{COLOR(:10|orange)}\mathtt{{#pvalR]self[#}}}$\\ \phantom{\texttt{p-valeur}}${@{COLOR(:10|orange)}\simeq #R{round(({#pvalR]self[#})*100,2)}\%}#R{ifelse(pval<#{.alphaR},"<","\\nless")}{@{COLOR(:10|blue)}#{.alphaTex}}$\\]
 [#when]q[#>]
   [\\${#deltaEstH0Tex]self[#,]false[#}\!\NotR\! {@{COLOR(:10|orange)}\mbox{\scriptsize\texttt{#{.deltaH0R}}}\!\simeq\! #R{formatC(deltaEst.H0)}}$\\]
@@ -94,18 +94,18 @@
     [#when]<[#>] [#R{ifelse(pval<#{.alphaR},"<","\\nless")}  {#deltaLimTex]self[#,]-[#}]
     [#when]>[#>] [#R{ifelse(pval<#{.alphaR},">","\\ngtr")} {#deltaLimTex]self[#,]+[#}]
     [#when]!=,\neq[#>]
-      [{#if]#R{leftpval<.5}[#>] 
+      [{#if]#R{leftpval<.5}[#>]
         [#R{ifelse(okH1,"<","\\nless")} {#deltaLimTex]self[#,]-[#}]
-      [#else] 
+      [#else]
         [#R{ifelse(okH1,">","\\ngtr")} {#deltaLimTex]self[#,]+[#}]
       [#}]
     [#}\!
 \NotR\!{@{COLOR(:10|darkgreen)}\mathtt{{#deltaLimR]self[#}\!\simeq\!#R{formatC({#deltaLimR]self[#})}}}\!$\\]
 [#case}
-{#if]#R{okH1}[#>] [ on peut] [#else] [ on ne peut pas] [#} plutôt penser (avec un risque de #{.alphaTex}) que #{.assertion}.}] 
+{#if]#R{okH1}[#>] [ on peut] [#else] [ on ne peut pas] [#} plutôt penser (avec un risque de #{.alphaTex}) que #{.assertion}.}]
 [#Actor}
 {#renv]#{.Renvir}+[#}
-[#?]"pq".include? #{=.indic}[#>]{#ImageR]ex:img/pval#{pb}.png[#,]8,4[#,]:10[#,]0.15,0.65[#optR]type="cairo-png",bg="#ffffffcc"[#,]
+[#?]"pq".include? #{=.indic}[#>]{#ImageR]ex:img/pval#{pb}.png[#,]8,4[#,]:10[#,]0.15,0.65[#optR]bg="#ffffffcc"[#,]
 {#pvalRCode]self[#}
 [#ImageR}[#?]end
 [#<]
@@ -120,7 +120,7 @@
 \textbf{Question } Peut-on penser que #{.assertion}
 au vu des données {#if]#{.frame.nbEch}==2[#>] [\texttt{#{.frame.y1R}} et \texttt{#{.frame.y2R}}][#else][\texttt{#{.frame.yR}}][#} en \texttt{R}~?\\
 \textbf{Indic \texttt{R}}~: {#case]#{.indic}
-[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})}$\simeq$ \texttt{#r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}} 
+[#when]p[#>]\texttt{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}$\simeq$ \texttt{#r{p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})}}[#when]q[#>]\texttt{deltaEst.H0}$\simeq$\texttt{#r{deltaEst.H0}}\\\phantom{\textbf{Indic \texttt{R}}~: }\texttt{q#{.loiStatR}(#r{1-#{.alphaR}}#{.paramLoiStatR})}$\simeq$ \texttt{#r{q#{.loiStatR}(1-#{.alphaR}#{.paramLoiStatR})}}
 [#}
 [#bas]
 {#if]#{prelim}[#>]@{ONLY(:2)}{{#redTestPre]self[#}}[#}|
@@ -154,10 +154,10 @@ au vu des données {#if]#{.frame.nbEch}==2[#>] [\texttt{#{.frame.y1R}} et \textt
 [#when]a
 [#>]
   \pgfnodebox{Asympt}[stroke]{\pgfxy(3,#Rb{#{size}-4.5*lY+#{dY}})}{\color[rgb]{0,0.6,0}Asymptotique}{2pt}{2pt}
-[#when]g  
+[#when]g
 [#>]\pgfnodebox{Gauss}[stroke]{\pgfxy(8,#Rb{#{size}-4.5*lY+#{dY}})}{\color[rgb]{0,0.6,0}Gaussien}{2pt}{2pt}
 [#when]1p-a[#>]\pgfnodeconncurve{Par1}{Asympt}{-90}{90}{0.5cm}{0.5cm}
-[#when]1p-g[#>]\pgfnodeconncurve{Par1}{Gauss}{-90}{90}{2cm}{0.5cm} 
+[#when]1p-g[#>]\pgfnodeconncurve{Par1}{Gauss}{-90}{90}{2cm}{0.5cm}
 [#when]1e-a[#>]\pgfnodeconncurve{Ech1}{Asympt}{-90}{90}{0.5cm}{0.5cm}
 [#when]1e-g[#>]\pgfnodeconncurve{Ech1}{Gauss}{-90}{90}{0.5cm}{0.5cm}
 [#when]2e-a[#>]\pgfnodeconncurve{Ech2}{Asympt}{-90}{90}{0.5cm}{0.5cm}
@@ -175,9 +175,9 @@ $p^\bullet$ & $\scriptsize\Est{\delta_{p^\bullet,p_0}}{Y}:=\frac{\Est{p^\bullet}
 $\mu^\bullet$ &  $\scriptsize\Est{\delta_{\mu^\bullet,\mu_0}}{Y}:=\frac{\Est{\mu^\bullet}{Y}-\mu_0}{\Est{\sigma_{\widehat{\mu^\bullet}}}{Y}}\SuitApprox \mathcal{N}(0,1)$\\\hline
 $\sigma^2_\bullet$ & $\scriptsize\Est{\delta_{\sigma^2_\bullet,\sigma^2_0}}{Y}:=\frac{\Est{\sigma^2_\bullet}{Y}-\sigma^2_0}{\Est{\sigma_{\widehat{\sigma^2_\bullet}}}{Y}}\SuitApprox \mathcal{N}(0,1)$\\\hline
 \end{tabular}}
-[#when]1pg[#>]%%% 1 param et gaussien 
+[#when]1pg[#>]%%% 1 param et gaussien
 \noindent\textbf{Données~:} $\Vect{Y}=(Y_1,\cdots,Y_n)$ avec $Y{\color{blue}\leadsto \mathcal{N}(\mu^\bullet,\sigma_\bullet)}$\\
-\noindent\textbf{Statistique de test sous $\mathbf{H_0}$~:}\\ 
+\noindent\textbf{Statistique de test sous $\mathbf{H_0}$~:}\\
 \centerline{\begin{tabular}{|c|c|}\hline
 $\mu^\bullet$ &  $\scriptsize\Est{\delta_{\mu^\bullet,\mu_0}}{Y}:=\frac{\Est{\mu^\bullet}{Y}-\mu_0}{\Est{\sigma_{\widehat{\mu^\bullet}}}{Y}}\leadsto \mathcal{S}t(n-1)$\\\hline
 $\sigma^2_\bullet$ & $\scriptsize\Est{\delta_{\sigma^2_\bullet,\sigma^2_0}}{Y}:=(n-1)\times\frac{\Est{\sigma^2_\bullet}{Y}}{\sigma^2_0}\leadsto \chi^2(n-1)$\\\hline
@@ -200,7 +200,7 @@ $r_\mu=\mu^{(1)}/\mu^{(2)}$ &  $\scriptsize\Est{\delta_{r_\mu,r_0}}{Y}:=\frac{\E
 $r_{\sigma^2}=\sigma^2_{(1)}/\sigma^2_{(2)}$ &  $\scriptsize\Est{\delta_{r_{\sigma^2},r_0}}{Y}:=\frac{\Est{r_{\sigma^2}}{Y}-r_0}{\Est{\sigma_{\widehat{r_{\sigma^2}}}}{Y}}\SuitApprox \mathcal{N}(0,1)$\\\hline
 \end{tabular}}
 [#when]2p2eg[#>]%%% 2 params, 2 ech et gaussien
-\noindent\textbf{Données~:} $\Vect{Y}=(Y^{(1)}_1,\cdots,Y^{(1)}_{n_1},Y^{(2)}_1,\cdots,Y^{(2)}_{n_2})$\\ 
+\noindent\textbf{Données~:} $\Vect{Y}=(Y^{(1)}_1,\cdots,Y^{(1)}_{n_1},Y^{(2)}_1,\cdots,Y^{(2)}_{n_2})$\\
 avec $Y^{(1)}_{i_1}{\color{blue}\leadsto \mathcal{N}(\mu^{(1)},\sigma_{(1)})}$ et $Y^{(2)}_{i_2}{\color{blue}\leadsto \mathcal{N}(\mu^{(2)},\sigma_{(2)})}$\\
 \noindent \textbf{Statistique de test sous $\mathbf{H_0}$~:}\\
 \centerline{\begin{tabular}{|c|c|}\hline
@@ -236,4 +236,3 @@ $r_{\sigma^2}=\sigma^2_{(1)}/\sigma^2_{(2)}$ & $\scriptsize\Est{\delta_{r_{\sigm
 {#presParam]#{mode}[#}
 \end{frame}
 [#def}
-

@@ -52,10 +52,10 @@ RCqls/Exo/exos
   |
   |On rappelle {\`a} titre indicatif que
   |\begin{list}{$\bullet$}{}
-  |\item $var(\Vect{x})= \overline{x^2}- \overline{x}^2$	
+  |\item $var(\Vect{x})= \overline{x^2}- \overline{x}^2$
   |\item $cov(\Vect{x},\Vect{y})=\overline{x \times y} - \overline{x} \times \overline{y}.$
   |\end{list}]
-  
+
   [#>]
     [{#rverb]
     |#{.indicR.mx}
@@ -79,7 +79,7 @@ RCqls/Exo/exos
   |\end{eqnarray*}
   |Vérification en \texttt{R}~:
   |{#rverb]
-  |#{.indicR.beta1R}	
+  |#{.indicR.beta1R}
   |beta1Est
   |#{.indicR.beta0R}
   |[#}
@@ -91,7 +91,7 @@ RCqls/Exo/exos
 [{#Question#}{D{\'e}terminez le coefficient de corrélation linéaire
 entre \texttt{#{.x}} et \texttt{#{.y}} et donnez-en une interpr{\'e}tation.}<\n><\n>]
 [#?]else[#>]
-[{#Question#}{D{\'e}terminez le coefficient de détermination lin{\'e}aire ($R^2$) (puis le coefficient de corrélation linéaire ($R$)) 
+[{#Question#}{D{\'e}terminez le coefficient de détermination lin{\'e}aire ($R^2$) (puis le coefficient de corrélation linéaire ($R$))
 entre \texttt{#{.x}} et \texttt{#{.y}}, et donnez-en une interpr{\'e}tation.}<\n><\n>]
 [#?]end
 [#tag]exam[#>]reponse?[6cm][#>]\Reponse{#{reponse}}
@@ -109,7 +109,7 @@ entre \texttt{#{.x}} et \texttt{#{.y}}, et donnez-en une interpr{\'e}tation.}<\n
   [\begin{Correction}
   |Dans le cadre de la régression simple, $R^2$ vaut le carré du coefficient de corrélation linéaire~:
   |\[
-  |R^2 = \frac{cov(\Vect{y},\Vect{x^{(1)}})^2}{var(\Vect{y}) \times var(\Vect{x^{(1)}}) } 
+  |R^2 = \frac{cov(\Vect{y},\Vect{x^{(1)}})^2}{var(\Vect{y}) \times var(\Vect{x^{(1)}}) }
   |=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}
   |\simeq #r{(tmp<-#{.indicR.cxy})^2}.
   |\]
@@ -121,7 +121,7 @@ entre \texttt{#{.x}} et \texttt{#{.y}}, et donnez-en une interpr{\'e}tation.}<\n
 [#r<]beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
 beta1Est<-tmp[2]
 [#>][{#Question#}{En utilisant le fait que $\displaystyle\sigma_{\widehat{\beta}_1}^2=\frac{\sigma^2} {n\times var(\Vect{x^{(1)}})}$ (dans le cas de la régression simple) et l'instruction \texttt{R} ci-dessous (notation mathématique de la quantité calculée à préciser, avec \texttt{beta0Est} et \texttt{beta1Est} les résultats des estimations en \texttt{R} de $\beta_0$ et $\beta_1$ obtenues précedemment)
-pouvez-vous dire si la variable \texttt{#{.x}} est significative dans l'explication de la variable \texttt{#{.y}} (Rédaction standard)~? 
+pouvez-vous dire si la variable \texttt{#{.x}} est significative dans l'explication de la variable \texttt{#{.y}} (Rédaction standard)~?
 }
 {#rverb][sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)]
 [#rverb}]
@@ -162,9 +162,9 @@ On retrouve les résultats des deux questions précédentes. En particulier, la 
 [#r<]beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
 beta1Est<-tmp[2]
 [#>][{#Question#}{
-Dans ce qui suit, \texttt{beta0Est} et \texttt{beta1Est} désignent les résultats des estimations en \texttt{R} de $\beta_0$ et $\beta_1$ obtenues précedemment. 
+Dans ce qui suit, \texttt{beta0Est} et \texttt{beta1Est} désignent les résultats des estimations en \texttt{R} de $\beta_0$ et $\beta_1$ obtenues précedemment.
 De plus, nous soulignons que $\displaystyle\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}=\frac{\Est{\sigma^2}{\Vect{y}|\Mat{x}}} {n\times var(\Vect{x^{(1)}})}$ dans le cas particulier de la régression simple.\\
-\noindent a) Quelles quantités apparaissant dans le \texttt{summary(lm(...))} de la question précédente sont reliées aux 2 expressions \texttt{e1} et \texttt{e2} suivantes~: 
+\noindent a) Quelles quantités apparaissant dans le \texttt{summary(lm(...))} de la question précédente sont reliées aux 2 expressions \texttt{e1} et \texttt{e2} suivantes~:
 {#rverb]
 e1 <- sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)
 e1
@@ -175,15 +175,15 @@ Proposer les notations mathématiques utilisées dans ce cours pour les identifi
 \noindent b) En vous aidant de la sortie \texttt{summary(lm(...))} de la question précédente, fournir la valeur de \texttt{e3} exprimée ci-dessous~:
 {#rverb]
 e3 <- beta1Est/sqrt(e2)
-[#rverb} 
+[#rverb}
 }
 ]
 [#tag]exam[#>]reponse?[5cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#>]
   [\begin{Correction}
-  | \noindent a) \texttt{e1} correspond à $\Est{\sigma^2}{\Vect{y}|\Mat{x}}$ mesurant 
+  | \noindent a) \texttt{e1} correspond à $\Est{\sigma^2}{\Vect{y}|\Mat{x}}$ mesurant
   |l'estimation du niveau de bruit et correspond au carré de \texttt{Residual
-  | standard error} fourni dans \texttt{summary(lm(...))}. \texttt{e2} est le résultat de la formule fournie  $\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}$ correspondant au carré de l'erreur standard fournie dans la colonne \texttt{std error}.\\ 
+  | standard error} fourni dans \texttt{summary(lm(...))}. \texttt{e2} est le résultat de la formule fournie  $\Est{\sigma^2_{\widehat{\beta}_1}}{\Vect{y}|\Mat{x}}$ correspondant au carré de l'erreur standard fournie dans la colonne \texttt{std error}.\\
   | \noindent b) \texttt{e3} correspond à la statistique de test de significativité locale de $\beta_1$ et vaut donc #r{e3} (voir colonne \texttt{t value}).
   \end{Correction}]
 [#meth}
@@ -205,7 +205,7 @@ graphics.off()
 [#}
 
 
-{#meth]graph.ExoLM1[#,] .graph.file[img/FigLM1#{.ObjectName}.jpg] [#,] scale[.6] 
+{#meth]graph.ExoLM1[#,] .graph.file[img/FigLM1#{.ObjectName}.jpg] [#,] scale[.6]
 [#<]{#make_graph]self[#}
 [#>]
 [{#Question#}{Sur le graphique ci-dessous reportez la droite ajustée (même approximativement) et illustrez la notion de valeur ajustée et de résidu.}
@@ -260,14 +260,14 @@ La variable nommée $z$ correspond très certainement avec la variable indicatri
 $$
 (#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \Bruit_i.
 $$
-Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $z=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)} soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{z}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{.y}}.
+%Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $z=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de {#hide]#R{round(tmpSumLmQ$r.squared*100,2)} soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\%[#hide} par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{z}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{.y}}.
 \end{Correction}
 [#}
 
 {#meth]ipQuali.ExoLM1[#,] newData[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,] short[false]
 [#?]#{0?indNew}[#r>indNew]#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1[#?]end
 [#>]
-[{#Question#}{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs 
+[{#Question#}{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
 mais pas encore la valeur de \texttt{#{.y}}.
 Dans la sortie \texttt{R} ci-dessous, pourriez-vous prévoir sa valeur puis calculer son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%~?}<\n>]
 [#?]#{short}[#>]{#rverb]predict(lm(#{.y}~#{.x}*z),#{newData},interval="prediction")[#}
@@ -277,20 +277,20 @@ predict(lm(#{.y}~#{.x}*z),xTau,interval="prediction")
 [#}[#?]end
 [#tag]exam[#>]reponse?[4cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#>]
-\begin{Correction} 
+\begin{Correction}
 Pour chacun des modèles, la prévision est donnée par la variable notée \texttt{fit}, la borne inférieure de l'intervalle de prévision au niveau 95\% par la variable \texttt{lwr} et la borne supérieure par \texttt{upr}.
 \end{Correction}
 [#}
 
 
 {#meth]qualiBin.ExoLM1 [#,] z[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]zDescr[] [#,]indDescr[]
-[#,]ordre[<<analyse[2,1,3]<<graph[3,2,1]] 
+[#,]ordre[<<analyse[2,1,3]<<graph[3,2,1]]
 [#,]predire[<<ind[]<<x[]]
 [#=] modelR$[c("#{.y}~#{.x}","#{.y}~z+#{.x}","#{.y}~z+#{.x}+z:#{.x}")]
 [#>]
 [On envisage plusieurs modèles linéaires expliquant la variable \texttt{#{.y}} en fonction de la variable  \texttt{#{.x}} et (parfois) de la variable binaire \texttt{z} #{zDescr}.\\
 
-\noindent \underline{\textbf{Présentation des modèles~:}} On tente alors les trois modèlisations linéaires suivantes 
+\noindent \underline{\textbf{Présentation des modèles~:}} On tente alors les trois modèlisations linéaires suivantes
 
 \noindent \textit{Modèle A}: $ (#{.y})_i = \beta^{A}_0+\beta^{A}_1 (#{.x})_i+\Bruit^{A}_i$\\
 \noindent \textit{Modèle B}: $ (#{.y})_i = \beta^{B}_0+\beta^{B}_1 z_i+ \beta^{B}_2 (#{.x})_i+\Bruit^{B}_i$\\
@@ -350,7 +350,7 @@ La variable nommée $z$ correspond très certainement avec la variable indicatri
 $$
 (#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \Bruit_i.
 $$
-Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $z=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de #R{round(tmpSumLmQ$r.squared*100,2)} soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\% par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{z}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{.y}}.
+Le modèle estimé correspond à deux droites d'équation $y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x$ lorsque $z=1$ et $y=\widehat{\beta_0}+\widehat{\beta_1}x$ lorsque $X=0$ (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le $R^2$ est de l'ordre de {#hide] #R{round(tmpSumLmQ$r.squared*100,2)}  soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\% [#hide} par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice \texttt{z}, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable \texttt{#{.y}}.
 \end{Correction}
 [#}
 
