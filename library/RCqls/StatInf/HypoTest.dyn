@@ -5,7 +5,9 @@
 [#,]side[>][#,]theta0R[.15][#,]alphaR[.05][#,]indic[pval]
 [#,]affirmation[]
 [#%]Fix the .yR, .y1R, .y2R
-[#?]#{0?yR} and #{+?nomPb}[#=]yR[y#{nomPb}][#?]#{0?y1R} and #{+?nom1Pb}[#=]y1R[y#{nom1Pb}][#?]#{0?y2R} and #{+?nom2Pb}[#=]y2R[y#{nom2Pb}][#?]end
+[#?]#{0?yR} and #{+?nomPb}[#=]yR[y#{nomPb}][#?]#{0?y1R} and #{+?nom1Pb}[#=]y1R[y#{nom1Pb}][#?]#{0?y2R} and #{+?nom2Pb}[#=]y2R[y#{nom2Pb}]
+[#?]#{0?yR} and #{=paramType}=="md" and #{+?nom1Pb} and #{+?nom2Pb}[#=]yR[y#{nom1Pb}-y#{nom2Pb}]
+[#?]end
 [#yield]default
 [#<]{#new].param[#of]ParamFrame[#in]#{.Renvir}[#,]#{paramType}[#,]#{sampleType}[#,].nomPb[#{nomPb}][#,].yR[#{yR}][#,].nom1Pb[#{nom1Pb}][#,].y1R[#{y1R}][#,].nom2Pb[#{nom2Pb}][#,].y2R[#{y2R}][#}
 {#hide][#hide}
@@ -462,6 +464,9 @@ indic=indic.uniq.join(",nl,")]
 [#when]var[#>]     [var(#{.frame.yR})]
 [#when]var1[#>]   [var(#{.frame.y1R})]
 [#when]var2[#>]   [var(#{.frame.y2R})]
+[#when]summary[#>] [c(mean(#{.frame.yR}),sd(#{.frame.yR}))]
+[#when]summary1[#>] [c(mean(#{.frame.y1R}),sd(#{.frame.y1R}))]
+[#when]summary2[#>] [c(mean(#{.frame.y2R}),sd(#{.frame.y2R}))]
 [#else] [#{choice}]
 [#}]
 [#?]#{headVerb}[#>][{#rverb]#{code}[#}]
