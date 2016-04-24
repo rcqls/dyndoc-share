@@ -1,5 +1,5 @@
-%%% Facility Class combining at once ParamFrame and TestParam
-{#meth]new.HypoTestParam
+%%% Facility Class combining at once ParamFrame (.par) and TestParam (.test)
+{#meth]new.HypoTestExo
 [#,]paramType[m][#,]sampleType[asymptotique]
 [#,]nomPb[][#,]yR[][#,]nom1Pb[][#,]y1R[][#,]nom2Pb[][#,]y2R[]
 [#,]side[>][#,]theta0R[.15][#,]alphaR[.05][#,]indic[pval]
