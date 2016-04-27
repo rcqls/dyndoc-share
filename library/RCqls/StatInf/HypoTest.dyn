@@ -4,15 +4,13 @@
 [#,]nomPb[][#,]yR[][#,]nom1Pb[][#,]y1R[][#,]nom2Pb[][#,]y2R[]
 [#,]side[>][#,]theta0R[.15][#,]alphaR[.05][#,]indic[pval]
 [#,]affirmation[]
-[#%]Fix the .yR, .y1R, .y2R
+[#%]Fix the .yR, .y1R, .y2R (even for md case) => Rmk (for me): toto?[titi] means that toto is initialized only if toto is not (empty init is an init)
 [#?]#{0?yR} and #{+?nomPb}[#=]yR[y#{nomPb}][#?]#{0?y1R} and #{+?nom1Pb}[#=]y1R[y#{nom1Pb}][#?]#{0?y2R} and #{+?nom2Pb}[#=]y2R[y#{nom2Pb}]
 [#?]#{0?yR} and #{=paramType}=="md" and #{+?nom1Pb} and #{+?nom2Pb}[#=]yR[y#{nom1Pb}-y#{nom2Pb}]
 [#?]end
 [#yield]default
 [#<]{#new].param[#of]ParamFrame[#in]#{.Renvir}[#,]#{paramType}[#,]#{sampleType}[#,].nomPb[#{nomPb}][#,].yR[#{yR}][#,].nom1Pb[#{nom1Pb}][#,].y1R[#{y1R}][#,].nom2Pb[#{nom2Pb}][#,].y2R[#{y2R}][#}
-{#hide][#hide}
 {#new].test[#of]TestParam[#in]#{.Renvir}[#,].frame[:self.param][#,].side[#{side}][#,].indic[#{indic}][#,].theta0R[#{theta0R}][#,].alphaR[#{alphaR}][#,].assertion[#{affirmation}][#}
-{#hide][#hide}
 [#meth}
 
 %%% Class
@@ -159,7 +157,7 @@
   require(asympTest)
   #print("#{.deltaH0R}")
   deltaEst.H0<-#{.deltaH0R}
-  print(deltaEst.H0)
+  #print(deltaEst.H0)
   leftpval<-p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})
 #}
 side<-"#{.side}"
@@ -204,7 +202,7 @@ okH1<- pval<#{.alphaR}
 [#}
 
 {#meth]deltaEstH0ExprTex.TestParam[#,]va[true]
-[#>]yy[{#if]#{va}[#>]#{.frame.YTex}[#else]#{.yTex}[#}]
+[#>]yy[{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}]
 [#>]theta0Tex[{#if]#R{#{.theta0R}<0}[#>](#{.theta0Tex})[#else]#{.theta0Tex}[#}]
 [#>]
 [{#case]#{.frame.paramType}-#{.frame.sampleType}
@@ -231,6 +229,8 @@ okH1<- pval<#{.alphaR}
     [#}]
 [#}
 
+{#meth]deltaH0R.TestParam[#>]#{.deltaH0R}[#}
+
 {#meth]deltaLimR.TestParam[#,] short[false]
 [#>]Expr[{#if]#{short}[#>][Expr][#else][][#}]
 [#>]alphaR[{#case]#{.side}[#when]!=,\neq[#>]#{.alphaR}/2[#else]#{.alphaR}[#}]
@@ -249,6 +249,9 @@ okH1<- pval<#{.alphaR}
   [#}]
 [#}
 
+{#meth]deltaH0Num.TestParam[#,]round[3][#>]:R{round(#{.deltaH0R},#{round})}[#}
+{#meth]deltaLimNum.TestParam[#,]round[3][#>]:R{round( {#deltaLimR]self[#},#{round})}[#}
+
 {#meth]pvalR.TestParam [#,] short[false]
 [#>]Expr[{#if]#{short}[#>][Expr][#else][][#}]
 [#>]
@@ -258,6 +261,8 @@ okH1<- pval<#{.alphaR}
     [#when]!=,\neq[#>] [2*{#if]#R{leftpval<.5}[#>] [p#{.loiStatR}(#{.deltaH0R}#{.paramLoiStat#{Expr}R})][#else] [(1-p#{.loiStatR}(#{.deltaH0R}#{.paramLoiStat#{Expr}R}))] [#}]
   [#}]
 [#}
+
+{#meth]pvalNum.TestParam[#>][#R{round(pval*100,2)}\%][#}
 
 {#meth]H0Theta.TestParam[#>][$#{.frame.thetaTex}=#{.theta0Tex}$] [#}
 
@@ -270,10 +275,35 @@ okH1<- pval<#{.alphaR}
 
 {#meth]H1Delta.TestParam [#>] [${#deltaH0Tex]self[#}:={#deltaH0ExprTex]self[#}#{.side}{#delta0Tex]self[#}$] [#}
 
-{#meth]H0.TestParam [#>] [$\mathbf{H}_0:$ @{H0Theta(self)}] [#}
+{#meth]H0.TestParam [#>] [$\mathbf{H}_0:$ {#H0Theta]self[#}] [#}
+{#meth]H1.TestParam [#>] [$\mathbf{H}_1:$ {#H1Theta]self[#}] [#}
 
-{#meth]H1.TestParam [#>] [$\mathbf{H}_1:$ @{H1Theta(self)}] [#}
+## Bad answer for H0 et H1
+{#meth]BadH0.TestParam [#,]side[<][#>] [$\mathbf{H}_0:$ $#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
+{#meth]BadH1.TestParam [#,]side[=][#>] [$\mathbf{H}_1:$ $#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
+{#meth]BadH0Theta.TestParam[#,]side[<][#>][$#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
+{#meth]BadH1Theta.TestParam[#,]side[=][#,] expr[false]
+[#>] [$#{.frame.thetaTex}{#if]#{expr} and #{.frame.nbEch}==2[#>] [:=#{.frame.thetaExprTex}] [#}#{side}#{.theta0Tex}$]
+[#}
 
+## Partie Préliminaire en 3 parties
+{#meth]PP.TestParam[#,] type[sign-num]
+[#=]theta0Rtmp[{#if]:r{#{.theta0R}>=0}[#>]#{.theta0R}[#else](#{.theta0R})[#if}]
+[#>]
+  [{#if]#{=.frame.paramType}=="md"
+  [#>]{#case]#{type}
+  [#when]sign-num[#>] [$\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{round((mean(#{.frame.yR})-#{.theta0R}),2)}$]
+  [#when]sign-pvalg[#>][p-valeur gauche {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
+  [#when]param[#>][$#{.frame.thetaTex}=\mbox{``moyenne de $#{.frame.YTex}$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
+  [#case}[#if}]
+[#>]
+  [{#if]#{.frame.nbEch}==2 and #{=.frame.paramType}+#{=.frame.sampleType}!="rvg"
+  [#>]{#case]#{type}
+  [#when]sign-num[#>] [$\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R}}$]
+  [#when]sign-pvalg[#>][p-valeur gauche est {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
+  [#when]param[#>][$#{.frame.thetaTex}=#{.frame.thetaExprTex}$]
+  [#case}[#if}]
+[#}
 
 {#meth]redTestPre.TestParam[#,] titrePre[true] [#,] verifRPre[true] [#,] shortPre[false]
 [#>]
@@ -321,6 +351,10 @@ okH1<- pval<#{.alphaR}
   [#}]
 [#}
 
+{#meth]StatTestH0.TestParam[#,]va[true][#>]
+[${\displaystyle {#deltaEstH0Tex]self[#}= {#deltaEstH0ExprTex]self[#} {#case]#{.frame.sampleType} [#when]a[#>] [\SuitApprox] [#else] [\leadsto] [#} #{.loiStatTex}}$]
+[#}
+
 {#meth]redTestStatH0.TestParam[#?]#{=Tex.Converter}=="MathJax"
 [#%]to correct the latex in mathjax: % --> \%
 [#=]deltaEstH0ExprTex[@{deltaEstH0Tex(self)} = @{deltaEstH0ExprTex(self)}]
@@ -339,6 +373,21 @@ okH1<- pval<#{.alphaR}
   $$]
 [#}
 
+%% Added recently for QCM goal (TODO: used it in the following one)
+{#meth]RD.TestParam[#,]indic[][#>]
+[{#case]#{indic}
+  [#when]p[#>]
+    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(biltatérale)] [#} < #{.alphaTex}]
+  [#when]q[#>]
+    [{#case]#{.side}
+    [#when]<[#>] [${#deltaEstH0Tex]self[#,]false[#} < {#deltaLimTex]self[#,]<[#}$]
+    [#when]>[#>] [${#deltaEstH0Tex]self[#,]false[#} > {#deltaLimTex]self[#,]>[#}$]
+    [#when]!=,\neq[#>][${#deltaEstH0Tex]self[#,]false[#} < {#deltaLimTex]self[#,]<[#}$ ou ${#deltaEstH0Tex]self[#,]false[#} > {#deltaLimTex]self[#,]>[#}$]
+    [#}]
+  [#}]
+[#}
+
+%%% TODO: take advantage of above!
 {#meth]redTestRD.TestParam[#>]
 [\textbf{Règle de décision} : Accepter $\mathbf{H}_1$ si
   {#case]#{.indic}

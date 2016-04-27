@@ -1,0 +1,115 @@
+[#require]RCqls/StatInf/HypoTest
+[#main][#R<]require(CqlsEAP)[#<]
+What I want: {#qcmL2]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
+When <what> contains "|" this means that there is a modifier for bad answer:
+Example: H0|< or H0:> or HO|!= mean that this is a false answer for H0
+%%% Facility Class
+{#def]qcmL2[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
+[#rb<]h1=#{=h1}
+#p :h1;p h1
+if h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
+  par,pb,side,refR= [$1,$2,$3,$4]
+  #p [par,pb,side,refR]
+  pbs=pb.split(",")
+  if par.length == pbs.length
+  else
+    Dyndoc.warn "burk"
+  end
+else
+  par=[] # as is
+end
+#p [#{=type},par,pb,pbs,refR]
+[#?]par.length==1
+[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
+[#,]:{par}[#,]#{cadre}[#,]nomPb[:{pb}]
+[#,]side[:{side}][#,]theta0R[:{refR}]
+[#R<]
+if(#{=data} != "") load(path.data("#{data}.RData"))
+#{initR}
+[#new}
+[#?]par.length==2
+[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
+[#,]:{par}[#,]#{cadre}[#,]nom1Pb[:{pbs[0]}][#,]nom2Pb[:{pbs[1]}]
+[#,]side[:{side}][#,]theta0R[:{refR}]
+[#R<]
+if(#{=data} != "") load(path.data("#{data}.RData"))
+#{initR}
+[#new}
+[#?]end
+[#rb<]#p [#{=what},par,pb,pbs,refR]
+[#>][{#case]#{what}
+[#when]H0[#>][{#H0]qcmSrv.test[#}][#when]h0[#>][{#H0Theta]qcmSrv.test[#}]
+[#when]H0|<[#>][{#BadH0]qcmSrv.test[#,]<[#}][#when]h0|<[#>][{#BadH0Theta]qcmSrv.test[#,]<[#}]
+[#when]H0|>[#>][{#BadH0]qcmSrv.test[#,]>[#}][#when]h0|>[#>][{#BadH0Theta]qcmSrv.test[#,]>[#}]
+[#when]H0|!=[#>][{#BadH0]qcmSrv.test[#,]\neq[#}][#when]h0|!=[#>][{#BadH0Theta]qcmSrv.test[#,]\neq[#}]
+
+[#when]H1[#>][{#H1]qcmSrv.test[#}][#when]h1[#>][{#H1Theta]qcmSrv.test[#}]
+[#when]H1|<=[#>][{#BadH1]qcmSrv.test[#,]\leq[#}][#when]h1|<=[#>][{#BadH1Theta]qcmSrv.test[#,]\leq[#}]
+[#when]H1|>=[#>][{#BadH1]qcmSrv.test[#,]\geq[#}][#when]h1|>=[#>][{#BadH1Theta]qcmSrv.test[#,]\geq[#}]
+[#when]H1|=[#>][{#BadH1]qcmSrv.test[#,]=[#}][#when]h1|=[#>][{#BadH1Theta]qcmSrv.test[#,]=[#}]
+
+[#when]stH0,StatTestH0[#>][{#deltaEstH0ExprTex]qcmSrv.test[#,]va[true][#}]
+[#when]lstH0,loiStatTestH0[#>][{#StatTestH0]qcmSrv.test[#}]
+[#when]lstH0|y,loiStatTestH0|y[#>][{#StatTestH0]qcmSrv.test[#,]va[false][#}]
+[#when]rdq,RDQ[#>][{#RD]qcmSrv.test[#,]q[#}]
+[#when]rdp,RDP[#>][{#RD]qcmSrv.test[#,]p[#}]
+[#when]pvalR[#>][\texttt{{#pvalR]qcmSrv.test[#}}]
+[#when]pvalNum[#>][{#pvalNum]qcmSrv.test[#}]
+[#when]deltaH0R[#>][\texttt{{#deltaH0R]qcmSrv.test[#}}]
+[#when]deltaLimR[#>][{#deltaLimR]qcmSrv.test[#}]
+[#when]deltaH0Num[#>][{#deltaH0Num]qcmSrv.test[#}]
+[#when]deltaLimNum[#>][{#deltaLimNum]qcmSrv.test[#}]
+[#when]ppsn,PreSignNum[#>][{#PP]qcmSrv.test[#,]sign-num[#}]
+[#when]ppsp,PreSignPValG[#>][{#PP]qcmSrv.test[#,]sign-pvalg[#}]
+[#when]ppp,PreParam[#>][{#PP]qcmSrv.test[#,]param[#}]
+[#when]AsIs[#>][:{h1}]
+[#case}]
+[#def}
+
+The numbers of elements of every lines may differ!
+* at the end of <h1> means good answer
+
+<h1-11>* @ what : data=<data-11> & env=<env-11> & init=<init-11> & space=<size-11> | <h1-12> : data=<data-12> & env=<env-12> & init=<init-12> & size=<size-12> | ...
+<h1-21> : data=<data-21> & env=<env-21> & init=<init-21> & space=<size-21> | <h1-22> : data=<data-22> & env=<env-22> & init=<init-22> & size=<size-22> | ...
+...
+<h1-p1> : data=<data-p1> & env=<env-p1> & init=<init-p1> & size=<size-p1> | <h1-p2> : data=<data-p2> & env=<env-p2> & init=<init-p2> & size=<size-p2> | ...
+
+{#def]qcmTest[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
+[#rb<]choices=#{=choices}.strip
+#p what
+res_table=[]
+lignes=choices.split("\n").map{|e| e.strip}
+#p lignes
+lignes.each do |ligne| #
+  unless ["%","#"].include? ligne[0,1]
+    res_ligne=[]
+    elts=ligne.split(" | ").map{|e| e.strip}
+    elts.each do |elt| #
+      res_elt={}
+      h1,opt=elt.split(":").map{|e| e.strip}
+      res_elt[:h1],res_elt[:what]=h1.split("@").map{|e| e.strip}
+      opts=opt.split("&").each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(cadre|data|env|init|space|size)\=(.*)$/} if opt
+      res_ligne << res_elt
+    end
+    res_table << res_ligne
+  end
+end
+#p res_table
+[#rb>]
+cpt=-1
+quest=[]
+res_table.each_with_index do |res_ligne,li| #
+  {#>]\noindent [#>}
+  res_ligne.each do |res_elt| #
+    cpt+=1
+    label=(("A".ord)+cpt).chr
+    h1,answer=(res_elt[:h1][-1,1]=="*" ? [res_elt[:h1][0...-1],:good] : [res_elt[:h1],:bad] )
+    size=res_elt[:size] || ""
+    size=#{=size} if size.empty? and #{+?size}
+    quest << {label: label, answer: answer}
+    {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#}{#qcmL2]:{h1}[#,]:{res_elt[:what] || "AsIs"}[#cadre]:{res_elt[:cadre] || "a"}[#data]:{res_elt[:data] || "#{data}"}[#initR]:{res_elt[:init] || ""}[#envR]:{res_elt[:env] ||"envHypoTestExo"}[#}{#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
+  end
+  {#>]\\[#>} if li != res_table.length-1
+end
+#Dyndoc.warn quest.inspect
+[#def}
