@@ -1,8 +1,10 @@
 [#require]RCqls/StatInf/HypoTest
+[#package]\usepackage{framed}
 [#main][#R<]require(CqlsEAP)[#<]
 What I want: {#qcmL2]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
 When <what> contains "|" this means that there is a modifier for bad answer:
 Example: H0|< or H0:> or HO|!= mean that this is a false answer for H0
+Rmk: method starting by qcmBad is generally only used for qcm goal!
 %%% Facility Class
 {#def]qcmL2[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
 [#rb<]h1=#{=h1}
@@ -39,29 +41,49 @@ if(#{=data} != "") load(path.data("#{data}.RData"))
 [#rb<]#p [#{=what},par,pb,pbs,refR]
 [#>][{#case]#{what}
 [#when]H0[#>][{#H0]qcmSrv.test[#}][#when]h0[#>][{#H0Theta]qcmSrv.test[#}]
-[#when]H0|<[#>][{#BadH0]qcmSrv.test[#,]<[#}][#when]h0|<[#>][{#BadH0Theta]qcmSrv.test[#,]<[#}]
-[#when]H0|>[#>][{#BadH0]qcmSrv.test[#,]>[#}][#when]h0|>[#>][{#BadH0Theta]qcmSrv.test[#,]>[#}]
-[#when]H0|!=[#>][{#BadH0]qcmSrv.test[#,]\neq[#}][#when]h0|!=[#>][{#BadH0Theta]qcmSrv.test[#,]\neq[#}]
+[#when]H0|<[#>][{#qcmBadH0]qcmSrv.test[#,]<[#}][#when]h0|<[#>][{#qcmBadH0Theta]qcmSrv.test[#,]<[#}]
+[#when]H0|>[#>][{#qcmBadH0]qcmSrv.test[#,]>[#}][#when]h0|>[#>][{#qcmBadH0Theta]qcmSrv.test[#,]>[#}]
+[#when]H0|!=[#>][{#qcmBadH0]qcmSrv.test[#,]\neq[#}][#when]h0|!=[#>][{#qcmBadH0Theta]qcmSrv.test[#,]\neq[#}]
+[#when]H0|Y[#>][{#qcmBadH0Y]qcmSrv.test[#}]
+[#%]H0,H0|<,H0|>,H0|!=,H0|Y
 
+[#%]H1,H1|<=,H1|>=,H1|=
 [#when]H1[#>][{#H1]qcmSrv.test[#}][#when]h1[#>][{#H1Theta]qcmSrv.test[#}]
-[#when]H1|<=[#>][{#BadH1]qcmSrv.test[#,]\leq[#}][#when]h1|<=[#>][{#BadH1Theta]qcmSrv.test[#,]\leq[#}]
-[#when]H1|>=[#>][{#BadH1]qcmSrv.test[#,]\geq[#}][#when]h1|>=[#>][{#BadH1Theta]qcmSrv.test[#,]\geq[#}]
-[#when]H1|=[#>][{#BadH1]qcmSrv.test[#,]=[#}][#when]h1|=[#>][{#BadH1Theta]qcmSrv.test[#,]=[#}]
+[#when]H1|<=[#>][{#qcmBadH1]qcmSrv.test[#,]\leq[#}][#when]h1|<=[#>][{#qcmBadH1Theta]qcmSrv.test[#,]\leq[#}]
+[#when]H1|>=[#>][{#qcmBadH1]qcmSrv.test[#,]\geq[#}][#when]h1|>=[#>][{#qcmBadH1Theta]qcmSrv.test[#,]\geq[#}]
+[#when]H1|=[#>][{#qcmBadH1]qcmSrv.test[#,]=[#}][#when]h1|=[#>][{#qcmBadH1Theta]qcmSrv.test[#,]=[#}]
 
+[#%]stH0,lstH0,lstH0|y
 [#when]stH0,StatTestH0[#>][{#deltaEstH0ExprTex]qcmSrv.test[#,]va[true][#}]
 [#when]lstH0,loiStatTestH0[#>][{#StatTestH0]qcmSrv.test[#}]
 [#when]lstH0|y,loiStatTestH0|y[#>][{#StatTestH0]qcmSrv.test[#,]va[false][#}]
+
+[#%]rdq,rdp|alpha,rdp|Y,rdp,rdp|>,rdp|qlim
 [#when]rdq,RDQ[#>][{#RD]qcmSrv.test[#,]q[#}]
+[#when]rdp|alpha[#>][{#qcmBadRD]qcmSrv.test[#,]q|alpha[#}]
+[#when]rdq|Y[#>][{#qcmBadRD]qcmSrv.test[#,]q|Y[#}]
 [#when]rdp,RDP[#>][{#RD]qcmSrv.test[#,]p[#}]
-[#when]pvalR[#>][\texttt{{#pvalR]qcmSrv.test[#}}]
-[#when]pvalNum[#>][{#pvalNum]qcmSrv.test[#}]
-[#when]deltaH0R[#>][\texttt{{#deltaH0R]qcmSrv.test[#}}]
-[#when]deltaLimR[#>][{#deltaLimR]qcmSrv.test[#}]
-[#when]deltaH0Num[#>][{#deltaH0Num]qcmSrv.test[#}]
-[#when]deltaLimNum[#>][{#deltaLimNum]qcmSrv.test[#}]
+[#when]rdp|>[#>][{#qcmBadRD]qcmSrv.test[#,]p|>[#}]
+[#when]rdp|qlim[#>][{#qcmBadRD]qcmSrv.test[#,]p|qlim[#}]
+
+[#%]pvalR,pvalNum
+[#when]pvalR[#>][p-valeur\NotR\texttt{{#pvalR]qcmSrv.test[#}}]
+[#when]pvalNum[#>][p-valeur={#pvalNum]qcmSrv.test[#}]
+
+[#%]deltaH0R,deltaH0Num,deltaLimLeftR,deltaLimRightR,deltaLimLeftNum,deltaLimRightNum
+[#when]deltaH0R[#>][${#deltaEstH0Tex]qcmSrv.test[#,]false[#}$\NotR\texttt{{#deltaH0R]qcmSrv.test[#}}]
+[#when]deltaH0Num[#>][${#deltaEstH0Tex]qcmSrv.test[#,]false[#}$={#deltaH0Num]qcmSrv.test[#}]
+[#when]deltaLimLeftR[#>][${#deltaLimTex]qcmSrv.test[#,]<[#}$\NotR {#deltaLimR]qcmSrv.test[#}]
+[#when]deltaLimRightR[#>][${#deltaLimTex]qcmSrv.test[#,]>[#}$\NotR {#deltaLimR]qcmSrv.test[#}]
+[#when]deltaLimLeftNum[#>][${#deltaLimTex]qcmSrv.test[#,]<[#}$={#deltaLimNum]qcmSrv.test[#}]
+[#when]deltaLimRightNum[#>][${#deltaLimTex]qcmSrv.test[#,]>[#}$={#deltaLimNum]qcmSrv.test[#}]
+
+[#%]ppsn,ppsp,ppp
 [#when]ppsn,PreSignNum[#>][{#PP]qcmSrv.test[#,]sign-num[#}]
 [#when]ppsp,PreSignPValG[#>][{#PP]qcmSrv.test[#,]sign-pvalg[#}]
 [#when]ppp,PreParam[#>][{#PP]qcmSrv.test[#,]param[#}]
+
+[#%]AsIs
 [#when]AsIs[#>][:{h1}]
 [#case}]
 [#def}
@@ -76,11 +98,12 @@ The numbers of elements of every lines may differ!
 
 {#def]qcmTest[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
 [#rb<]choices=#{=choices}.strip
-#p what
+#p [:choices,choices]
 res_table=[]
 lignes=choices.split("\n").map{|e| e.strip}
-#p lignes
+#p [:lignes,lignes]
 lignes.each do |ligne| #
+  #p [:ligne,ligne]
   unless ["%","#"].include? ligne[0,1]
     res_ligne=[]
     elts=ligne.split(" | ").map{|e| e.strip}
@@ -94,12 +117,14 @@ lignes.each do |ligne| #
     res_table << res_ligne
   end
 end
-#p res_table
+#p [:res_table,res_table]
 [#rb>]
 cpt=-1
 quest=[]
+#Dyndoc.warn :res_table,[res_table,res_table.length]
 res_table.each_with_index do |res_ligne,li| #
   {#>]\noindent [#>}
+  #Dyndoc.warn :res_ligne,[li,res_ligne]
   res_ligne.each do |res_elt| #
     cpt+=1
     label=(("A".ord)+cpt).chr
@@ -111,5 +136,135 @@ res_table.each_with_index do |res_ligne,li| #
   end
   {#>]\\[#>} if li != res_table.length-1
 end
-#Dyndoc.warn quest.inspect
+# format of title is: <family title>::<key>
+title,k=#{=title}.split("::")
+# ensure that $qcm and $qcm[title] exists
+$qcm={} unless $qcm
+$qcm[title]={} unless $qcm[title]
+$qcm[title][k] = quest
+## QUESTION: can be also saved as a whole object in ~/dyndoc/???
+File.open(title+".qcm","w") {|f| f << $qcm[title].inspect}
 [#def}
+
+{#def]qcmRedStd[#,]title[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
+[#=]title[:{#{=title}.strip}]
+[#rb<]content={h0: '#{H0}'.strip.split("\n"), h1: '#{H1}'.strip.split("\n"), st: '#{StatTest}'.strip.split("\n"), rd: '#{RD}'.strip.split("\n"), an: '#{Conclusion}'.strip.split("\n")}
+content.keys.each do |k| #
+  txt=content[k]
+#p :txt,[k,txt]
+  opts={}
+  first=txt[0].strip
+  if first[0,1]=='(' and first[-1,1]==')'
+    ## read the options
+    first[1...-1].split('),(').each{|e| opts[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/}
+    ## update txt
+    txt=txt[1..-1]
+  end
+  txt=txt.join("\n")
+#p :txt,txt.inspect
+  {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}:::{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+end
+[#>]
+\begin{framed}
+\noindent \textbf{Réponses aux choix (pour remplir le Formulaire de REPONSES)}~:\\
+\noindent \underline{Hypothèses de test}~:\\
+\noindent $\mathbf{H_0}$:\quad
+#{test.h0}
+
+\noindent $\mathbf{H_1}$:\quad
+#{test.h1}
+
+\noindent\underline{Statistique de test sous $\mathbf{H_0}$}~:\\
+#{test.st}
+
+\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:
+#{test.rd}
+
+\noindent\underline{Conclusion}~: Au vu des données, \\
+#{test.an}
+\end{framed}
+[#def}
+
+#####################################
+#### QCM File: new, free, save load
+#####################################
+{#def]qcmNew[#,]title[][#rb<]
+$qcm={} unless $qcm
+$qcm[#{=title}]={}
+[#def}
+
+{#def]qcmFree[#,]title[][#rb<]
+$qcm.delete #{=title} if $qm.keys.include? #{=title}
+[#def}
+
+{#def]qcmSave[#,]title[][#,]file[]
+[#?]#{0?file}[#=]file[#{title}.qcm]
+[#rb<]
+if (qcm=$qcm[#{=title}])
+  File.open(#{=file},"w") {|f| f << qcm.inspect}
+end
+[#def}
+
+{#def]qcmLoad[#,]title[][#,]file[][#,]amc[false]
+[#?]#{0?file}[#=]file[#{title}.qcm]
+[#rb<]
+$qcm={} unless $qcm
+$qcm[#{=title}]=eval(File.read(#{=file}))
+[#?]#{amc}[#>]
+todo: bla bla bla
+[#def}
+
+##########################################
+#        QCM Server Stuff
+##########################################
+####  Partie Préliminaire en 3 parties
+##########################################
+{#meth]PP.TestParam[#,] type[sign-num]
+[#=]theta0Rtmp[{#if]:r{#{.theta0R}>=0}[#>]#{.theta0R}[#else](#{.theta0R})[#if}]
+[#>]
+  [{#if]#{=.frame.paramType}=="md"
+  [#>]{#case]#{type}
+  [#when]sign-num[#>] [$\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{round((mean(#{.frame.yR})-#{.theta0R}),2)}$]
+  [#when]sign-pvalg[#>][p-valeur gauche {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
+  [#when]param[#>][$#{.frame.thetaTex}=\mbox{``moyenne de $#{.frame.YTex}$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
+  [#case}[#if}]
+[#>]
+  [{#if]#{.frame.nbEch}==2 and #{=.frame.paramType}+#{=.frame.sampleType}!="rvg"
+  [#>]{#case]#{type}
+  [#when]sign-num[#>] [$\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R}}$]
+  [#when]sign-pvalg[#>][p-valeur gauche est {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
+  [#when]param[#>][$#{.frame.thetaTex}=#{.frame.thetaExprTex}$]
+  [#case}[#if}]
+[#}
+##########################################
+#### QCM BAD Answers
+##########################################
+## Bad answer for H0 et H1
+{#meth]qcmBadH0.TestParam [#,]side[<][#>] [$\mathbf{H}_0:$ $#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
+{#meth]qcmBadH1.TestParam [#,]side[=][#>] [$\mathbf{H}_1:$ $#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
+{#meth]qcmBadH0Theta.TestParam[#,]side[<][#>][$#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
+{#meth]qcmBadH1Theta.TestParam[#,]side[=][#,] expr[false]
+[#>] [$#{.frame.thetaTex}{#if]#{expr} and #{.frame.nbEch}==2[#>] [:=#{.frame.thetaExprTex}] [#}#{side}#{.theta0Tex}$]
+[#}
+{#meth]qcmBadH0Y.TestParam[#>][$\mathbf{H}_0:$ ${#thetaTex]self[#}#{side}#{.theta0Tex}$][#}
+## Bad RD
+{#meth]qcmBadRD.TestParam[#,]indic[][#>]
+[{#case]#{indic}
+  [#when]p|>[#>][p-valeur > #{.alphaTex}]
+  [#when]p|qlim[#>]
+    [p-valeur {#case]#{.side} [#when]<[#>] [ < {#deltaLimTex]self[#,]<[#}] [#when]>[#>] [ > <  {#deltaLimTex]self[#,]>[#}] [#when]!=,\neq[#>] [ < {#deltaLimTex]self[#,]>[#}] [#case}]
+  [#when]q|alpha[#>]
+    [{#case]#{.side}
+    [#when]<[#>] [${#deltaEstH0Tex]self[#,]false[#} < #{.alphaTex}$]
+    [#when]>[#>] [${#deltaEstH0Tex]self[#,]false[#} > #{.alphaTex} {#deltaLimTex]self[#,]>[#}$]
+    [#when]!=,\neq[#>][${#deltaEstH0Tex]self[#,]false[#} < \frac{#{.alphaTex}}2$ ou ${#deltaEstH0Tex]self[#,]false[#} > \frac{#{.alphaTex}}2$]
+    [#}]
+  [#when]q|Y[#>]
+    [{#case]#{.side}
+    [#when]<[#>] [${#deltaEstH0Tex]self[#,]true[#} < {#deltaLimTex]self[#,]<[#}$]
+    [#when]>[#>] [${#deltaEstH0Tex]self[#,]true[#} > {#deltaLimTex]self[#,]>[#}$]
+    [#when]!=,\neq[#>][${#deltaEstH0Tex]self[#,]true[#} < {#deltaLimTex]self[#,]<[#}$ ou ${#deltaEstH0Tex]self[#,]true[#} > {#deltaLimTex]self[#,]>[#}$]
+    [#}]
+  [#}]
+[#}
+## Bad Conclusion

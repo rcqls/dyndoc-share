@@ -278,33 +278,6 @@ okH1<- pval<#{.alphaR}
 {#meth]H0.TestParam [#>] [$\mathbf{H}_0:$ {#H0Theta]self[#}] [#}
 {#meth]H1.TestParam [#>] [$\mathbf{H}_1:$ {#H1Theta]self[#}] [#}
 
-## Bad answer for H0 et H1
-{#meth]BadH0.TestParam [#,]side[<][#>] [$\mathbf{H}_0:$ $#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
-{#meth]BadH1.TestParam [#,]side[=][#>] [$\mathbf{H}_1:$ $#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
-{#meth]BadH0Theta.TestParam[#,]side[<][#>][$#{.frame.thetaTex}#{side}#{.theta0Tex}$] [#}
-{#meth]BadH1Theta.TestParam[#,]side[=][#,] expr[false]
-[#>] [$#{.frame.thetaTex}{#if]#{expr} and #{.frame.nbEch}==2[#>] [:=#{.frame.thetaExprTex}] [#}#{side}#{.theta0Tex}$]
-[#}
-
-## Partie Préliminaire en 3 parties
-{#meth]PP.TestParam[#,] type[sign-num]
-[#=]theta0Rtmp[{#if]:r{#{.theta0R}>=0}[#>]#{.theta0R}[#else](#{.theta0R})[#if}]
-[#>]
-  [{#if]#{=.frame.paramType}=="md"
-  [#>]{#case]#{type}
-  [#when]sign-num[#>] [$\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{round((mean(#{.frame.yR})-#{.theta0R}),2)}$]
-  [#when]sign-pvalg[#>][p-valeur gauche {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
-  [#when]param[#>][$#{.frame.thetaTex}=\mbox{``moyenne de $#{.frame.YTex}$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
-  [#case}[#if}]
-[#>]
-  [{#if]#{.frame.nbEch}==2 and #{=.frame.paramType}+#{=.frame.sampleType}!="rvg"
-  [#>]{#case]#{type}
-  [#when]sign-num[#>] [$\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R}}$]
-  [#when]sign-pvalg[#>][p-valeur gauche est {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
-  [#when]param[#>][$#{.frame.thetaTex}=#{.frame.thetaExprTex}$]
-  [#case}[#if}]
-[#}
-
 {#meth]redTestPre.TestParam[#,] titrePre[true] [#,] verifRPre[true] [#,] shortPre[false]
 [#>]
   [{#if]#{=.frame.paramType}=="md"
@@ -377,7 +350,7 @@ okH1<- pval<#{.alphaR}
 {#meth]RD.TestParam[#,]indic[][#>]
 [{#case]#{indic}
   [#when]p[#>]
-    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(biltatérale)] [#} < #{.alphaTex}]
+    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(bilatérale)] [#} < #{.alphaTex}]
   [#when]q[#>]
     [{#case]#{.side}
     [#when]<[#>] [${#deltaEstH0Tex]self[#,]false[#} < {#deltaLimTex]self[#,]<[#}$]
