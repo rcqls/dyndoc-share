@@ -1,104 +1,6 @@
 [#require]RCqls/StatInf/HypoTest
 [#package]\usepackage{framed}
 [#main][#R<]require(CqlsEAP)[#<]
-{#def]qcmSrv[#,]srv[][#,]what[][#>]
-[{#case]#{what}
-[#when]H0[#>][{#H0]srv.test[#}][#when]h0[#>][{#H0Theta]srv.test[#}]
-[#when]H0|<[#>][{#qcmBadH0]srv.test[#,]<[#}][#when]h0|<[#>][{#qcmBadH0Theta]srv.test[#,]<[#}]
-[#when]H0|>[#>][{#qcmBadH0]srv.test[#,]>[#}][#when]h0|>[#>][{#qcmBadH0Theta]srv.test[#,]>[#}]
-[#when]H0|!=[#>][{#qcmBadH0]srv.test[#,]\neq[#}][#when]h0|!=[#>][{#qcmBadH0Theta]srv.test[#,]\neq[#}]
-[#when]H0|Y[#>][{#qcmBadH0Y]srv.test[#}]
-[#%]H0,H0|<,H0|>,H0|!=,H0|Y
-
-[#%]H1,H1|<=,H1|>=,H1|=
-[#when]H1[#>][{#H1]srv.test[#}][#when]h1[#>][{#H1Theta]srv.test[#}]
-[#when]H1|<=[#>][{#qcmBadH1]srv.test[#,]\leq[#}][#when]h1|<=[#>][{#qcmBadH1Theta]srv.test[#,]\leq[#}]
-[#when]H1|>=[#>][{#qcmBadH1]srv.test[#,]\geq[#}][#when]h1|>=[#>][{#qcmBadH1Theta]srv.test[#,]\geq[#}]
-[#when]H1|=[#>][{#qcmBadH1]srv.test[#,]=[#}][#when]h1|=[#>][{#qcmBadH1Theta]srv.test[#,]=[#}]
-
-[#%]stH0,lstH0,lstH0|y
-[#when]stH0,StatTestH0[#>][{#deltaEstH0ExprTex]srv.test[#,]va[true][#}]
-[#when]lstH0,loiStatTestH0[#>][{#StatTestH0]srv.test[#}]
-[#when]lstH0|y,loiStatTestH0|y[#>][{#StatTestH0]srv.test[#,]va[false][#}]
-
-[#%]rdq,rdp|alpha,rdp|Y,rdp,rdp|>,rdp|qlim
-[#when]rdq,RDQ[#>][{#RD]srv.test[#,]q[#}]
-[#when]rdp|alpha[#>][{#qcmBadRD]srv.test[#,]q|alpha[#}]
-[#when]rdq|Y[#>][{#qcmBadRD]srv.test[#,]q|Y[#}]
-[#when]rdp,RDP[#>][{#RD]srv.test[#,]p[#}]
-[#when]rdp|>[#>][{#qcmBadRD]srv.test[#,]p|>[#}]
-[#when]rdp|qlim[#>][{#qcmBadRD]srv.test[#,]p|qlim[#}]
-
-[#%]pvalR,pvalNum
-[#when]pvalR[#>][p-valeur\NotR\texttt{{#pvalR]srv.test[#}}]
-[#when]pvalNum[#>][p-valeur={#pvalNum]srv.test[#}]
-
-[#%]deltaH0R,deltaH0Num,deltaLimLeftR,deltaLimRightR,deltaLimLeftNum,deltaLimRightNum
-[#when]deltaH0R[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$\NotR\texttt{{#deltaH0R]srv.test[#}}]
-[#when]deltaH0Num[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$={#deltaH0Num]srv.test[#}]
-[#when]deltaLimLeftR[#>][${#deltaLimTex]srv.test[#,]<[#}$\NotR {#deltaLimR]srv.test[#}]
-[#when]deltaLimRightR[#>][${#deltaLimTex]srv.test[#,]>[#}$\NotR {#deltaLimR]srv.test[#}]
-[#when]deltaLimLeftNum[#>][${#deltaLimTex]srv.test[#,]<[#}$={#deltaLimNum]srv.test[#}]
-[#when]deltaLimRightNum[#>][${#deltaLimTex]srv.test[#,]>[#}$={#deltaLimNum]srv.test[#}]
-
-[#%]ppsn,ppsp,ppp
-[#when]ppsn,PreSignNum[#>][{#PP]srv.test[#,]sign-num[#}]
-[#when]ppsp,PreSignPValG[#>][{#PP]srv.test[#,]sign-pvalg[#}]
-[#when]ppp,PreParam[#>][{#PP]srv.test[#,]param[#}]
-
-[#%]AsIs
-[#when]AsIs[#>][:{h1}]
-[#case}]
-[#def}
-
-
-What I want: {#qcmSrvH1]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
-When <what> contains "|" this means that there is a modifier for bad answer:
-Example: H0|< or H0:> or HO|!= mean that this is a false answer for H0
-Rmk: method starting by qcmBad is generally only used for qcm goal!
-%%% Facility Class
-{#def]qcmSrvH1[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
-[#rb<]h1=#{=h1}
-#p :h1;p h1
-if h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
-  par,pb,side,refR= [$1,$2,$3,$4]
-  #p [par,pb,side,refR]
-  pbs=pb.split(",")
-  if par.length == pbs.length
-  else
-    Dyndoc.warn "burk"
-  end
-else
-  par=[] # as is
-end
-#p [#{=type},par,pb,pbs,refR]
-[#?]par.length==1
-[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
-[#,]:{par}[#,]#{cadre}[#,]nomPb[:{pb}]
-[#,]side[:{side}][#,]theta0R[:{refR}]
-[#R<]
-if(#{=data} != "") load(path.data("#{data}.RData"))
-#{initR}
-[#new}
-[#?]par.length==2
-[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
-[#,]:{par}[#,]#{cadre}[#,]nom1Pb[:{pbs[0]}][#,]nom2Pb[:{pbs[1]}]
-[#,]side[:{side}][#,]theta0R[:{refR}]
-[#R<]
-if(#{=data} != "") load(path.data("#{data}.RData"))
-#{initR}
-[#new}
-[#?]end
-[#rb<]#p [#{=what},par,pb,pbs,refR]
-[#>][{#qcmSrv]:qcmSrv[#what]#{what}[#}]
-[#def}
-
-{#def]qcmFramed[#,]content[][#>]
-\begin{framed}
-\noindent \textbf{Réponses aux choix (pour remplir le Formulaire de REPONSES)}~:\\
-#{content}
-\end{framed}
-[#def}
 
 
 {#def]qcmChoices[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
@@ -120,8 +22,8 @@ lignes.each do |ligne| #
       elts=ligne.split(" | ").map{|e| e.strip}
       elts.each do |elt| #
         res_elt={}
-        res_elt[:txt],opt=elt.split(":").map{|e| e.strip}
-        opts=opt.split("&").each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/} if opt
+        res_elt[:txt],*opts=elt.split("&").map{|e| e.strip}
+        opts.each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/} unless opts.empty?
         res_ligne << res_elt
       end
     end
@@ -207,6 +109,113 @@ end
 [#qcmFramed}
 [#def}
 
+### qcmSrv???
+
+{#def]qcmSrvWhat[#,]srv[][#,]what[][#>]
+[{#case]#{what}
+[#when]H0[#>][{#H0]srv.test[#}][#when]h0[#>][{#H0Theta]srv.test[#}]
+[#when]H0|<[#>][{#qcmBadH0]srv.test[#,]<[#}][#when]h0|<[#>][{#qcmBadH0Theta]srv.test[#,]<[#}]
+[#when]H0|>[#>][{#qcmBadH0]srv.test[#,]>[#}][#when]h0|>[#>][{#qcmBadH0Theta]srv.test[#,]>[#}]
+[#when]H0|!=[#>][{#qcmBadH0]srv.test[#,]\neq[#}][#when]h0|!=[#>][{#qcmBadH0Theta]srv.test[#,]\neq[#}]
+[#when]H0|Y[#>][{#qcmBadH0Y]srv.test[#}]
+[#%]H0,H0|<,H0|>,H0|!=,H0|Y
+
+[#%]H1,H1|<=,H1|>=,H1|=
+[#when]H1[#>][{#H1]srv.test[#}][#when]h1[#>][{#H1Theta]srv.test[#}]
+[#when]H1|<=[#>][{#qcmBadH1]srv.test[#,]\leq[#}][#when]h1|<=[#>][{#qcmBadH1Theta]srv.test[#,]\leq[#}]
+[#when]H1|>=[#>][{#qcmBadH1]srv.test[#,]\geq[#}][#when]h1|>=[#>][{#qcmBadH1Theta]srv.test[#,]\geq[#}]
+[#when]H1|=[#>][{#qcmBadH1]srv.test[#,]=[#}][#when]h1|=[#>][{#qcmBadH1Theta]srv.test[#,]=[#}]
+
+[#%]stH0,lstH0,lstH0|y
+[#when]stH0,StatTestH0[#>][{#deltaEstH0ExprTex]srv.test[#,]va[true][#}]
+[#when]lstH0,loiStatTestH0[#>][{#StatTestH0]srv.test[#}]
+[#when]lstH0|y,loiStatTestH0|y[#>][{#StatTestH0]srv.test[#,]va[false][#}]
+
+[#%]rdq,rdp|alpha,rdp|Y,rdp,rdp|>,rdp|qlim
+[#when]rdq,RDQ[#>][{#RD]srv.test[#,]q[#}]
+[#when]rdp|alpha[#>][{#qcmBadRD]srv.test[#,]q|alpha[#}]
+[#when]rdq|Y[#>][{#qcmBadRD]srv.test[#,]q|Y[#}]
+[#when]rdp,RDP[#>][{#RD]srv.test[#,]p[#}]
+[#when]rdp|>[#>][{#qcmBadRD]srv.test[#,]p|>[#}]
+[#when]rdp|qlim[#>][{#qcmBadRD]srv.test[#,]p|qlim[#}]
+
+[#%]pvalR,pvalNum
+[#when]pvalR[#>][p-valeur\NotR\texttt{{#pvalR]srv.test[#}}]
+[#when]pvalNum[#>][p-valeur={#pvalNum]srv.test[#}]
+
+[#%]deltaH0R,deltaH0Num,deltaLimLeftR,deltaLimRightR,deltaLimLeftNum,deltaLimRightNum
+[#when]deltaH0R[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$\NotR\texttt{{#deltaH0R]srv.test[#}}]
+[#when]deltaH0Num[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$={#deltaH0Num]srv.test[#}]
+[#when]deltaLimLeftR[#>][${#deltaLimTex]srv.test[#,]<[#}$\NotR {#deltaLimR]srv.test[#}]
+[#when]deltaLimRightR[#>][${#deltaLimTex]srv.test[#,]>[#}$\NotR {#deltaLimR]srv.test[#}]
+[#when]deltaLimLeftNum[#>][${#deltaLimTex]srv.test[#,]<[#}$={#deltaLimNum]srv.test[#}]
+[#when]deltaLimRightNum[#>][${#deltaLimTex]srv.test[#,]>[#}$={#deltaLimNum]srv.test[#}]
+
+[#%]ppsn,ppsp,ppp
+[#when]ppsn,PreSignNum[#>][{#PP]srv.test[#,]sign-num[#}]
+[#when]ppsp,PreSignPValG[#>][{#PP]srv.test[#,]sign-pvalg[#}]
+[#when]ppp,PreParam[#>][{#PP]srv.test[#,]param[#}]
+
+[#%]AsIs
+[#when]AsIs[#>][:{h1}]
+[#case}]
+[#def}
+
+
+What I want: {#qcmSrvH1]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
+When <what> contains "|" this means that there is a modifier for bad answer:
+Example: H0|< or H0:> or HO|!= mean that this is a false answer for H0
+Rmk: method starting by qcmBad is generally only used for qcm goal!
+%%% Facility Class
+{#def]qcmSrvH1[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
+[#rb<]h1=#{=h1}
+#p :h1;p h1
+if h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
+  mode=:h1
+  par,pb,side,refR= [$1,$2,$3,$4]
+  #p [par,pb,side,refR]
+  pbs=pb.split(",")
+  if par.length == pbs.length
+  else
+    Dyndoc.warn "burk"
+  end
+elsif h1.is_a? Hash and h1["Class"]=="HypoTestExo"
+  mode=:direct
+else
+  mode=:as_is
+  par=[] # as is
+end
+#p [#{=type},par,pb,pbs,refR]
+[#?]mode==:direct
+[#=]qcmSrv[::{h1["ObjectName"]}]
+[#?]mode==:h1 and par.length==1
+[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
+[#,]:{par}[#,]#{cadre}[#,]nomPb[:{pb}]
+[#,]side[:{side}][#,]theta0R[:{refR}]
+[#R<]
+if(#{=data} != "") load(path.data("#{data}.RData"))
+#{initR}
+[#new}
+[#?]mode==:h1 and par.length==2
+[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
+[#,]:{par}[#,]#{cadre}[#,]nom1Pb[:{pbs[0]}][#,]nom2Pb[:{pbs[1]}]
+[#,]side[:{side}][#,]theta0R[:{refR}]
+[#R<]
+if(#{=data} != "") load(path.data("#{data}.RData"))
+#{initR}
+[#new}
+[#?]end
+[#rb<]#p [#{=what},par,pb,pbs,refR]
+[#>][{#qcmSrvWhat]:qcmSrv[#what]#{what}[#}]
+[#def}
+
+{#def]qcmFramed[#,]content[][#>]
+\begin{framed}
+\noindent \textbf{Réponses aux choix (pour remplir le Formulaire de REPONSES)}~:\\
+#{content}
+\end{framed}
+[#def}
+
 The numbers of elements of every lines may differ!
 * at the end of <h1> means good answer
 
@@ -228,15 +237,17 @@ lignes.each do |ligne| #
     elts=ligne.split(" | ").map{|e| e.strip}
     elts.each do |elt| #
       res_elt={}
-      h1,opt=elt.split(":").map{|e| e.strip}
+      h1,*opts=elt.split("&").map{|e| e.strip}
+      ##p [:opts,opts]
       res_elt[:h1],res_elt[:what]=h1.split("@").map{|e| e.strip}
-      opts=opt.split("&").each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(cadre|data|env|init|space|size)\=(.*)$/} if opt
+      opts.each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(cadre|data|env|init|space|size)\=(.*)$/} unless opts.empty?
       res_ligne << res_elt
     end
     res_table << res_ligne
   end
 end
-#p [:res_table,res_table]
+#
+p [:res_table,res_table]
 [#rb>]
 cpt=-1
 quest=[]
