@@ -2,10 +2,12 @@
 [#package]\usepackage{framed}
 [#main][#R<]require(CqlsEAP)[#<]
 
+##### qcmChoices and qcmChoicesList
 
 {#def]qcmChoices[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
 [#rb<]choices=#{=choices}.strip
-#p [:choices,choices]
+#
+p [:choices,choices]
 res_table=[]
 lignes=choices.split("\n").map{|e| e.strip}
 #p [:lignes,lignes]
@@ -30,8 +32,7 @@ lignes.each do |ligne| #
     res_table << res_ligne
   end
 end
-#
-p [:res_table,res_table]
+#p [:res_table,res_table]
 [#rb>]
 cpt=-1
 quest=[]
@@ -42,6 +43,7 @@ res_table.each_with_index do |res_ligne,li| #
   res_ligne.each do |res_elt| #
     if res_elt.is_a? String
       {#>]:{res_elt}[#>}
+      quest << res_elt
     else
       cpt+=1
       label=(("A".ord)+cpt).chr
@@ -71,42 +73,25 @@ File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
 [#def}
 
 ### NOT FINISHED!!!
+## {#qcmChoicesList]prj/title/key[#content]...[#}
+## or {#qcmChoicesList]prj/title/key1+key2+key3[#content]...[#}
+
 {#def]qcmChoicesList[#,]title[][#,]content[]
-[#=]title[:{#{=title}.strip}]
-[#rb<]content=#{=content}.split("\\n")
-content.keys.each do |k| #
-  txt=content[k]
-#p :txt,[k,txt]
-  opts={}
-  first=txt[0].strip
-  if first[0,1]=='(' and first[-1,1]==')'
-    ## read the options
-    first[1...-1].split('),(').each{|e| opts[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/}
-    ## update txt
-    txt=txt[1..-1]
-  end
-  txt=txt.join("\n")
-#p :txt,txt.inspect
-  {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+[#>]txt[]
+[#rb<]prj,title,keys=#{=title}.strip.split("/").map{|e| e.strip}
+keys=keys.split("+")
+content=#{=content}.split(/---+\n/).map{|e| e.strip}
+##p content
+keys=(1..content.length).map{|e| keys[0]+e.to_s} if keys.length != content.length and keys.length==1
+##p keys
+content.each_with_index do |b,i| #
+  k=keys[i]
+  ##p [:key,k,b]
+  {#<][#+]txt[{#qcmChoices]:{prj}/:{title}/:{k.to_s}[#choices]:{b}[#qcmChoices}\\][#<}
 end
+##p [:txt,#{=txt}]##
 [#>]
-{#qcmFramed]
-[\noindent \underline{Hypothèses de test}~:\\
-\noindent $\mathbf{H_0}$:\quad
-#{test.h0}
-
-\noindent $\mathbf{H_1}$:\quad
-#{test.h1}
-
-\noindent\underline{Statistique de test sous $\mathbf{H_0}$}~:\\
-#{test.st}
-
-\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:
-#{test.rd}
-
-\noindent\underline{Conclusion}~: Au vu des données, \\
-#{test.an}]
-[#qcmFramed}
+[{#qcmFramed]#{txt}[#qcmFramed}]
 [#def}
 
 ### qcmSrv???
@@ -186,7 +171,7 @@ else
   par=[] # as is
 end
 #p [#{=type},par,pb,pbs,refR]
-[#?]mode==:direct
+[#?]mode==:direct[#%]h1 is represented as Hash when it is a Dyndoc pointer or object
 [#=]qcmSrv[::{h1["ObjectName"]}]
 [#?]mode==:h1 and par.length==1
 [#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
@@ -345,12 +330,30 @@ p [:qcmLoad,prj,title,key]
 [#rb<]p [:qcm,$qcm[prj]]
 [#rb>]
 if $qcm[prj] and $qcm[prj][title]
+  choices=$qcm[prj][title][key]
+  if choices[0].is_a? String
+    txt=choices[0]
+    {#>]:{txt} [#>}
+    choices=choices[1..-1]
+  end
   {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{mz=1}\begin{reponsesperso}[o]][#>}
-  $qcm[prj][title][key].each do |a| #
-    choix="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
-    {#>]:{choix}{:{a[:label]}\quad}[#>}
+  choices.each do |a| #
+    choice="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
+    {#>]:{choice}{:{a[:label]}\quad}[#>}
   end
   {#>][\end{reponsesperso}\end{questionmult}][#>}
+end
+[#def}
+
+{#def]qcmLoadAuto[#,]title[]
+[#rb<]prj,title=#{=title}.split("/")
+p #{=title}
+[#<]{#qcmInit]:{prj}[#}
+[#rb>]
+if $qcm[prj] and qcm=$qcm[prj][title]
+  qcm.keys.each do |k| #
+    {#>]\noindent {#qcmLoad]#{title}/:{k}[#}\\[#>}
+  end
 end
 [#def}
 
