@@ -1,12 +1,63 @@
 [#require]RCqls/StatInf/HypoTest
 [#package]\usepackage{framed}
 [#main][#R<]require(CqlsEAP)[#<]
-What I want: {#qcmL2]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
+{#def]qcmSrv[#,]srv[][#,]what[][#>]
+[{#case]#{what}
+[#when]H0[#>][{#H0]srv.test[#}][#when]h0[#>][{#H0Theta]srv.test[#}]
+[#when]H0|<[#>][{#qcmBadH0]srv.test[#,]<[#}][#when]h0|<[#>][{#qcmBadH0Theta]srv.test[#,]<[#}]
+[#when]H0|>[#>][{#qcmBadH0]srv.test[#,]>[#}][#when]h0|>[#>][{#qcmBadH0Theta]srv.test[#,]>[#}]
+[#when]H0|!=[#>][{#qcmBadH0]srv.test[#,]\neq[#}][#when]h0|!=[#>][{#qcmBadH0Theta]srv.test[#,]\neq[#}]
+[#when]H0|Y[#>][{#qcmBadH0Y]srv.test[#}]
+[#%]H0,H0|<,H0|>,H0|!=,H0|Y
+
+[#%]H1,H1|<=,H1|>=,H1|=
+[#when]H1[#>][{#H1]srv.test[#}][#when]h1[#>][{#H1Theta]srv.test[#}]
+[#when]H1|<=[#>][{#qcmBadH1]srv.test[#,]\leq[#}][#when]h1|<=[#>][{#qcmBadH1Theta]srv.test[#,]\leq[#}]
+[#when]H1|>=[#>][{#qcmBadH1]srv.test[#,]\geq[#}][#when]h1|>=[#>][{#qcmBadH1Theta]srv.test[#,]\geq[#}]
+[#when]H1|=[#>][{#qcmBadH1]srv.test[#,]=[#}][#when]h1|=[#>][{#qcmBadH1Theta]srv.test[#,]=[#}]
+
+[#%]stH0,lstH0,lstH0|y
+[#when]stH0,StatTestH0[#>][{#deltaEstH0ExprTex]srv.test[#,]va[true][#}]
+[#when]lstH0,loiStatTestH0[#>][{#StatTestH0]srv.test[#}]
+[#when]lstH0|y,loiStatTestH0|y[#>][{#StatTestH0]srv.test[#,]va[false][#}]
+
+[#%]rdq,rdp|alpha,rdp|Y,rdp,rdp|>,rdp|qlim
+[#when]rdq,RDQ[#>][{#RD]srv.test[#,]q[#}]
+[#when]rdp|alpha[#>][{#qcmBadRD]srv.test[#,]q|alpha[#}]
+[#when]rdq|Y[#>][{#qcmBadRD]srv.test[#,]q|Y[#}]
+[#when]rdp,RDP[#>][{#RD]srv.test[#,]p[#}]
+[#when]rdp|>[#>][{#qcmBadRD]srv.test[#,]p|>[#}]
+[#when]rdp|qlim[#>][{#qcmBadRD]srv.test[#,]p|qlim[#}]
+
+[#%]pvalR,pvalNum
+[#when]pvalR[#>][p-valeur\NotR\texttt{{#pvalR]srv.test[#}}]
+[#when]pvalNum[#>][p-valeur={#pvalNum]srv.test[#}]
+
+[#%]deltaH0R,deltaH0Num,deltaLimLeftR,deltaLimRightR,deltaLimLeftNum,deltaLimRightNum
+[#when]deltaH0R[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$\NotR\texttt{{#deltaH0R]srv.test[#}}]
+[#when]deltaH0Num[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$={#deltaH0Num]srv.test[#}]
+[#when]deltaLimLeftR[#>][${#deltaLimTex]srv.test[#,]<[#}$\NotR {#deltaLimR]srv.test[#}]
+[#when]deltaLimRightR[#>][${#deltaLimTex]srv.test[#,]>[#}$\NotR {#deltaLimR]srv.test[#}]
+[#when]deltaLimLeftNum[#>][${#deltaLimTex]srv.test[#,]<[#}$={#deltaLimNum]srv.test[#}]
+[#when]deltaLimRightNum[#>][${#deltaLimTex]srv.test[#,]>[#}$={#deltaLimNum]srv.test[#}]
+
+[#%]ppsn,ppsp,ppp
+[#when]ppsn,PreSignNum[#>][{#PP]srv.test[#,]sign-num[#}]
+[#when]ppsp,PreSignPValG[#>][{#PP]srv.test[#,]sign-pvalg[#}]
+[#when]ppp,PreParam[#>][{#PP]srv.test[#,]param[#}]
+
+[#%]AsIs
+[#when]AsIs[#>][:{h1}]
+[#case}]
+[#def}
+
+
+What I want: {#qcmSrvH1]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
 When <what> contains "|" this means that there is a modifier for bad answer:
 Example: H0|< or H0:> or HO|!= mean that this is a false answer for H0
 Rmk: method starting by qcmBad is generally only used for qcm goal!
 %%% Facility Class
-{#def]qcmL2[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
+{#def]qcmSrvH1[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
 [#rb<]h1=#{=h1}
 #p :h1;p h1
 if h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
@@ -39,53 +90,121 @@ if(#{=data} != "") load(path.data("#{data}.RData"))
 [#new}
 [#?]end
 [#rb<]#p [#{=what},par,pb,pbs,refR]
-[#>][{#case]#{what}
-[#when]H0[#>][{#H0]qcmSrv.test[#}][#when]h0[#>][{#H0Theta]qcmSrv.test[#}]
-[#when]H0|<[#>][{#qcmBadH0]qcmSrv.test[#,]<[#}][#when]h0|<[#>][{#qcmBadH0Theta]qcmSrv.test[#,]<[#}]
-[#when]H0|>[#>][{#qcmBadH0]qcmSrv.test[#,]>[#}][#when]h0|>[#>][{#qcmBadH0Theta]qcmSrv.test[#,]>[#}]
-[#when]H0|!=[#>][{#qcmBadH0]qcmSrv.test[#,]\neq[#}][#when]h0|!=[#>][{#qcmBadH0Theta]qcmSrv.test[#,]\neq[#}]
-[#when]H0|Y[#>][{#qcmBadH0Y]qcmSrv.test[#}]
-[#%]H0,H0|<,H0|>,H0|!=,H0|Y
+[#>][{#qcmSrv]:qcmSrv[#what]#{what}[#}]
+[#def}
 
-[#%]H1,H1|<=,H1|>=,H1|=
-[#when]H1[#>][{#H1]qcmSrv.test[#}][#when]h1[#>][{#H1Theta]qcmSrv.test[#}]
-[#when]H1|<=[#>][{#qcmBadH1]qcmSrv.test[#,]\leq[#}][#when]h1|<=[#>][{#qcmBadH1Theta]qcmSrv.test[#,]\leq[#}]
-[#when]H1|>=[#>][{#qcmBadH1]qcmSrv.test[#,]\geq[#}][#when]h1|>=[#>][{#qcmBadH1Theta]qcmSrv.test[#,]\geq[#}]
-[#when]H1|=[#>][{#qcmBadH1]qcmSrv.test[#,]=[#}][#when]h1|=[#>][{#qcmBadH1Theta]qcmSrv.test[#,]=[#}]
+{#def]qcmFramed[#,]content[][#>]
+\begin{framed}
+\noindent \textbf{Réponses aux choix (pour remplir le Formulaire de REPONSES)}~:\\
+#{content}
+\end{framed}
+[#def}
 
-[#%]stH0,lstH0,lstH0|y
-[#when]stH0,StatTestH0[#>][{#deltaEstH0ExprTex]qcmSrv.test[#,]va[true][#}]
-[#when]lstH0,loiStatTestH0[#>][{#StatTestH0]qcmSrv.test[#}]
-[#when]lstH0|y,loiStatTestH0|y[#>][{#StatTestH0]qcmSrv.test[#,]va[false][#}]
 
-[#%]rdq,rdp|alpha,rdp|Y,rdp,rdp|>,rdp|qlim
-[#when]rdq,RDQ[#>][{#RD]qcmSrv.test[#,]q[#}]
-[#when]rdp|alpha[#>][{#qcmBadRD]qcmSrv.test[#,]q|alpha[#}]
-[#when]rdq|Y[#>][{#qcmBadRD]qcmSrv.test[#,]q|Y[#}]
-[#when]rdp,RDP[#>][{#RD]qcmSrv.test[#,]p[#}]
-[#when]rdp|>[#>][{#qcmBadRD]qcmSrv.test[#,]p|>[#}]
-[#when]rdp|qlim[#>][{#qcmBadRD]qcmSrv.test[#,]p|qlim[#}]
+{#def]qcmChoices[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
+[#rb<]choices=#{=choices}.strip
+#p [:choices,choices]
+res_table=[]
+lignes=choices.split("\n").map{|e| e.strip}
+#p [:lignes,lignes]
+lignes.each do |ligne| #
+  #p [:ligne,ligne]
+  unless ["%","#"].include? ligne[0,1]
+    res_ligne=[]
+    if ligne[0,2]=='<<'
+      lab,*rest=ligne[2..-1].split(">>")
+      ligne=rest.join(">>").strip
+      res_ligne << lab #not a Hash
+    end
+    unless ligne.empty?
+      elts=ligne.split(" | ").map{|e| e.strip}
+      elts.each do |elt| #
+        res_elt={}
+        res_elt[:txt],opt=elt.split(":").map{|e| e.strip}
+        opts=opt.split("&").each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/} if opt
+        res_ligne << res_elt
+      end
+    end
+    res_table << res_ligne
+  end
+end
+#
+p [:res_table,res_table]
+[#rb>]
+cpt=-1
+quest=[]
+#Dyndoc.warn :res_table,[res_table,res_table.length]
+res_table.each_with_index do |res_ligne,li| #
+  {#>]\noindent [#>}
+  #Dyndoc.warn :res_ligne,[li,res_ligne]
+  res_ligne.each do |res_elt| #
+    if res_elt.is_a? String
+      {#>]:{res_elt}[#>}
+    else
+      cpt+=1
+      label=(("A".ord)+cpt).chr
+      txt,answer=(res_elt[:txt][-1,1]=="*" ? [res_elt[:txt][0...-1],:good] : [res_elt[:txt],:bad] )
+      size=res_elt[:size] || ""
+      size=#{=size} if size.empty? and #{+?size}
+      quest << {label: label, answer: answer}
+      {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#} :{txt} {#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
+    end
+  end
+  {#>]\\[#>} if li != res_table.length-1 and !(res_ligne.length==1 and res_ligne[0].is_a? String)
+end
+# format of title is: <family title>::<key>
+prj,title,k=#{=title}.split("/")
+# ensure that $qcm and $qcm[title] exists
+$qcm={} unless $qcm
+$qcm[prj]={} unless $qcm[prj]
+$qcm[prj][title]={} unless $qcm[prj][title]
+$qcm[prj][title][k] = quest
+## QUESTION: can be also saved as a whole object in ~/dyndoc/???
+dir=File.expand_path File.join("~",".qcmAMC")
+unless File.directory? dir
+  require 'fileutils'
+  FileUtils.mkdir_p dir
+end
+File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
+[#def}
 
-[#%]pvalR,pvalNum
-[#when]pvalR[#>][p-valeur\NotR\texttt{{#pvalR]qcmSrv.test[#}}]
-[#when]pvalNum[#>][p-valeur={#pvalNum]qcmSrv.test[#}]
+### NOT FINISHED!!!
+{#def]qcmChoicesList[#,]title[][#,]content[]
+[#=]title[:{#{=title}.strip}]
+[#rb<]content=#{=content}.split("\\n")
+content.keys.each do |k| #
+  txt=content[k]
+#p :txt,[k,txt]
+  opts={}
+  first=txt[0].strip
+  if first[0,1]=='(' and first[-1,1]==')'
+    ## read the options
+    first[1...-1].split('),(').each{|e| opts[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/}
+    ## update txt
+    txt=txt[1..-1]
+  end
+  txt=txt.join("\n")
+#p :txt,txt.inspect
+  {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+end
+[#>]
+{#qcmFramed]
+[\noindent \underline{Hypothèses de test}~:\\
+\noindent $\mathbf{H_0}$:\quad
+#{test.h0}
 
-[#%]deltaH0R,deltaH0Num,deltaLimLeftR,deltaLimRightR,deltaLimLeftNum,deltaLimRightNum
-[#when]deltaH0R[#>][${#deltaEstH0Tex]qcmSrv.test[#,]false[#}$\NotR\texttt{{#deltaH0R]qcmSrv.test[#}}]
-[#when]deltaH0Num[#>][${#deltaEstH0Tex]qcmSrv.test[#,]false[#}$={#deltaH0Num]qcmSrv.test[#}]
-[#when]deltaLimLeftR[#>][${#deltaLimTex]qcmSrv.test[#,]<[#}$\NotR {#deltaLimR]qcmSrv.test[#}]
-[#when]deltaLimRightR[#>][${#deltaLimTex]qcmSrv.test[#,]>[#}$\NotR {#deltaLimR]qcmSrv.test[#}]
-[#when]deltaLimLeftNum[#>][${#deltaLimTex]qcmSrv.test[#,]<[#}$={#deltaLimNum]qcmSrv.test[#}]
-[#when]deltaLimRightNum[#>][${#deltaLimTex]qcmSrv.test[#,]>[#}$={#deltaLimNum]qcmSrv.test[#}]
+\noindent $\mathbf{H_1}$:\quad
+#{test.h1}
 
-[#%]ppsn,ppsp,ppp
-[#when]ppsn,PreSignNum[#>][{#PP]qcmSrv.test[#,]sign-num[#}]
-[#when]ppsp,PreSignPValG[#>][{#PP]qcmSrv.test[#,]sign-pvalg[#}]
-[#when]ppp,PreParam[#>][{#PP]qcmSrv.test[#,]param[#}]
+\noindent\underline{Statistique de test sous $\mathbf{H_0}$}~:\\
+#{test.st}
 
-[#%]AsIs
-[#when]AsIs[#>][:{h1}]
-[#case}]
+\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:
+#{test.rd}
+
+\noindent\underline{Conclusion}~: Au vu des données, \\
+#{test.an}]
+[#qcmFramed}
 [#def}
 
 The numbers of elements of every lines may differ!
@@ -132,18 +251,24 @@ res_table.each_with_index do |res_ligne,li| #
     size=res_elt[:size] || ""
     size=#{=size} if size.empty? and #{+?size}
     quest << {label: label, answer: answer}
-    {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#}{#qcmL2]:{h1}[#,]:{res_elt[:what] || "AsIs"}[#cadre]:{res_elt[:cadre] || "a"}[#data]:{res_elt[:data] || "#{data}"}[#initR]:{res_elt[:init] || ""}[#envR]:{res_elt[:env] ||"envHypoTestExo"}[#}{#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
+    {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#}{#qcmSrvH1]:{h1}[#,]:{res_elt[:what] || "AsIs"}[#cadre]:{res_elt[:cadre] || "a"}[#data]:{res_elt[:data] || "#{data}"}[#initR]:{res_elt[:init] || ""}[#envR]:{res_elt[:env] ||"envHypoTestExo"}[#}{#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
   end
   {#>]\\[#>} if li != res_table.length-1
 end
 # format of title is: <family title>::<key>
-title,k=#{=title}.split("::")
+prj,title,k=#{=title}.split("/")
 # ensure that $qcm and $qcm[title] exists
 $qcm={} unless $qcm
-$qcm[title]={} unless $qcm[title]
-$qcm[title][k] = quest
+$qcm[prj]={} unless $qcm[prj]
+$qcm[prj][title]={} unless $qcm[prj][title]
+$qcm[prj][title][k] = quest
 ## QUESTION: can be also saved as a whole object in ~/dyndoc/???
-File.open(title+".qcm","w") {|f| f << $qcm[title].inspect}
+dir=File.expand_path File.join("~",".qcmAMC")
+unless File.directory? dir
+  require 'fileutils'
+  FileUtils.mkdir_p dir
+end
+File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
 [#def}
 
 {#def]qcmRedStd[#,]title[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
@@ -162,12 +287,11 @@ content.keys.each do |k| #
   end
   txt=txt.join("\n")
 #p :txt,txt.inspect
-  {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}:::{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+  {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
 end
 [#>]
-\begin{framed}
-\noindent \textbf{Réponses aux choix (pour remplir le Formulaire de REPONSES)}~:\\
-\noindent \underline{Hypothèses de test}~:\\
+{#qcmFramed]
+[\noindent \underline{Hypothèses de test}~:\\
 \noindent $\mathbf{H_0}$:\quad
 #{test.h0}
 
@@ -181,37 +305,67 @@ end
 #{test.rd}
 
 \noindent\underline{Conclusion}~: Au vu des données, \\
-#{test.an}
-\end{framed}
+#{test.an}]
+[#qcmFramed}
 [#def}
 
 #####################################
 #### QCM File: new, free, save load
 #####################################
-{#def]qcmNew[#,]title[][#rb<]
-$qcm={} unless $qcm
-$qcm[#{=title}]={}
-[#def}
-
-{#def]qcmFree[#,]title[][#rb<]
-$qcm.delete #{=title} if $qm.keys.include? #{=title}
-[#def}
-
-{#def]qcmSave[#,]title[][#,]file[]
-[#?]#{0?file}[#=]file[#{title}.qcm]
+{#def]qcmInit[#,]prj[]
 [#rb<]
-if (qcm=$qcm[#{=title}])
-  File.open(#{=file},"w") {|f| f << qcm.inspect}
+$qcm={} unless $qcm
+prj=#{=prj}
+##p [:prj,prj]
+unless $qcm[prj]
+  qcmAMC=File.expand_path File.join("~",".qcmAMC",prj+".qcm")
+  #p [qcmAMC,(File.exists? qcmAMC)]
+  if File.exist? qcmAMC
+    $qcm[prj]=eval(File.read(qcmAMC))
+    ##p [:qcm,$qcm[prj]]
+  end
 end
 [#def}
 
-{#def]qcmLoad[#,]title[][#,]file[][#,]amc[false]
-[#?]#{0?file}[#=]file[#{title}.qcm]
-[#rb<]
-$qcm={} unless $qcm
-$qcm[#{=title}]=eval(File.read(#{=file}))
-[#?]#{amc}[#>]
-todo: bla bla bla
+{#def]qcmLoad[#,]title[]
+[#rb<]prj,title,key=#{=title}.split("/")
+p [:qcmLoad,prj,title,key]
+[#<]{#qcmInit]:{prj}[#}
+[#rb<]p [:qcm,$qcm[prj]]
+[#rb>]
+if $qcm[prj] and $qcm[prj][title]
+  {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{mz=1}\begin{reponsesperso}[o]][#>}
+  $qcm[prj][title][key].each do |a| #
+    choix="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
+    {#>]:{choix}{:{a[:label]}\quad}[#>}
+  end
+  {#>][\end{reponsesperso}\end{questionmult}][#>}
+end
+[#def}
+
+{#def]qcmLoadHypoTest[#,]title[]
+[#rb<]prj,title=#{=title}.split("/")
+p #{=title}
+[#<]{#qcmInit]:{prj}[#}
+[#rb<]p [:q,prj,title,$qcm[prj][title]]
+[#rb>]
+if $qcm[prj] and qcm=$qcm[prj][title]
+Dyndoc.warn :q,[:q,qcm]
+    {#>]\noindent\underline{Hypothèses de Test}~:[#nl][#nl][#>}
+    qcm.keys.each do |key| #
+      txt = case key
+      when "h0","h1"
+        "$\\mathbf{"+key[0,1].upcase+"_"+key[1,1]+"}$~:"
+      when "st"
+        "\\noindent \\underline{Statistique de Test sous $\\mathbf{H_0}$}~:"
+      when "rd"
+        "\\noindent \\underline{Règle de Décision}~:"
+      when "an"
+        "\\noindent \\underline{Conclusion}~:"
+      end
+      {#>]:{txt} {#qcmLoad]:{prj}/:{title}/:{key}[#}[#nl][#nl][#>}
+    end
+end
 [#def}
 
 ##########################################
