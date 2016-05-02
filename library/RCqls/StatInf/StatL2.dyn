@@ -6,8 +6,7 @@
 
 {#def]qcmChoices[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
 [#rb<]choices=#{=choices}.strip
-#
-p [:choices,choices]
+#p [:choices,choices]
 res_table=[]
 lignes=choices.split("\n").map{|e| e.strip}
 #p [:lignes,lignes]
@@ -231,8 +230,7 @@ lignes.each do |ligne| #
     res_table << res_ligne
   end
 end
-#
-p [:res_table,res_table]
+#p [:res_table,res_table]
 [#rb>]
 cpt=-1
 quest=[]
@@ -267,27 +265,31 @@ end
 File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
 [#def}
 
-{#def]qcmRedStd[#,]title[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
+{#def]qcmRedStd[#,]title[][#,]PP[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
 [#=]title[:{#{=title}.strip}]
-[#rb<]content={h0: '#{H0}'.strip.split("\n"), h1: '#{H1}'.strip.split("\n"), st: '#{StatTest}'.strip.split("\n"), rd: '#{RD}'.strip.split("\n"), an: '#{Conclusion}'.strip.split("\n")}
+[#=]test.pp[]
+[#rb<]content={pp: '#{PP}'.strip.split("\n"), h0: '#{H0}'.strip.split("\n"), h1: '#{H1}'.strip.split("\n"), st: '#{StatTest}'.strip.split("\n"), rd: '#{RD}'.strip.split("\n"), an: '#{Conclusion}'.strip.split("\n")}
 content.keys.each do |k| #
   txt=content[k]
+  if !(k==:pp and txt.empty?)
 #p :txt,[k,txt]
-  opts={}
-  first=txt[0].strip
-  if first[0,1]=='(' and first[-1,1]==')'
-    ## read the options
-    first[1...-1].split('),(').each{|e| opts[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/}
-    ## update txt
-    txt=txt[1..-1]
-  end
-  txt=txt.join("\n")
+    opts={}
+    first=txt[0].strip
+    if first[0,1]=='(' and first[-1,1]==')'
+      ## read the options
+      first[1...-1].split('),(').each{|e| opts[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/}
+      ## update txt
+      txt=txt[1..-1]
+    end
+    txt=txt.join("\n")
 #p :txt,txt.inspect
-  {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+    {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+  end
 end
 [#>]
 {#qcmFramed]
-[\noindent \underline{Hypothèses de test}~:\\
+[{#if]#{+?test.pp}[#>]\noindent \underline{Partie Préliminaire~:}\\ #{test.pp}\\[#}|
+\noindent \underline{Hypothèses de test}~:\\
 \noindent $\mathbf{H_0}$:\quad
 #{test.h0}
 
@@ -325,9 +327,11 @@ end
 
 {#def]qcmLoad[#,]title[]
 [#rb<]prj,title,key=#{=title}.split("/")
-p [:qcmLoad,prj,title,key]
+bareme="mz=1"
+bareme=$qcmBareme[prj][title][key] if $qcmBareme and $qcmBareme[prj] and $qcmBareme[prj][title] and $qcmBareme[prj][title][key]
+#p [:qcmLoad,prj,title,key]
 [#<]{#qcmInit]:{prj}[#}
-[#rb<]p [:qcm,$qcm[prj]]
+[#rb<]#p [:qcm,$qcm[prj]]
 [#rb>]
 if $qcm[prj] and $qcm[prj][title]
   choices=$qcm[prj][title][key]
@@ -336,7 +340,7 @@ if $qcm[prj] and $qcm[prj][title]
     {#>]:{txt} [#>}
     choices=choices[1..-1]
   end
-  {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{mz=1}\begin{reponsesperso}[o]][#>}
+  {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{:{bareme}}\begin{reponsesperso}[o]][#>}
   choices.each do |a| #
     choice="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
     {#>]:{choice}{:{a[:label]}\quad}[#>}
@@ -347,7 +351,7 @@ end
 
 {#def]qcmLoadAuto[#,]title[]
 [#rb<]prj,title=#{=title}.split("/")
-p #{=title}
+#p #{=title}
 [#<]{#qcmInit]:{prj}[#}
 [#rb>]
 if $qcm[prj] and qcm=$qcm[prj][title]
@@ -359,17 +363,20 @@ end
 
 {#def]qcmLoadHypoTest[#,]title[]
 [#rb<]prj,title=#{=title}.split("/")
-p #{=title}
+#p #{=title}
 [#<]{#qcmInit]:{prj}[#}
-[#rb<]p [:q,prj,title,$qcm[prj][title]]
+[#rb<]#p [:q,prj,title,$qcm[prj][title]]
 [#rb>]
 if $qcm[prj] and qcm=$qcm[prj][title]
-Dyndoc.warn :q,[:q,qcm]
-    {#>]\noindent\underline{Hypothèses de Test}~:[#nl][#nl][#>}
+#Dyndoc.warn :q,[:q,qcm]
     qcm.keys.each do |key| #
       txt = case key
-      when "h0","h1"
-        "$\\mathbf{"+key[0,1].upcase+"_"+key[1,1]+"}$~:"
+      when "pp"
+        "\\noindent \\underline{Partie Préliminaire}~:"
+      when "h0"
+        "\\noindent\\underline{Hypothèses de Test}~:\n\n$\\mathbf{H_0}$~:"
+      when "h1"
+        "$\\mathbf{H_1}$~:"
       when "st"
         "\\noindent \\underline{Statistique de Test sous $\\mathbf{H_0}$}~:"
       when "rd"
@@ -379,6 +386,20 @@ Dyndoc.warn :q,[:q,qcm]
       end
       {#>]:{txt} {#qcmLoad]:{prj}/:{title}/:{key}[#}[#nl][#nl][#>}
     end
+end
+[#def}
+
+{#def]qcmBareme[#,]content[]
+[#rb<]
+$bareme={} unless $bareme
+content=#{=content}.stip.split("\n").map{|e| e.strip}
+content.each do |l| #
+  path,*bareme=l.split(":")
+  bareme=bareme.join(":")
+  prj,title,key=path.strip.split("/")
+  $qcmBareme[prj]={} unless $qcmBareme[prj]
+  $qcmBareme[prj][title]={} unless $qcmBareme[prj][title]
+  $qcmBareme[prj][title][key] = bareme
 end
 [#def}
 
