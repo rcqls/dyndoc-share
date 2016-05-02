@@ -117,7 +117,7 @@ end
 
 [#%]rdq,rdp|alpha,rdp|Y,rdp,rdp|>,rdp|qlim
 [#when]rdq,RDQ[#>][{#RD]srv.test[#,]q[#}]
-[#when]rdp|alpha[#>][{#qcmBadRD]srv.test[#,]q|alpha[#}]
+[#when]rdq|alpha[#>][{#qcmBadRD]srv.test[#,]q|alpha[#}]
 [#when]rdq|Y[#>][{#qcmBadRD]srv.test[#,]q|Y[#}]
 [#when]rdp,RDP[#>][{#RD]srv.test[#,]p[#}]
 [#when]rdp|>[#>][{#qcmBadRD]srv.test[#,]p|>[#}]
@@ -126,6 +126,7 @@ end
 [#%]pvalR,pvalNum
 [#when]pvalR[#>][p-valeur\NotR\texttt{{#pvalR]srv.test[#}}]
 [#when]pvalNum[#>][p-valeur={#pvalNum]srv.test[#}]
+[#when]pvalR|q[#>][TODO]
 
 [#%]deltaH0R,deltaH0Num,deltaLimLeftR,deltaLimRightR,deltaLimLeftNum,deltaLimRightNum
 [#when]deltaH0R[#>][${#deltaEstH0Tex]srv.test[#,]false[#}$\NotR\texttt{{#deltaH0R]srv.test[#}}]
@@ -135,8 +136,9 @@ end
 [#when]deltaLimLeftNum[#>][${#deltaLimTex]srv.test[#,]<[#}$={#deltaLimNum]srv.test[#}]
 [#when]deltaLimRightNum[#>][${#deltaLimTex]srv.test[#,]>[#}$={#deltaLimNum]srv.test[#}]
 
-[#%]ppsn,ppsp,ppp
+[#%]ppsn,ppsd,ppsp,ppp
 [#when]ppsn,PreSignNum[#>][{#PP]srv.test[#,]sign-num[#}]
+[#when]ppsd,PreSignDelta[#>][{#PP]srv.test[#,]sign-deltaH0[#}]
 [#when]ppsp,PreSignPValG[#>][{#PP]srv.test[#,]sign-pvalg[#}]
 [#when]ppp,PreParam[#>][{#PP]srv.test[#,]param[#}]
 
@@ -299,7 +301,7 @@ end
 \noindent\underline{Statistique de test sous $\mathbf{H_0}$}~:\\
 #{test.st}
 
-\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:
+\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:\\
 #{test.rd}
 
 \noindent\underline{Conclusion}~: Au vu des données, \\
@@ -389,18 +391,27 @@ if $qcm[prj] and qcm=$qcm[prj][title]
 end
 [#def}
 
-{#def]qcmBareme[#,]content[]
-[#rb<]
-$bareme={} unless $bareme
-content=#{=content}.stip.split("\n").map{|e| e.strip}
-content.each do |l| #
-  path,*bareme=l.split(":")
-  bareme=bareme.join(":")
-  prj,title,key=path.strip.split("/")
-  $qcmBareme[prj]={} unless $qcmBareme[prj]
-  $qcmBareme[prj][title]={} unless $qcmBareme[prj][title]
-  $qcmBareme[prj][title][key] = bareme
+{#def]qcmBareme[#,]content[][#rb<]
+$qcmBareme={} unless $qcmBareme
+lignes=#{=content}.strip.split("\n").map{|e| e.strip}
+lignes.each do |ligne| #
+  elts=ligne.split(" | ")
+  prj,title=nil,nil #to save the values in the following loop
+  elts.each_with_index do |e,i| #
+    path,*bareme=e.split(":")
+    bareme=bareme.join(":").strip
+    if i==0
+      prj,title,key=path.strip.split("/")
+    else
+      key=path.strip
+    end
+    $qcmBareme[prj]={} unless $qcmBareme[prj]
+    $qcmBareme[prj][title]={} unless $qcmBareme[prj][title]
+    $qcmBareme[prj][title][key] = bareme
+  end
 end
+#
+p [:bareme,$qcmBareme]
 [#def}
 
 ##########################################
@@ -413,15 +424,17 @@ end
 [#>]
   [{#if]#{=.frame.paramType}=="md"
   [#>]{#case]#{type}
-  [#when]sign-num[#>] [$\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{round((mean(#{.frame.yR})-#{.theta0R}),2)}$]
-  [#when]sign-pvalg[#>][p-valeur gauche {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
-  [#when]param[#>][$#{.frame.thetaTex}=\mbox{``moyenne de $#{.frame.YTex}$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
+  [#when]sign-num[#>] [$\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{round((mean(#{.frame.yR})-#{.theta0R}),1)}$]
+  [#when]sign-deltaH0[#>] [${#deltaEstH0Tex]self[#,]false[#} {#if]:r{leftpval<=.5}[#>]<[#else]>[#if}0$]
+  [#when]sign-pvalg[#>][p-valeur gauche ${#if]:r{leftpval<=.5}[#>]<[#else]>[#if} 50\%$]
+  [#when]param[#>][$\mu^D=\mbox{``moyenne de $Y^D$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $Y^D:=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
   [#case}[#if}]
 [#>]
   [{#if]#{.frame.nbEch}==2 and #{=.frame.paramType}+#{=.frame.sampleType}!="rvg"
   [#>]{#case]#{type}
-  [#when]sign-num[#>] [$\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R}}$]
-  [#when]sign-pvalg[#>][p-valeur gauche est {#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if} à $50\%$]
+  [#when]sign-num[#>] [$\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{round(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R},1)}$]
+  [#when]sign-deltaH0[#>][${#deltaEstH0Tex]self[#,]false[#} {#if]:r{leftpval<=.5}[#>]<[#else]>[#if}0$]
+  [#when]sign-pvalg[#>][p-valeur gauche ${#if]:r{leftpval<=.5}[#>]<[#else]>[#if} 50\%$]
   [#when]param[#>][$#{.frame.thetaTex}=#{.frame.thetaExprTex}$]
   [#case}[#if}]
 [#}
@@ -445,7 +458,7 @@ end
   [#when]q|alpha[#>]
     [{#case]#{.side}
     [#when]<[#>] [${#deltaEstH0Tex]self[#,]false[#} < #{.alphaTex}$]
-    [#when]>[#>] [${#deltaEstH0Tex]self[#,]false[#} > #{.alphaTex} {#deltaLimTex]self[#,]>[#}$]
+    [#when]>[#>] [${#deltaEstH0Tex]self[#,]false[#} > #{.alphaTex}$]
     [#when]!=,\neq[#>][${#deltaEstH0Tex]self[#,]false[#} < \frac{#{.alphaTex}}2$ ou ${#deltaEstH0Tex]self[#,]false[#} > \frac{#{.alphaTex}}2$]
     [#}]
   [#when]q|Y[#>]
