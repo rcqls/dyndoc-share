@@ -1,0 +1,41 @@
+[#<]
+{#def]fragment[#,]ind[][#,]trans[]
+[#?]#{+?trans}[#rb<]tmp=" "+#{=trans}.split(",").map{|e| e.strip}.join(" ")[#=]trans[:{tmp}]
+[#?]#{+?ind}[#=]ind[ data-fragment-index="#{ind}"]
+[#?]end
+[#>][<p class="fragment#{trans}"#{ind}>]
+[#yield]default
+[#>]</p>
+[#}
+
+{#def]section[#,]auto[][#,]trans[][#,]speed[][#,]bg[]
+[#?]#{+?auto}[#=]auto[ data-autoslide="#{auto}"]
+[#?]#{+?trans}[#=]trans[ data-transition="#{trans}"]
+[#?]#{+?speed}[#=]speed[ data-transition-speed="#{speed}"]
+[#?]#{+?bg}[#=]bg[ data-background#{bg}][#%](example of )bg[video="http://..."]
+[#?]end
+[#>]<section#{auto}#{trans}#{speed}#{bg}>
+[#=]content[{#blck][#yield]default[#}][#>]#{content}
+[#>]</section>
+[#}
+
+{#def]markdown[#,]auto[][#,]trans[][#,]speed[][#,]bg[]
+[#?]#{+?auto}[#=]auto[ data-autoslide="#{auto}"]
+[#?]#{+?trans}[#=]trans[ data-transition="#{trans}"]
+[#?]#{+?speed}[#=]speed[ data-transition-speed="#{speed}"]
+[#?]#{+?bg}[#=]bg[ data-background#{bg}][#%](example of )bg[video="http://..."]
+[#?]end
+[#=]slide[#{auto}#{trans}#{speed}#{bg}]
+[#>]<section data-markdown>
+<script type="text/template">
+[#?]#{+?slide}[#>]<!-- .slide:#{slide} -->[#?]end
+[#=]content[{#blck][#yield]default[#}]
+[#rb<]content=#{=content}.split('\n')
+content.map! do |elt| #
+  elt.rstrip.gsub(/<<([0-9]*)>>$/,' <!-- .element: class="fragment"  data-fragment-index="\1" -->')
+  .gsub(/<<([^<>]*)>>/,' <!-- .element: class="fragment \1" -->')
+end
+[#>]:{content.join('\n')}
+[#>]</script>
+</section>
+[#}

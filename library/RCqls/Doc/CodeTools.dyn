@@ -1,0 +1,78 @@
+## OLD
+{#def]dyncodeSrc[#,]key[][#,]render[amy]
+[#>]{#uv][#key]#{key}[#syntax]dyndoc[#}
+[#def}
+
+{#def]dyncodeOut[#,]key[][#,]verb[true]
+[#?]#{verb}[#>]<pre>[#?]end[#>]
+{#dyn]test|#{key}[#}
+[#?]#{verb}[#>]</pre>[#?]end[#>]
+[#def}
+
+## NEW
+{#def]dyncodeOut[#,]key[]
+[#%]Needs || after "{\#dyn]atom" since the last | is not considered because of formatting!
+[#>]
+<pre>
+{#dyn]atom||#{code.#{key}}[#dyn}
+</pre>
+[#def}
+
+{#def]dyncodeSrc[#,]key[]
+[#%]Needs || after atom since the last | is not considered!
+[#>]{#uv]#{code.#{key}}[#syntax]dyndoc[#render]solarized[#}
+[#def}
+
+[#rb<]
+
+module DyndocDoc
+    def DyndocDoc.seq(instr)
+        "&#91;&#35;"+instr+"&#93;"
+    end
+
+    def DyndocDoc.open(instr)
+        "&#123;&#35;"+instr+"&#93;"
+    end
+
+    def DyndocDoc.close(instr)
+        "&#91;&#35;"+instr+"&#125;"
+    end
+
+    def DyndocDoc.get(type,instr)
+        mode=nil
+        case type[0]
+        when ":"
+          mode="58"
+        when "#"
+          mode="35"
+        end
+        "&#"+mode+";"+type[1..-1]+"&#123;"+instr+"&#125;"
+    end
+
+
+    def DyndocDoc.singleCall(instr)
+        "&#123;&#35;"+instr+"&#35;&#125;"
+    end
+
+    def DyndocDoc.call(instr)
+        res=""
+        instr.each do |code|  #
+            if code.is_a? Array
+                res += DyndocDoc.method(code[0]).call(code[1])
+            elsif code.is_a? String
+                res += code
+            end
+        end
+        res
+    end
+end
+
+[#<]
+
+{#def]openTag[#,]instr[][#,]bold[false][#>]{#if]#{bold}[#>]*[#}:{DyndocDoc.open(#{=instr})}{#if]#{bold}[#>]*[#}[#def}
+{#def]closeTag[#,]instr[][#,]bold[false][#>]{#if]#{bold}[#>]*[#}:{DyndocDoc.close(#{=instr})}{#if]#{bold}[#>]*[#}[#def}
+{#def]seqTag[#,]instr[][#>]{#if]#{bold}[#>]*[#}:{DyndocDoc.seq(#{=instr})}{#if]#{bold}[#>]*[#}[#def}
+
+{#def]OpenTag[#,]instr[][#>]{#openTag]#{instr}[#bold]true[#}[#def}
+{#def]CloseTag[#,]instr[][#>]{#closeTag]#{instr}[#bold]true[#}[#def}
+{#def]SeqTag[#,]instr[][#>]{#seqTag]#{instr}[#bold]true[#}[#def}

@@ -7,6 +7,7 @@
 [#%]Fix the .yR, .y1R, .y2R (even for md case) => Rmk (for me): toto?[titi] means that toto is initialized only if toto is not (empty init is an init)
 [#?]#{0?yR} and #{+?nomPb}[#=]yR[y#{nomPb}][#?]#{0?y1R} and #{+?nom1Pb}[#=]y1R[y#{nom1Pb}][#?]#{0?y2R} and #{+?nom2Pb}[#=]y2R[y#{nom2Pb}]
 [#?]#{0?yR} and #{=paramType}=="md" and #{+?nom1Pb} and #{+?nom2Pb}[#=]yR[y#{nom1Pb}-y#{nom2Pb}]
+[#?]#{=paramType}=="md"[#=]nomPb[D]
 [#?]end
 [#yield]default
 [#<]{#new].param[#of]ParamFrame[#in]#{.Renvir}[#,]#{paramType}[#,]#{sampleType}[#,].nomPb[#{nomPb}][#,].yR[#{yR}][#,].nom1Pb[#{nom1Pb}][#,].y1R[#{y1R}][#,].nom2Pb[#{nom2Pb}][#,].y2R[#{y2R}][#}

@@ -427,7 +427,7 @@ p [:bareme,$qcmBareme]
   [#when]sign-num[#>] [$\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{round((mean(#{.frame.yR})-#{.theta0R}),1)}$]
   [#when]sign-deltaH0[#>] [${#deltaEstH0Tex]self[#,]false[#} {#if]:r{leftpval<=.5}[#>]<[#else]>[#if}0$]
   [#when]sign-pvalg[#>][p-valeur gauche ${#if]:r{leftpval<=.5}[#>]<[#else]>[#if} 50\%$]
-  [#when]param[#>][$\mu^D=\mbox{``moyenne de $Y^D$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $Y^D:=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
+  [#when]param[#>][$#{.frame.thetaTex}=\mbox{``moyenne de $#{.frame.YTex}$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$ avec $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$]
   [#case}[#if}]
 [#>]
   [{#if]#{.frame.nbEch}==2 and #{=.frame.paramType}+#{=.frame.sampleType}!="rvg"
