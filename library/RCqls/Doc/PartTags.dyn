@@ -1,0 +1,55 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Forme des syntaxes `dyndoc`
+
+La syntaxe de `dyndoc` est reconnaissable par son jeu de balises très "exotiques" de type domino.
+Dans une première approche du système de balises `dyndoc`, un utilisateur pourra trouver cette singularité déplaisante et lourde. Pourtant, l'aspect très exotique des balises a été volontairement choisi afin de pouvoir être facilement détectables (via un "parser") dans la plupart des documents aux formats existants standard (`latex`, `html`, ...).
+Une balise se décompose en une séquence
+d'une accolade ou crochet ouvert, du caractère `#` (et parfois `@` beaucoup moins utilisé),
+d'un nom d'instruction (qui peut contenir des symboles) et finalement d'un crochet ou accolade fermé comme le montre la sortie suivante :
+
+{#dyncodeSrc]tags[#}
+
+Il y a donc trois types de balises : **ouverte** (commençant par une accolade ouverte), **fermée** (finissant par une accolade fermée) et **séquentielle** (commençant et finissant respectivement par des crochets ouvert et fermé).
+Une balise ouverte est toujours associée a une balise fermée délimitant ainsi le début et la fin d'une **commande `dyndoc` dite de bloc**. A l'intérieur, une commande de bloc peut contenir une ou plusieurs
+balises séquentielles. Celles-ci sont interprétées séquentiellement  et correspondent à des commandes `dyndoc` dites séquentielles.
+Les balises `dyndoc` peuvent être agencées sur une même ligne comme dans l'exemple précédent ou sur plusieurs lignes commme dans les exemples suivants :
+{#dyncodeSrc]tags2[#}
+{#dyncodeSrc]tags3[#}
+
+{#hide]Les balises ouverte et fermée nous rappelle un langage de type `xml` (comme le `html`) et sont syntaxiquement équivalentes. Les balises séquentielles quant à elles semblent être différentes.
+Soulignons qu'elles n'existaient pas dans la première version de `dyndoc`.
+Elles sont naturellement apparues pour simplifier la séquence de blocs consécutifs <code>{#OpenTag]instr[#}{#CloseTag]instr[#}</code>
+[#hide}
+
+A toute balise ouverte ou séquentielle associée à une commande de bloc, correspond un contenu commençant juste après la balise et
+se terminant juste avant la balise suivante séquentielle ou fermée associée à cette même commande de bloc. L'exemple suivant illustre
+cette notion.
+
+{#dyncodeSrc]tags4[#}
+Cette exemple illustre la possibilité d'inclure une nouvelle commande de bloc dans le contenu d'une balise associée à une commande de bloc.
+Ici la commande de bloc `cmd2` est inclus dans le contenu de la première balise séquentielle `cmd1Seq` associée à la commande de bloc `cmd1`.
+
+### Structure d'un document source `dyndoc`
+
+Un document source `dyndoc` est pour la convenance de l'utilisateur automatiquement complété :
+
+* avant le code utilisateur par : <code>{#OpenTag]document[#}{#SeqTag]main[#}{#SeqTag]>[#}</code>
+* après le code utilisateur par : <code>{#CloseTag]document[#}</code>
+
+Ainsi, un document source `dyndoc` ne contenant que du contenu `latex` (sans aucune commande `dyndoc`) peut être converti en un document `latex` directement compilable.
+Cette facilité est rendue possible en soulignant qu'un modèle de présentation ("layout" en anglais) par défaut est associé à tout type de format de sortie.
+Il est à noter que le "layout" est lui-même défini dans le langage `dyndoc`.
+
+Un utilisateur de niveau avancé est invité à se référer à la description plus complète de la commande  {#OpenTag]document[#} afin de découvrir les balises séquentielles
+associées <code>{#SeqTag]main[#}</code> (ou <code>{#SeqTag]content[#}</code> ), <code>{#SeqTag]require[#}</code>, <code>{#SeqTag]package[#}</code>, <code>{#SeqTag]title[#}</code>, <code>{#SeqTag]preamble[#}</code>, <code>{#SeqTag]postamble[#}</code>.
+
+### Conversion des balises séquentielles de base en une commande de bloc `dyndoc`
+
+Nous verrons dans la prochaine section les balises séquentielles de base associées à la commande de bloc principale <code>{#OpenTag]blck[#}</code>.
+Afin de présenter un processus d'autoconversion par le parser `dyndoc`, signalons que
+parmi ces balises principales, la balise <code>{#SeqTag]>[#}</code>  permet d'afficher le contenu obtenu après quelques traitements `dyndoc` dans le document de sortie
+tandis que <code>{#SeqTag]<[#}</code> permet de faire des traitements `dyndoc` dont le contenu est au contraire non redirigé vers le document de sortie.

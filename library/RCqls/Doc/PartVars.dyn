@@ -1,0 +1,23 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Variables `dyndoc`
+
+Une variable `dyndoc` est avant tout une variable ne contenant que des chaînes de caractères.
+
+##### Code source
+
+{#dyncodeSrc]varsDyndoc[#}
+
+##### Résultat
+
+{#dyncodeOut]varsDyndoc[#}
+
+##### Commentaires
+
+* La ligne 1 du code source permet de définir les variables `toto` et `titi` à partir des balises <code>{#SeqTag]>[#}</code> (ancien format) et <code>{#SeqTag]=[#}</code> (nouveau format).
+* La ligne 3 quand à elle permet d'ajouter du contenu aux 2 variables via les balises <code>{#SeqTag]>[#}</code> (notez l'ajout du `+` dans `toto+`) et <code>{#SeqTag]+[#}</code>.
+* La ligne 5 montre comment écraser les contenus de ces variables.
+* Notez comment les contenus des variables `toto` et `titi` sont extraits à l'aide de <code>*:{DyndocDoc.get("#","toto")}*</code> et <code>*:{DyndocDoc.get("#","titi")}*</code> dans les lignes 2, 4 et 6.

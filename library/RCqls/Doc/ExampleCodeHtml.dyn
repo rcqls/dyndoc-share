@@ -149,7 +149,7 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 [#=]code.caseRbCode[{#dyn>]
 [#=]todo[first,third,second,first]
 [#>]This is the list of the translated words in French:
-[#rb>]#{=todo}.split(",").each do |todo|
+[#rb>]#{=todo}.split(",").each do |todo| #
 	case todo.to_sym
 	when :first then {#>]premier [#>}
 	when :second then {#>]deuxième [#>}
@@ -254,12 +254,30 @@ puts a3
 [#%]## General
 
 [#=]code.blck_tags[{#dyn>]
+[#%]This text is ignored as a comment.
+
+[#>]This is two lines put in three
+lines of code
+[#%]The following block #> contains formated text.
+The content starts just after the first [.
+The content ends just before the last ].
+For each line:
+  * any whitespaces from the beginning to the first | are ignored.
+  * any whitespaces from the last | till the end of line are ignored.
 [#>]
 
     [This is two |
 	|lines put in three
 	|lines of code]
 
+
+[#<]
+
+[#>]
+[#dyn>}]
+
+[#=]code.blck_tags_orig[{#dyn>]
+...[#<]...
 [#dyn>}]
 
 [#%]C'est l'original ici uniquement pour sauvergarde!!!

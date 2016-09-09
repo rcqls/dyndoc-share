@@ -1,0 +1,35 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Commandes `ruby`
+
+A la différence de `Sweave` (ainsi que `knitr`) développé exclusivement en `R`, `dyndoc` est développé en `ruby`.
+Il est ainsi très facile de faire interagir `ruby` et `dyndoc`.
+
+##### Code source
+
+{#dyncodeSrc]RbInCode[#}
+
+##### Résultat
+
+{#dyncodeOut]RbInCode[#}
+
+##### Commentaires
+
+Remarquez qu'aucun affichage des instructions `puts` n'apparaît dans la sortie. L'affichage des `puts` comme tout autre
+affichage `ruby` apparaît éventuellement dans une console si `dyndoc` est exécuté en ligne de commande.
+
+L'instruction <code>*:{DyndocDoc.get(":","...")}*</code> (ou <code>*:{DyndocDoc.get(":rb","...")}*</code> ou <code>*:{DyndocDoc.get("#rb","...")}*</code>), permet d'extraire le
+contenu de la variable nommée `...` défini dans un bloc <code>{#SeqTag]rb<[#}</code>.
+
+L'exemple suivant permet au contraire de rediriger les sorties `ruby` dans le document.
+
+##### Code source
+
+{#dyncodeSrc]RbOutCode[#}
+
+##### Résultat
+
+{#dyncodeOut]RbOutCode[#}

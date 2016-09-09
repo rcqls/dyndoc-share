@@ -1,0 +1,10 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Structure `case` en `dyndoc`
+
+{#dyncodeSrc]caseTag[#}
+
+{#dyncodeOut]caseTag[#}

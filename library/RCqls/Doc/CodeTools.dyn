@@ -13,7 +13,7 @@
 {#def]dyncodeOut[#,]key[]
 [#%]Needs || after "{\#dyn]atom" since the last | is not considered because of formatting!
 [#>]
-<pre>
+<pre class="dynres">
 {#dyn]atom||#{code.#{key}}[#dyn}
 </pre>
 [#def}

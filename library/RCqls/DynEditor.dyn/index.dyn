@@ -1,0 +1,12 @@
+[#rb<]require 'ostruct'
+$editor_cfg=OpenStruct.new({
+  :root=>File.expand_path("~/RCqls/RodaServer/public/pages"),
+  :edit=>File.expand_path("~/RCqls/RodaServer/edit"),
+  :support=>File.expand_path("~/RCqls/RodaServer/edit/support"),
+  :base_url=>"http://www.dyndoc.fr/",
+  :tmp_dir=>File.expand_path("~/.tmp.Rmd")
+})
+
+
+require "fileutils"
+FileUtils.mkdir_p($editor_cfg.tmp_dir)

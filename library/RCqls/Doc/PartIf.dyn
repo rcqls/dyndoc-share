@@ -1,0 +1,14 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Condition `if` en `dyndoc`
+
+{#dyncodeSrc]ifTag[#}
+
+{#dyncodeOut]ifTag[#}
+
+{#dyncodeSrc]ifSeqTag[#}
+
+{#dyncodeOut]ifSeqTag[#}

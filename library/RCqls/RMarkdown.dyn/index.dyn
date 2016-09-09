@@ -1,0 +1,98 @@
+[#require]RCqls/DynEditor
+Tools/Web/Html
+[#main][#<]{#def]mdOut[#,]key[][#md>]
+#{code_#{key}}
+[#def}
+
+{#def]rmdOut[#,]key[][#,]prefix[][#,]iframe_size[width="1024" height="800"]
+[#>>]:{$editor_cfg.tmp_dir}/#{key}.Rmd[#{code_#{key}}]
+[#=]output_file[:{$editor_cfg.root}/#{prefix}/#{key}.html]
+[#rb<]FileUtils.mkdir_p(File.dirname(#{=output_file}))
+p [:rmdOut,$editor_cfg.tmp_dir}+"/#{key}.Rmd",#{=output_file}]
+[#R<]rmarkdown::render(":{$editor_cfg.tmp_dir}/#{key}.Rmd",output_file=#{=output_file})
+[#>]<iframe src="/#{prefix}/#{key}.html" #{iframe_size}></iframe>
+[#def}
+
+{#def]mdSrc[#,]key[][#,]uv_theme[solarized]
+[#%]Needs || after atom since the last | is not considered!
+[#>]{#uv]#{code_#{key}}[#syntax]text.html.markdown.multimarkdown[#render]#{uv_theme}[#}
+[#def}
+
+{#def]Rmd[#,]file[][#,]header[
+---
+title: "RMarkdown demo"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+  self_contained: true
+  thumbnails: true
+  lightbox: true
+  gallery: false
+  highlight: tango
+---
+]
+[#,]options[
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+]
+[#=]content[{#blck][#yield]default[#blck}]
+[#=]rmd_content[
+#{header}
+#{options}
+#{content}
+]
+[#=]rmd_file[:{$editor_cfg.tmp_dir}/#{file}.Rmd]
+[#=]html_file_cache[:{File.join($editor_cfg.root,"#{file}.html.cache")}]
+[#rb>]public_dir[File.dirname(#{=html_file_cache})]
+[#rb<]FileUtils.mkdir_p(File.dirname(#{=rmd_file}))
+FileUtils.mkdir_p(File.dirname(#{=html_file_cache}))
+p [:rmd,#{=rmd_file},#{=html_file},#{=html_file_cache}]
+[#>>]#{rmd_file}[#{rmd_content}]
+[#R<]rmarkdown::render(#{=rmd_file},output_file=#{=html_file_cache})
+[#def}
+
+{#def]readthedown[#,]file[]
+[#>]{#Rmd][#header][
+---
+title: "RMarkdown demo"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+  self_contained: true
+  thumbnails: true
+  lightbox: true
+  gallery: false
+  highlight: tango
+---
+]
+[#options][
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+][#>]{#blck][#yield]default[#blck}[#Rmd}
+[#def}

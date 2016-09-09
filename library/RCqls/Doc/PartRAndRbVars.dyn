@@ -1,0 +1,21 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Traitement `ruby` et `R`
+[#%]This is needed because dyncodeOut inR or inRb can't inherit envir from other dyncodeOut varsR (here)
+[#=]toto[TOTO]
+[#=]toto@[[1,3,2]]
+[#=]toto$[c(1,3,2)]
+[#>]
+
+
+{#dyncodeSrc]inRbCode[#}
+
+{#dyncodeOut]inRbCode[#}
+
+
+{#dyncodeSrc]inRCode[#}
+
+{#dyncodeOut]inRCode[#}

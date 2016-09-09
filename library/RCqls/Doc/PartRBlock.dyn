@@ -1,0 +1,53 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Commandes `R`
+
+Comme avec `Sweave` et même si `dyndoc` est développé en `ruby` (et non en `R` comme `Sweave`),
+il est possible d'embarquer le système `R` dans `dyndoc` et ainsi de faire interagir `R` et `dyndoc`.
+
+L'exemple suivant propose d'exécuter du code `R` sans affichage dans un premier temps.
+Dans un second temps, les contenus de variables `R` sont extraites dans `dyndoc`.
+
+##### Code source
+
+{#dyncodeSrc]RInCode[#}
+
+##### Résultat
+
+{#dyncodeOut]RInCode[#}
+
+##### Commentaires
+
+Remarquez qu'aucun affichage des instructions `cat(...)` n'apparaît dans la sortie. L'affichage des `cat(...)` comme tout autre
+affichage `R` apparaît éventuellement dans une console si `dyndoc` est exécuté en ligne de commande.
+
+L'instruction <code>*:{DyndocDoc.get(":r","...")}*</code> (ou <code>*:{DyndocDoc.get("#r","...")}*)</code>, qui est l'équivalent de `\Sexpr{...}` en `Sweave`, permet d'extraire le contenu de la variable nommée `...`
+défini dans un bloc <code>{#SeqTag]R<[#}</code>, qui est une sorte  d'équivalent `Sweave` de `<<echo=FALSE,results=hide>>=`.
+
+L'exemple suivant permet au contraire de rediriger les sorties `R` dans le document. C'est l'équivalent `Sweave` de `<<echo=FALSE>>=`.
+
+##### Code source
+
+{#dyncodeSrc]ROutCode[#}
+
+##### Résultat
+
+{#dyncodeOut]ROutCode[#}
+
+L'exemple suivant permet d'obtenir la commande de base `Sweave` (i.e. `<<>>=`) en affichant les entrées et sorties d'une session `R`.
+
+##### Code source
+
+{#dyncodeSrc]rverbCode[#}
+
+##### Résultat
+
+{#dyncodeOut]rverbCode[#verb]false[#}
+
+##### Commentaires
+
+Cette sortie verbatim `R` est assez sommaire. Comme `dyndoc` est aussi un langage de programmation pour étendre les fonctionnalités de base,
+il existe des librairies `dyndoc` qui permettent de définir des sorties à la guise de l'utilisateur-développeur.

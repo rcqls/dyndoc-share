@@ -1,0 +1,27 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Code `dyndoc` dans un bloc `R`
+
+Maintenant, l'une des possibilités les plus appréciables en `dyndoc` est la possibilité
+d'éxecuter du code `dyndoc` dans un bloc `R` (voir section suivante pour bloc `ruby`).
+
+##### Boucle `R`
+
+{#dyncodeSrc]loopRCode[#}
+
+{#dyncodeOut]loopRCode[#}
+
+##### Condition `if` en `R`
+
+{#dyncodeSrc]ifRCode[#}
+
+{#dyncodeOut]ifRCode[#}
+
+##### Structure `switch` en `R`
+
+{#dyncodeSrc]caseRCode[#}
+
+{#dyncodeOut]caseRCode[#}

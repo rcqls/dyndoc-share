@@ -1,0 +1,115 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+
+### Un exemple de bienvenue
+
+Voilà un premier exemple donnant une idée générale de ce qu'est `dyndoc`. Le code source suivant (enregistré dans la fichier `hello.dyn`) propose l'habituel exemple `hello`
+fourni pour présenter un nouveau langage.
+
+{#dyncodeSrc]hello[#}
+
+Et voici le résultat obtenu à partir de la ligne de commande `dyn  hello.dyn` :
+
+{#dyncodeOut]hello[#}
+
+### Commentaires généraux sur l'exemple de bienvenue
+
+Le code est découpé en 4 parties délimitées par les balises <code>{#SeqTag]r<[#}</code>, <code>{#SeqTag]rb<[#}</code>, <code>{#SeqTag]<[#}</code> et <code>{#SeqTag]>[#}</code>.
+La  première permet de réaliser un traitement `R` (ici très sommaire). La deuxième réalise un traitement `ruby`.
+La troisième popose la définition d'une fonction `hello` (déclarée en `dyndoc` entre les balises <code>{#OpenTag]def[#}</code> et <code>{#CloseTag]def[#}</code>)
+utilisée dans la quatrième et dernière partie (via les appels <code>*:{DyndocDoc.singleCall("hello")}*</code> et <code>*:{DyndocDoc.call([[:open,"hello"],"Mister",[:close,""]])}*</code>)
+qui est ici en charge de l'affichage du résultat. En effet, toutes les balises de la forme <code>{#SeqTag]...<[#}</code> sont censées ne produire aucun affichage
+dans le document de sortie. Il est ainsi possible de rajouter des commentaires en dehors des commandes `dyndoc` (ici, déinition de la fonction `hello`) comme cela a été fait dans le contenu
+de la balise <code>{#SeqTag]<[#}</code>. Sans rentrer dans les détails, notons que cette fonction a un seul paramètre `name` avec pour valeur par défaut `Miss`.
+Toutes les balises `dyndoc` suivant la dernière balise <code>{#SeqTag],[#}</code> forment le corps de la fonction qui sera executé à chaque futur appel de la fonction.
+
+La quatrième partie fait tout d'abord appel par 2 fois à la fonction `hello`. La première forme  <code>*:{DyndocDoc.singleCall("hello")}*</code> correspond à l'appel de la fonction
+sans aucun argument pour le paramètre `name`. La valeur par défaut est ainsi utilisée. Le deuxième appel est lui fourni avec un nouvel argument pour le paramètre `name`.
+Les deux dernières lignes affichées permettent d'extraire successivement la variable `miss` en `ruby`  (via <code>*:{DyndocDoc.get(":","who")}*</code>)
+et `mister` en `R` (via <code>*:{DyndocDoc.get(":r","who")}*</code>). Les différentes commandes d'extraction sont
+<code>*:{DyndocDoc.get(":","...")}*</code> (équivalent à <code>*:{DyndocDoc.get(":rb","...")}*</code> ou <code>*:{DyndocDoc.get("#rb","...")}*</code>) pour des variables `ruby`,
+*:{DyndocDoc.get(":r","...")}* (équivalent à *:{DyndocDoc.get("#r","...")}*) pour des variables `R`
+et <code>*:{DyndocDoc.get("#","...")}*</code> pour de variables `dyndoc`.
+L'usage de variable `dyndoc` n'a été introduit actuellement qu'à travers le paramètre `name` de la fonction `hello`. Notons l'usage de <code>*:{DyndocDoc.get("#","name")}*</code>
+dans le corps de la fonction `hello` pour extraire le contenu du paramètre `name` (considéré par `dyndoc` comme une variable).
+
+Le dernier commentaire porte sur un aspect de présentation du code `dyndoc` concernant les balises du type <code>{#SeqTag]>[#}</code>. En effet, le contenu associé à cette balise
+commence normalement par le premier caractère à droite jusqu'au caractère précédent la prochaine balise incluant les caractères spéciaux invisibles de tabulation
+et de retour à la ligne. Afin de permettre une présentation plus agréable du code @dyndoc@, les règles suivantes ont été introduites :
+
+* le contenu associé à une balise (du type <code>{#SeqTag]>[#}</code>) peut être délimité entre un crochet ouvert (précédé par des espaces facultatifs)
+et un crochet fermé (suivi par des espaces facultatifs)
+* lorsque tout espace commençant une ligne suivi du caractère &#124;, ceux-ci sont automatiquement supprimés
+* lorsque toute fin de ligne (i.e. un retour de ligne &#92;n) précédé par le caractère &#124;, ceux sont automatiquement supprimés.
+
+Ces régles ont été appliquées dans l'exemple introductif à la fois dans le corps de la fonction @hello@ ainsi que pour la dernière balise d'affichage <code>{#SeqTag]>[#}</code>.
+
+### Le même exemple avec appel d'une librairie `dyndoc`
+
+Si les deux codes suivants sont respectivement enregistrés dans les fichier `helloLib.dyn` et `helloBis.dyn`
+placés dans le même répertoire courant
+
+{#dyncodeSrc]helloLib[#}
+
+{#dyncodeSrc]helloBis[#}
+
+alors la ligne de commmande `dyn helloBis.dyn` produirait exactement la même sortie que précédemment. Remarquons que toutes les parties de code
+inutiles pour l'obtention du résultat ont été retirées dans cet exemple.
+
+Le point important à souligner est que `dyndoc` permet de créer ses propres outils de "reporting" que l'on peut placer dans des fichiers (appelés librairies `dyndoc`)
+réutilisables par l'utilisateur dans ses documents source.
+Nous verrons plus tard que `dyndoc` dispose aussi d'un mécanisme de programmation orientée objet (assez similaire à celui du  `R`).
+
+Enfin, le document source `helloBis.dyn` nous indique la structure principale d'un document `dyndoc` (voir Concepts généraux pour plus de détails).
+Dans l'exemple,
+Les balises prioritaires sont <code>{#SeqTag]require[#}</code> et <code>{#SeqTag]main[#}</code> (équivalent à  <code>{#SeqTag]content[#}</code>). Les autres balises <code>{#SeqTag]r<[#}</code>, <code>{#SeqTag]rb<[#}</code>, <code>{#SeqTag]<[#}</code>
+et <code>{#SeqTag]>[#}</code> sont des sous-balises attachées à la balise <code>{#SeqTag]main[#}</code> représentant le contenu principal du document source.
+La balise <code>{#SeqTag]require[#}</code> permet de charger des librairies `dyndoc` avant le
+traitement du contenu principal. Pour un document `latex` par exemple, il existe au même niveau de priorité les balises <code>{#SeqTag]title[#}</code>, <code>{#SeqTag]package[#}</code> et
+<code>{#SeqTag]preamble[#}</code> (par exemples) qui permettent respectivement de définir la partie titre (auteur et date inclus), la partie `\usepackage` et la partie préliminaire
+(appelé preamble en `latex`) d'un document de sortie `latex`.
+
+
+{#hide]
+
+[#page][#_>]h4. Formats de sortie @dyndoc@
+
+A priori @dyndoc@ est un langage de "templating" utilisable pour tout document au format "human readable". Il a été toutefois conçu en tout premier lieu pour générer
+des documents au format @latex@ (le défaut) et @html@. Un fichier @dyndoc@ comprend les extensions suivantes :
+
+{#hide#}|{background:#ddd}. Extensions|{background:#ddd}. Format source|{background:#ddd}. Format de sortie|{#hide#}
+{#hide#}|@.dyn@|Général|A préciser (@latex@ si non précisé)|{#hide#}
+{#hide#}|@.dyn_tex@, @_tmpl.tex@|@latex@|@latex@|{#hide#}
+{#hide#}|@.dyn_html@, @_tmpl.html@|@html@|@html@|{#hide#}
+{#hide#}|@.dyn_txtl@ | @textile@|@html@|{#hide#}
+{#hide#}|@.dyn_ttm@|@ttm@|@html@|{#hide#}
+
+[#title]{#fr]*Commandes @dyndoc@*[#en]*@dyndoc@ commands*[#}
+
+
+[#title]{#fr]*Commandes @ruby@*[#en]*@ruby@ commands*[#}
+
+
+
+[#title]<div>*Interactions*</div>
+[#page]h4. Variables @dyndoc@, @ruby@ et @R@
+
+
+{#dyncodeSrc]varsR[#}
+
+{#dyncodeOut]varsR[#}
+
+
+
+[#title]<div>*Advanced*</div>
+[#page]h4. @options@
+
+{#dyncodeSrc]rverb2Code[#}
+
+{#dyncodeOut]rverb2Code[#}
+
+
+[#hide}

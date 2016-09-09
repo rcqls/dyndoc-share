@@ -1,0 +1,27 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main][#md>]
+### Code `dyndoc` dans un bloc `ruby`
+
+Comme signalé dans la section précédente et de manière similaire, il est possible
+d'éxecuter du code `dyndoc` dans un bloc `ruby`.
+
+##### Boucle `ruby`
+
+{#dyncodeSrc]loopRbCode[#}
+
+{#dyncodeOut]loopRbCode[#}
+
+##### Condition `if` en `ruby`
+
+{#dyncodeSrc]ifRbCode[#}
+
+{#dyncodeOut]ifRbCode[#}
+
+##### Structure `case` en `ruby`
+
+{#dyncodeSrc]caseRbCode[#}
+
+{#dyncodeOut]caseRbCode[#}
