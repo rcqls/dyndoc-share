@@ -18,9 +18,9 @@ p [:rmdOut,$editor_cfg.tmp_dir}+"/#{key}.Rmd",#{=output_file}]
 [#>]{#uv]#{code_#{key}}[#syntax]text.html.markdown.multimarkdown[#render]#{uv_theme}[#}
 [#def}
 
-{#def]Rmd[#,]file[][#,]header[
+{#def]Rmd[#,]file[][#,]title[RMarkdown demo][#,]header[
 ---
-title: "RMarkdown demo"
+title: "#{title}"
 date: "`r Sys.Date()`"
 output:
   rmdformats::readthedown:
