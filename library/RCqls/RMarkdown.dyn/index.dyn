@@ -18,9 +18,13 @@ p [:rmdOut,$editor_cfg.tmp_dir}+"/#{key}.Rmd",#{=output_file}]
 [#>]{#uv]#{code_#{key}}[#syntax]text.html.markdown.multimarkdown[#render]#{uv_theme}[#}
 [#def}
 
-{#def]Rmd[#,]file[][#,]title[RMarkdown demo][#,]header[
+{#def]Rmd[#,]file[]
+[#,]title[RMarkdown demo]
+[#,]uv_theme[solarized]
+[#,]css[]
+[#,]header[
 ---
-title: "#{title}"
+title: ":{#{=title}.strip}"
 date: "`r Sys.Date()`"
 output:
   rmdformats::readthedown:
@@ -52,6 +56,12 @@ opts_knit$set(width=75)
 [#=]rmd_content[
 #{header}
 #{options}
+{#if]#{+?uv_theme}[#>]<style type="text/css">@import url("/tools/uv/#{uv_theme}.css");</style>[#if}
+{#if]#{+?css}[#rb>]
+#{=css}.strip.split(",").each do |css| #
+{#>]<style type="text/css">@import url(":{css.strip}");</style>[#nl][#>}
+end
+[#if}
 #{content}
 ]
 [#=]rmd_file[:{$editor_cfg.tmp_dir}/#{file}.Rmd]
