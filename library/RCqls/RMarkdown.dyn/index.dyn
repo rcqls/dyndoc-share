@@ -106,3 +106,42 @@ opts_knit$set(width=75)
 ```
 ][#>]{#blck][#yield]default[#blck}[#Rmd}
 [#def}
+
+{#def]maketoc[#,]html[#rb<]
+
+toc,subtoc=[],[]
+#{=html}.split("\n").each  do |l| #
+  if l =~ /<h(1|2) id\=\"([^\>]*)\"[^\>]*\>(.*)<\/h(1|2)>/
+    if $1.to_i==1
+      unless subtoc.empty?
+        toc[-1][:subtoc]=subtoc
+        subtoc=[]
+      end
+      toc << {key: $2, name: $3}
+    else
+      subtoc << {key: $2, name: $3}
+    end
+  end
+end
+
+
+unless subtoc.empty?
+  toc[-1][:subtoc]=subtoc
+  subtoc=[]
+end
+
+res="<ul>\n"
+cur_level=0
+toc.each do |e| #
+    res << "\t"+'<li><a href="#'+e[:key]+'">'+e[:name]+"</a>"
+    unless e[:subtoc]
+      res << "</li>\n"
+    else
+      res << "\n\t\t<ul>\n"
+      e[:subtoc].each {|e2| res << "\t\t\t"+'<li><a href="#'+e2[:key]+'">'+e2[:name]+"</a></li>\n" }
+      res << "\t\t</ul>\n\t</li>\n"
+    end
+end
+res << "</ul>\n"
+[#rb>]res
+[#def}
