@@ -1,4 +1,4 @@
-{#def]shiny[#,]path[][#,]ui[][#,]server
+{#def]shiny[#,]path[][#,]ui[][#,]server[#,]width[800][#,]height[600]
 [#rb<]
 cache={path: #{=path}.strip, ui: #{=ui}.strip, server: #{=server}.strip}
 path_dir=File.join(ENV["HOME"],"ShinyApps",cache[:path])
@@ -10,7 +10,7 @@ FileUtils.mkdir_p path_dir
     f << cache[mode]
   end
 end
-[#>]<iframe src="http://shiny.dyndoc.fr/users/cqls/:{cache[:path]}" width="800" height="600" frameborder="0"></iframe>
+[#>]<iframe src="http://shiny.dyndoc.fr/users/cqls/:{cache[:path]}" width="#{width}" height="#{height}" frameborder="0"></iframe>
 [#def}
 
 {#hide]
