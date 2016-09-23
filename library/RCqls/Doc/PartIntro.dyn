@@ -31,7 +31,7 @@ sans aucun argument pour le paramètre `name`. La valeur par défaut est ainsi u
 Les deux dernières lignes affichées permettent d'extraire successivement la variable `miss` en `ruby`  (via <code>*:{DyndocDoc.get(":","who")}*</code>)
 et `mister` en `R` (via <code>*:{DyndocDoc.get(":r","who")}*</code>). Les différentes commandes d'extraction sont
 <code>*:{DyndocDoc.get(":","...")}*</code> (équivalent à <code>*:{DyndocDoc.get(":rb","...")}*</code> ou <code>*:{DyndocDoc.get("#rb","...")}*</code>) pour des variables `ruby`,
-*:{DyndocDoc.get(":r","...")}* (équivalent à *:{DyndocDoc.get("#r","...")}*) pour des variables `R`
+<code>*:{DyndocDoc.get(":r","...")}*</code> (équivalent à <code>*:{DyndocDoc.get("#r","...")}*</code>) pour des variables `R`
 et <code>*:{DyndocDoc.get("#","...")}*</code> pour de variables `dyndoc`.
 L'usage de variable `dyndoc` n'a été introduit actuellement qu'à travers le paramètre `name` de la fonction `hello`. Notons l'usage de <code>*:{DyndocDoc.get("#","name")}*</code>
 dans le corps de la fonction `hello` pour extraire le contenu du paramètre `name` (considéré par `dyndoc` comme une variable).

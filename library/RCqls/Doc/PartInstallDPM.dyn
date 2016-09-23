@@ -1,0 +1,26 @@
+[#require]
+Tools/Web/Html
+RCqls/Doc/ExampleCodeHtml
+RCqls/Doc/CodeTools
+[#main]
+[#=]::code.testdpm[{#dyn>][#require]LibTest/tools
+[#main]
+{#hello]Moi[#}[#dyn>}]
+[#md>]
+## Dyndoc Package Manager
+
+* `dpm install <github repo>` where `<github repos>` is the name of a Github repo containing one or more dyndoc folder:
+```{bash}
+dpm install rcqls/dyndoc-library-demo
+```
+* `dpm link`
+```{bash}
+dpm link rcqls/dyndoc-library-demo/LibOne LibTest
+# or
+dpm link rcqls/dyndoc-library-demo/LibTwo LibTest
+```
+* Now depending of using first or second link, the following dyndoc file with content:
+{#dyncodeSrc]testdpm[#}
+would answer: `hello Moi` or `bonjour Moi`.
+
+* `dpm unlink` (TODO)

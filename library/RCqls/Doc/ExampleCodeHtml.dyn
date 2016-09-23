@@ -1,4 +1,4 @@
-[#=]code.hello[{#dyn>]
+[#=]::code.hello[{#dyn>]
 [#R<]# R code without output since R<
 who <- "MisteR"
 [#rb<]# ruby code without output since rb<
@@ -19,13 +19,13 @@ Next, definition of function hello
 
 [#dyn>}]
 
-[#=]code.helloLib[{#dyn>]
+[#=]::code.helloLib[{#dyn>]
 {#def]hello[#,]name[Miss][#>]
   [from Dyn, Hello #{name}]
 [#}
 [#dyn>}]
 
-[#=]code.helloBis[{#dyn>]
+[#=]::code.helloBis[{#dyn>]
 [#require]helloLib
 [#main][#r<]who <- "MisteR"[#rb<] who = "Miss Ruby"
 [#>]
@@ -39,18 +39,18 @@ Next, definition of function hello
 
 [#%]### tags ###
 
-[#=]code.tags[{#dyn>]{#...] ... [#...] ... [#...] ... [#...} [#dyn>}]
+[#=]::code.tags[{#dyn>]{#...] ... [#...] ... [#...] ... [#...} [#dyn>}]
 
-[#=]code.tags2[{#dyn>]{#...] ...
+[#=]::code.tags2[{#dyn>]{#...] ...
 [#...] ...
 [#...] ...
 [#...} [#dyn>}]
 
-[#=]code.tags3[{#dyn>]{#...] ...
+[#=]::code.tags3[{#dyn>]{#...] ...
 [#...] ... [#...] ... [#...] ...
 [#...] ... [#...} [#dyn>}]
 
-[#=]code.tags4[{#dyn>]{#cmd1]contenu associé la la balise ouverte de la commande de bloc cmd1
+[#=]::code.tags4[{#dyn>]{#cmd1]contenu associé la la balise ouverte de la commande de bloc cmd1
 [#cmd1Seq1]début du contenu de la balise cmd1Seq1{#cmd2] ... [#cmd2}
 suite du contenu de la balise cmd1Seq1
 [#cmd1Seq2]contenu de la balise cmd1Seq2[#cmd1}
@@ -58,7 +58,7 @@ suite du contenu de la balise cmd1Seq1
 
 [#%]##
 
-[#=]code.varsDyndoc[{#dyn>]
+[#=]::code.varsDyndoc[{#dyn>]
 [#>]toto[TOTO][#=]titi[TITI]
 [#>]First step: (#{toto}) AND (#{titi})
 [#>]toto+[ and TOTO2][#+]titi[ and TITI2]
@@ -68,7 +68,7 @@ suite du contenu de la balise cmd1Seq1
 [#dyn>}]
 
 
-[#=]code.varsR[{#dyn>]
+[#=]::code.varsR[{#dyn>]
 [#=]toto[TOTO]
 [#%]Ruby variables from Dyndoc environment
 [#=]toto@[[1,3,2]]
@@ -78,7 +78,7 @@ suite du contenu de la balise cmd1Seq1
 [#>] [Content of toto$: #{toto$}<\n>]
 [#dyn>}]
 
-[#=]code.inRbCode[{#dyn>]
+[#=]::code.inRbCode[{#dyn>]
 [#rb<]  <toto@>[0]= <toto@>.inject(0) { |s,v| s += v }
  		<toto:> = <toto:>.downcase
  		<toto[1]$> = <toto$>.inject(0) { |s,v| s += v }
@@ -86,7 +86,7 @@ suite du contenu de la balise cmd1Seq1
 contains #{toto} (resp. #{toto@} and #{toto$})
 [#dyn>}]
 
-[#=]code.inRCode[{#dyn>]
+[#=]::code.inRCode[{#dyn>]
 [#R<]	<toto@>[1]= 1L
  		<toto:> = toupper(<toto:>)
  		<toto$>[1] = 1
@@ -94,14 +94,14 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 contains #{toto} (resp. #{toto@} and #{toto$})
 [#dyn>}]
 
-[#=]code.ifTag[{#dyn>]
+[#=]::code.ifTag[{#dyn>]
 [#rb<]number=11
 [#>]number :{number} is {#if]number%2==1[#>]odd[#else]even[#if}
 [#R<]number <- 28
 [#>]number :r{number} is {#if]:r{number%%2==1}[#>]odd[#else]even[#if}
 [#dyn>}]
 
-[#=]code.ifRCode[{#dyn>]
+[#=]::code.ifRCode[{#dyn>]
 [#R>]number=31
     if(number%%2==1)
         {#>]number :r{number} is odd[#>}
@@ -109,7 +109,7 @@ contains #{toto} (resp. #{toto@} and #{toto$})
         {#>]number :r{number} is even[#>}
 [#dyn>}]
 
-[#=]code.ifRbCode[{#dyn>]
+[#=]::code.ifRbCode[{#dyn>]
 [#rb>]number=33
     if number%2==1
         {#>]number :{number} is odd[#>}
@@ -118,13 +118,13 @@ contains #{toto} (resp. #{toto@} and #{toto$})
     end
 [#dyn>}]
 
-[#=]code.ifSeqTag[{#dyn>]
+[#=]::code.ifSeqTag[{#dyn>]
 [#rb<]number=14[#R<]number <- 25
 [#>]number :{number} is [#?]number%2==1[#>]odd[#?]else[#>]even[#?]end
 [#>]<\n>number :r{number} is [#?]:r{number%%2==1}[#>]odd[#?]else[#>]even
 [#dyn>}]
 
-[#=]code.caseTag[{#dyn>]
+[#=]::code.caseTag[{#dyn>]
 [#=]todo[first,third,second,first]
 [#>]This is the list of the translated words in French:
 {#case]#{todo}
@@ -134,7 +134,7 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 [#case}
 [#dyn>}]
 
-[#=]code.caseRCode[{#dyn>]
+[#=]::code.caseRCode[{#dyn>]
 [#=]todo[first,third,second,first]
 [#>]This is the list of the translated words in French:
 [#R>]
@@ -146,7 +146,7 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 	}
 [#dyn>}]
 
-[#=]code.caseRbCode[{#dyn>]
+[#=]::code.caseRbCode[{#dyn>]
 [#=]todo[first,third,second,first]
 [#>]This is the list of the translated words in French:
 [#rb>]#{=todo}.split(",").each do |todo| #
@@ -158,14 +158,14 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 end
 [#dyn>}]
 
-[#=]code.loopRCode[{#dyn>]
+[#=]::code.loopRCode[{#dyn>]
 [#>]Dyndoc inside R block!
 [#R>] for(cpt in 1:4) { {#>]item:r{cpt} [#>} }
 [#>]<\n>but also,
 [#R>] sapply(5:8,function(cpt) {#>]item:r{cpt} [#>})
 [#dyn>}]
 
-[#=]code.loopRbCode[{#dyn>]
+[#=]::code.loopRbCode[{#dyn>]
 [#>]Dyndoc inside ruby block!
 [#rb>] for cpt in 1..4 do {#>]item:{cpt} [#>}; end
 [#>]<\n>but also,
@@ -175,7 +175,7 @@ end
 
 [#%]## R code
 
-[#=]code.RInCode[{#dyn>]
+[#=]::code.RInCode[{#dyn>]
 [#R<]# No output even for the following "cat(...)"
 a <- c("toto","titi")
 cat(a,'\n')
@@ -189,13 +189,13 @@ cat(a3)
 :r{a3}
 [#dyn>}]
 
-[#=]code.rverbCode[{#dyn>]
+[#=]::code.rverbCode[{#dyn>]
 [#R>>]x <- rnorm(10)
 x
 mean(x)
 [#dyn>}]
 
-[#=]code.rverb2Code[{#dyn>]
+[#=]::code.rverb2Code[{#dyn>]
 [#<] {#r]a<-rnorm(10) [#in]toto[#}
 {#def]testRVerb[#,]opt[exo]
 [#<]{#opt]#{opt}[#}
@@ -213,7 +213,7 @@ mean(x)
 [#>]{#testRVerb]cor,-exo[#}
 [#dyn>}]
 
-[#=]code.ROutCode[{#dyn>]
+[#=]::code.ROutCode[{#dyn>]
 [#R>]# Each output goes to the document
 a <- c("toto","titi")
 cat(a,'\n')
@@ -226,7 +226,7 @@ cat(a3)
 
 [#%]## Ruby code
 
-[#=]code.RbInCode[{#dyn>]
+[#=]::code.RbInCode[{#dyn>]
 [#rb<]# No output even for the following "puts"
 a=["toto","titi"]
 puts a
@@ -240,7 +240,7 @@ puts a3
 :{a3}
 [#dyn>}]
 
-[#=]code.RbOutCode[{#dyn>]
+[#=]::code.RbOutCode[{#dyn>]
 [#rb>]# Each output goes to the document
 a=["toto","titi"]
 puts a
@@ -253,7 +253,7 @@ puts a3
 
 [#%]## General
 
-[#=]code.blck_tags[{#dyn>]
+[#=]::code.blck_tags[{#dyn>]
 [#%]This text is ignored as a comment.
 
 [#>]This is two lines put in three
@@ -276,12 +276,12 @@ For each line:
 [#>]
 [#dyn>}]
 
-[#=]code.blck_tags_orig[{#dyn>]
+[#=]::code.blck_tags_orig[{#dyn>]
 ...[#<]...
 [#dyn>}]
 
 [#%]C'est l'original ici uniquement pour sauvergarde!!!
-[#=]code.varsAll[{#dyn>]
+[#=]::code.varsAll[{#dyn>]
 [#>]Text variables from Dyndoc environment: declaration and use
 [#=]toto[TOTO]
 [#>] [#{toto}|]
@@ -307,7 +307,7 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 contains #{toto} (resp. #{toto@} and #{toto$})
 [#dyn>}]
 
-[#=]code.def[{#dyn>]
+[#=]::code.def[{#dyn>]
 [#<]
 	{#def]toto[#,]par1[value1][#,]par2@[[:value2,"value2bis"]]
 	[#,]ary[<<comp1[valcomp1]<<comp2[valcomp2]]
@@ -326,7 +326,7 @@ contains #{toto} (resp. #{toto@} and #{toto$})
 	|{#toto][#par2@]"value2alt".upcase[#ary.comp2]val2xomp2[#}]
 [#dyn>}]
 
-[#=]code.array_list[{#dyn>]
+[#=]::code.array_list[{#dyn>]
 [#=]list[<<a[listAContent]<<b[listBContent]]
 [#=]array[<<[ary1Content]<<[ary2Content]]
 [#>]list content: a=#{list.a}, b=#{list.b}

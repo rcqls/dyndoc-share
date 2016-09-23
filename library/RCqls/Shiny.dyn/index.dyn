@@ -1,0 +1,35 @@
+{#def]shiny[#,]path[][#,]ui[][#,]server
+[#rb<]
+cache={path: #{=path}.strip, ui: #{=ui}.strip, server: #{=server}.strip}
+path_dir=File.join(ENV["HOME"],"ShinyApps",cache[:path])
+require 'fileutils'
+FileUtils.mkdir_p path_dir
+([:ui,:server]).each do |mode| #
+  #p mode.to_s+".R"
+  File.open(File.join(path_dir,mode.to_s+".R"),"w") do |f| #
+    f << cache[mode]
+  end
+end
+[#>]<iframe src="http://shiny.dyndoc.fr/users/cqls/:{cache[:path]}" width="800" height="600" frameborder="0"></iframe>
+[#def}
+
+{#hide]
+{#newBlck]shiny[#aggregate]path,ui,server
+[#blck]:pre[#rb<]cache(path: "")
+[#blck]path[#do_code]cache[:path]=blckMngr.parse.strip
+[#blck]ui[#do_code]cache[:ui]=blckMngr.parse.strip
+[#blck]server[#do_code]cache[:server]=blckMngr.parse.strip
+[#blck]:post
+[#rb<]
+path=File.join(ENV["HOME"],"ShinyApps",cache[:path])
+require 'fileutils'
+FileUtils.mkdir_p path
+([:ui,:server]).each do |mode| #
+  p mode.to_s+".R"
+  File.open(File.join(path,mode.to_s+".R"),"w") do |f| #
+    f << cache[mode]
+  end
+end
+[#>]<iframe src="http://shiny.dyndoc.fr/users/cqls/:{cache[:path]}" width="800" height="600" frameborder="0"></iframe>
+[#newBlck}
+[#hide}

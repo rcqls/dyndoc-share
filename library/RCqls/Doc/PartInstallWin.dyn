@@ -1,0 +1,59 @@
+[#md>]
+### for Windows user
+
+Installation is proposed with basic installers and also with [scoop](http://scoop.sh) which allow us to install the required tools in command-line mode.
+
+#### Common pre-installations
+
+* [ConEmu](https://conemu.github.io) (optional but strongly required). Rmk: `conemu`can be installed also via `scoop` but in such a case it is not in the Windows menu.
+* [R](http://cran.r-project.org/bin/windows/base/),  [Rtools](https://cran.r-project.org/bin/windows/Rtools/) and  [RStudio](https://www.rstudio.com/products/rstudio/download/) (pandoc is embedded)
+* add R (`C:\Program Files\R\R-3.2.3\bin\i386` or `C:\Program Files\R\R-3.2.3\bin\x64`) and pandoc (`C:\Program Files\RStudio\bin\pandoc\bin`) to the PATH environment variable.
+
+
+#### Installation with [scoop](http://scoop.sh) (my preferred choice)
+
+`scoop` requires powershell version >= 3 installed.
+
+* open `powershell` and install [scoop](http://scoop.sh):
+````{bash}
+iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
+set-executionpolicy unrestricted -s cu
+````
+* `scoop install git`
+* `scoop install ruby` (ruby and devkit automatically installed)
+* `scoop install latex`
+* [scoop-extras](https://github.com/lukesampson/scoop-extras) (not required but allow to install Application like Atom): `scoop bucket add extras`
+* Rmk: if `scoop install latex` fails, it is sometimes because the current version is obsolete in the scoop directory, then I have my own scoop-bucket (thanks scoop!):
+```{bash}
+scoop bucket add rcqls https://github.com/rcqls/scoop-bucket
+scoop install rcqls/miktex
+## pandoc
+scoop install rcqls/pandoc
+```
+* If you want to update `scoop` or applications installed by `scoop`:
+```{bash}
+scoop status
+scoop update
+## scoop update <application>
+```
+
+#### Basic with Windows installers
+
+* ruby: [rubyinstaller](http://rubyinstaller.org) and [devkit](http://rubyinstaller.org/add-ons/devkit) (Advice: put them in the same directory `C:\tools` and follow the instructions for devkit: `ruby dk.rb init` and then `ruby dk.rb install`)
+* [git](https://git-for-windows.github.io) (for Windows: useable in cmd)
+* latex (with pdflatex in PATH) : [MikTex](http:/miktex.org)
+
+#### Common post-installations
+
+* Open `powershell` terminal (ConEmu is excellent) and then:
+```{bash}
+gem install dyndoc-ruby --no-ri --no-rdoc
+R -e 'install.packages("devtools",repos="http://cran.rstudio.com/")'
+R -e 'devtools::install_github("rcqls/rb4R",args="--no-multiarch")'
+R -e 'install.packages("base64",repos="http://cran.rstudio.com/")'
+```
+
+* optional but nice-to-have:
+    * `gem install asciidoctor --no-ri --no-rdoc`
+    * If RStudio not installed: [pandoc](https://github.com/jgm/pandoc/releases) or `scoop install pandoc`
+    * [Ttm](http://hutchinson.belmont.ma.us/tth/mml)

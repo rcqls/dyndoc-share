@@ -19,6 +19,7 @@
 [#def}
 
 {#def]dyncodeSrc[#,]key[]
+[#rb<]#p [:key,#{=key},#{=code.#{key}}]
 [#%]Needs || after atom since the last | is not considered!
 [#>]{#uv]#{code.#{key}}[#syntax]dyndoc[#render]solarized[#}
 [#def}
