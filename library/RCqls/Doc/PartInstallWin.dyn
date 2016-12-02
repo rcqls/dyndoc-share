@@ -1,5 +1,23 @@
 [#md>]
-### for Windows user
+### Windows 10 user with WSL (Ubuntu Bash)
+
+With WSL (Ubuntu Bash), Windows user has access to a Ubuntu linux system. It is then possible to install dyndoc following the linux install steps.
+The simplest way is still to just copy and paste the following command in a the Ubuntu bash terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-ubuntu.sh)"`
+If the message after launching `pandoc -v` is `timer_create not implemented!`, you could  solve the problem by adding `export GHCRTS=-V0` at the end of the file `/home/<username>/.bashrc` (after replacing `<username>` with your current Ubuntu username)
+
+* directly from Ubuntu Bash:
+```{bash}
+sudo apt-get install nano
+nano ~/.bashrc
+```
+Go to the end of file and append a new line `export GHCRTS=-V0`.
+`[Ctrl+O]`, `[Enter]` and `[Ctrl+X]` to save and quit.
+
+* indirectly from Windows: open the file `C:\Users\rdrouilh\AppData\Local\lxss\home\<username>\.bashrc` with some text editor. Go to the end of file and append a new line `export GHCRTS=-V0`. Save and quit the text editor.
+
+In order to check that now `pandoc` is fixed, reopen an Ubuntu Bash Terminal and now `pandoc -v` does behave properly.
+
+### Windows user without WSL (Ubuntu Bash)
 
 Installation is proposed with basic installers and also with [scoop](http://scoop.sh) which allow us to install the required tools in command-line mode.
 

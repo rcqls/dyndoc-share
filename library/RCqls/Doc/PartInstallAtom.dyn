@@ -1,23 +1,33 @@
 [#md>]
 ## Dyndoc inside Atom editor
 
+### Automatic installation for MacOSX and Ubuntu system
+
+**IMPORTANT** This install can work for Windows 10 with WSL when combined with Xming install. It is however more convenient to use atom directly inside Windows. 
+To install all requirements for using dyndoc inside atom, copy and paste in the terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-atom.sh)"`
+
+### Manual installation
+
 * Install [Atom](https://atom.io)
     * for MacOSX user: `brew cask install atom` (Important: atom can be installed with a basic installer but this way allows us to set the environment variable PATH properly)
     * for Windows user: `scoop install atom`
 * install packages `(atom-)dyndoc` and `(atom-)language-dyndoc` via settings inside atom (via comamnd line: `apm install dyndoc language-dyndoc`)
-
-## Dyndoc testing inside Atom editor
-
-* dyndoc server: open console and type
+* install a required dyndoc library: open console and type
 ```{bash}
 dpm install rcqls/DyndocWebTools.dyn  # install DyndocWebTools.dyn (git is required)
 dpm link rcqls/DyndocWebTools.dyn     # to be required in dyndoc
-dyn-srv                               # launch the dyndoc server
 ```
 * optional atom packages but nice-to-have or even almost required:
-    * asciidoc-preview, language-asciidoc (made by asciidoctor team)
-    * pdf-view
-    * Command line: `apm install asciidoc-preview language-asciidoc pdf-view`
+  * asciidoc-preview, language-asciidoc (made by asciidoctor team)
+  * pdf-view
+  * Command line: `apm install asciidoc-preview language-asciidoc pdf-view`
+
+## Dyndoc testing inside Atom editor
+
+* launch dyndoc server in a terminal:
+```{bash}
+dyn-srv
+```
 * open atom and select ~/dyndoc/demo folder, open first.dyn
 * to open dyndoc viewer: `[Ctrl+Alt+x] [t]` (Windows and Linux) or `[Cmd+Alt+x] [t]` (MacOSX)
-* to execute dyndoc code: `[Ctrl+Alt+d]` (Windows and Linux) or `[Cmd+Alt+x] [d]` (MacOSX)
+* to execute dyndoc code: `[Ctrl+Alt+x] [d]` (Windows and Linux) or `[Cmd+Alt+x] [d]` (MacOSX)

@@ -1,0 +1,27 @@
+{#def]srcCode[#,]lang[][#,]code[][#,]theme[solarized]
+[#rb<]require "dyndoc/common/uv"
+code=#{=code}
+res=Uv.parse(code.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"#{lang}.syntax") , false, #{=theme},false)
+#p [:res,res]
+[#>]:{res}
+[#def}
+
+{#def]redCode[#,]code[]
+[#rb<]require "dyndoc/common/uv"
+code=#{=code}
+res=Uv.parse(code.force_encoding("utf-8"), "xhtml", File.join(Uv.syntax_path,"rebol.syntax") , false, "solarized",false)
+#p [:res,res]
+[#>]:{res}
+[#def}
+
+{#def]redCode[#,]code[][#>]{#srcCode]source.shell[#code]:{#{=code}.strip}[#srcCode}[#def}
+
+{#def]bashCode[#,]code[][#>]{#srcCode]source.shell[#code]:{#{=code}.strip}[#srcCode}[#def}
+
+{#def]RCode[#,]code[][#>]{#srcCode]source.r[#code]:{#{=code}.strip}[#srcCode}[#def}
+
+{#def]RConsoleCode[#,]code[][#>]{#srcCode]source.r-console[#code]:{#{=code}.strip}[#srcCode}[#def}
+
+{#def]rbCode[#,]code[][#>]{#srcCode]source.ruby[#code]:{#{=code}.strip}[#srcCode}[#def}
+
+{#def]pyCode[#,]code[][#>]{#srcCode]source.python[#code]:{#{=code}.strip}[#srcCode}[#def}

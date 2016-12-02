@@ -1,8 +1,16 @@
 [#md>]
 ### for MacOSX user
 
-* requirements
-    * `ruby`: [Xcode](https://developer.apple.com/downloads/) provides one and [homebrew](http://brew.sh) is based on ruby.
+#### Requirements
+
+* `ruby` installation depends on [Xcode](https://developer.apple.com/downloads/)
+* [homebrew](http://brew.sh) is based on ruby.
+
+A step by step install is then described below. For a quicker automatic install, just copy and paste the following command in a terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-mac.sh)"`
+
+#### **Step by step install**
+
+* Complete requirements
     * Command-line tools for Xcode (to access ruby): inside Terminal, `xcode-select --install`
 (details is proposed in the [homebrew github](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Installation.md#installation) website).
     * gem config: create ~/.gemrc containing `gem: --user-install --no-ri --no-rdoc`. This simply defines the default behavior of `gem` command. `--no-ri --no-rdoc` avoids to generate documentation when '--user-install' installs gem at the predefined user folder `~/.gem/ruby/<ruby-version>`. **Important**: do not forget then to add the following lines in your `.bash_profile`:

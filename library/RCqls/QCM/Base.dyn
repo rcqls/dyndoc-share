@@ -1,0 +1,177 @@
+[#package]\usepackage{framed}
+[#main][#<]
+
+##### qcmChoices and qcmChoicesList
+
+{#def]qcmChoices[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
+[#rb<]choices=#{=choices}.strip
+#p [:choices,choices]
+res_table=[]
+lignes=choices.split("\n").map{|e| e.strip}
+#p [:lignes,lignes]
+lignes.each do |ligne| #
+  #p [:ligne,ligne]
+  unless ["%","#"].include? ligne[0,1]
+    res_ligne=[]
+    if ligne[0,2]=='<<'
+      lab,*rest=ligne[2..-1].split(">>")
+      ligne=rest.join(">>").strip
+      res_ligne << lab #not a Hash
+    end
+    unless ligne.empty?
+      elts=ligne.split(" | ").map{|e| e.strip}
+      elts.each do |elt| #
+        res_elt={}
+        res_elt[:txt],*opts=elt.split("&").map{|e| e.strip}
+        opts.each{|e| res_elt[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/} unless opts.empty?
+        res_ligne << res_elt
+      end
+    end
+    res_table << res_ligne
+  end
+end
+#p [:res_table,res_table]
+[#rb>]
+cpt=-1
+quest=[]
+#Dyndoc.warn :res_table,[res_table,res_table.length]
+res_table.each_with_index do |res_ligne,li| #
+  {#>]\noindent [#>}
+  #Dyndoc.warn :res_ligne,[li,res_ligne]
+  res_ligne.each do |res_elt| #
+    if res_elt.is_a? String
+      {#>]:{res_elt}[#>}
+      quest << res_elt
+    else
+      cpt+=1
+      label=(("A".ord)+cpt).chr
+      txt,answer=(res_elt[:txt][-1,1]=="*" ? [res_elt[:txt][0...-1],:good] : [res_elt[:txt],:bad] )
+      size=res_elt[:size] || ""
+      size=#{=size} if size.empty? and #{+?size}
+      quest << {label: label, answer: answer}
+      {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#} :{txt} {#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
+    end
+  end
+  {#>]\\[#>} if li != res_table.length-1 and !(res_ligne.length==1 and res_ligne[0].is_a? String)
+end
+# format of title is: <family title>::<key>
+prj,title,k=#{=title}.split("/")
+# ensure that $qcm and $qcm[title] exists
+$qcm={} unless $qcm
+$qcm[prj]={} unless $qcm[prj]
+$qcm[prj][title]={} unless $qcm[prj][title]
+$qcm[prj][title][k] = quest
+## QUESTION: can be also saved as a whole object in ~/dyndoc/???
+dir=File.expand_path File.join("~",".qcmAMC")
+unless File.directory? dir
+  require 'fileutils'
+  FileUtils.mkdir_p dir
+end
+File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
+[#def}
+
+### NOT FINISHED!!!
+## {#qcmChoicesList]prj/title/key[#content]...[#}
+## or {#qcmChoicesList]prj/title/key1+key2+key3[#content]...[#}
+
+{#def]qcmChoicesList[#,]title[][#,]content[]
+[#>]txt[]
+[#rb<]prj,title,keys=#{=title}.strip.split("/").map{|e| e.strip}
+keys=keys.split("+")
+content=#{=content}.split(/---+\n/).map{|e| e.strip}
+##p content
+keys=(1..content.length).map{|e| keys[0]+e.to_s} if keys.length != content.length and keys.length==1
+##p keys
+content.each_with_index do |b,i| #
+  k=keys[i]
+  ##p [:key,k,b]
+  {#<][#+]txt[{#qcmChoices]:{prj}/:{title}/:{k.to_s}[#choices]:{b}[#qcmChoices}\\][#<}
+end
+##p [:txt,#{=txt}]##
+[#>]
+[{#qcmFramed]#{txt}[#qcmFramed}]
+[#def}
+
+{#def]qcmFramed[#,]content[][#>]
+\begin{framed}
+\noindent \textbf{Réponses aux choix (pour remplir le Formulaire de REPONSES)}~:\\
+#{content}
+\end{framed}
+[#def}
+
+#####################################
+#### QCM File: new, free, save load
+#####################################
+{#def]qcmInit[#,]prj[]
+[#rb<]
+$qcm={} unless $qcm
+prj=#{=prj}
+##p [:prj,prj]
+unless $qcm[prj]
+  qcmAMC=File.expand_path File.join("~",".qcmAMC",prj+".qcm")
+  #p [qcmAMC,(File.exists? qcmAMC)]
+  if File.exist? qcmAMC
+    $qcm[prj]=eval(File.read(qcmAMC))
+    ##p [:qcm,$qcm[prj]]
+  end
+end
+[#def}
+
+{#def]qcmLoad[#,]title[]
+[#rb<]prj,title,key=#{=title}.split("/")
+bareme="mz=1"
+bareme=$qcmBareme[prj][title][key] if $qcmBareme and $qcmBareme[prj] and $qcmBareme[prj][title] and $qcmBareme[prj][title][key]
+#p [:qcmLoad,prj,title,key]
+[#<]{#qcmInit]:{prj}[#}
+[#rb<]#p [:qcm,$qcm[prj]]
+[#rb>]
+if $qcm[prj] and $qcm[prj][title]
+  choices=$qcm[prj][title][key]
+  if choices[0].is_a? String
+    txt=choices[0]
+    {#>]:{txt} [#>}
+    choices=choices[1..-1]
+  end
+  {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{:{bareme}}\begin{reponsesperso}[o]][#>}
+  choices.each do |a| #
+    choice="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
+    {#>]:{choice}{:{a[:label]}\quad}[#>}
+  end
+  {#>][\end{reponsesperso}\end{questionmult}][#>}
+end
+[#def}
+
+{#def]qcmLoadAuto[#,]title[]
+[#rb<]prj,title=#{=title}.split("/")
+#p #{=title}
+[#<]{#qcmInit]:{prj}[#}
+[#rb>]
+if $qcm[prj] and qcm=$qcm[prj][title]
+  qcm.keys.each do |k| #
+    {#>]\noindent {#qcmLoad]#{title}/:{k}[#}\\[#>}
+  end
+end
+[#def}
+
+{#def]qcmBareme[#,]content[][#rb<]
+$qcmBareme={} unless $qcmBareme
+lignes=#{=content}.strip.split("\n").map{|e| e.strip}
+lignes.each do |ligne| #
+  elts=ligne.split(" | ")
+  prj,title=nil,nil #to save the values in the following loop
+  elts.each_with_index do |e,i| #
+    path,*bareme=e.split(":")
+    bareme=bareme.join(":").strip
+    if i==0
+      prj,title,key=path.strip.split("/")
+    else
+      key=path.strip
+    end
+    $qcmBareme[prj]={} unless $qcmBareme[prj]
+    $qcmBareme[prj][title]={} unless $qcmBareme[prj][title]
+    $qcmBareme[prj][title][key] = bareme
+  end
+end
+#
+p [:bareme,$qcmBareme]
+[#def}
