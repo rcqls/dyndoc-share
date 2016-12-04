@@ -3,9 +3,9 @@ RCqls/QCM/Base
 [#package]\usepackage{framed}
 [#main][#R<]require(CqlsEAP)[#<]
 
-### qcmSrv???
+### qcmSrvHypoTestExo provides any info related to .test object extracted from srv of class HypoTestExo (gathering .param and .test objects)
 
-{#def]qcmSrvWhat[#,]srv[][#,]what[][#>]
+{#def]qcmSrvHypoTestExo[#,]srv[][#,]what[][#>]
 [{#case]#{what}
 [#when]H0[#>][{#H0]srv.test[#}][#when]h0[#>][{#H0Theta]srv.test[#}]
 [#when]H0|<[#>][{#qcmBadH0]srv.test[#,]<[#}][#when]h0|<[#>][{#qcmBadH0Theta]srv.test[#,]<[#}]
@@ -58,11 +58,19 @@ RCqls/QCM/Base
 [#def}
 
 
-What I want: {#qcmSrvH1]p(A) > 0.15[#,]H0[#} H0 could be H1, stH0 (stat de test H0), rdq (quantile),rdp (p-valeur), ccl... and pp (partie prelim)
+[#%]What I want: {#qcmSrvH1]p(A) > 0.15[#,]H0[#}
+* H0 could be H1,
+* stH0 (stat de test H0),
+* rdq (quantile),
+* rdp (p-valeur),
+* ccl...
+* pp (partie prelim)
 When <what> contains "|" this means that there is a modifier for bad answer:
 Example: H0|< or H0:> or HO|!= mean that this is a false answer for H0
 Rmk: method starting by qcmBad is generally only used for qcm goal!
 %%% Facility Class
+[#<]
+
 {#def]qcmSrvH1[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
 [#rb<]h1=#{=h1}
 #p :h1;p h1
@@ -102,7 +110,7 @@ if(#{=data} != "") load(path.data("#{data}.RData"))
 [#new}
 [#?]end
 [#rb<]#p [#{=what},par,pb,pbs,refR]
-[#>][{#qcmSrvWhat]:qcmSrv[#what]#{what}[#}]
+[#>][{#qcmSrvHypoTestExo]:qcmSrv[#what]#{what}[#}]
 [#def}
 
 
@@ -114,7 +122,7 @@ The numbers of elements of every lines may differ!
 ...
 <h1-p1> : data=<data-p1> & env=<env-p1> & init=<init-p1> & size=<size-p1> | <h1-p2> : data=<data-p2> & env=<env-p2> & init=<init-p2> & size=<size-p2> | ...
 
-{#def]qcmTest[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
+{#def]qcmHypoTest[#,]title[][#,]choices[][#,]space[\quad][#,]size[]
 [#rb<]choices=#{=choices}.strip
 #p [:choices,choices]
 res_table=[]
@@ -138,37 +146,22 @@ lignes.each do |ligne| #
 end
 #p [:res_table,res_table]
 [#rb>]
-cpt=-1
-quest=[]
+QCM.new_question
 #Dyndoc.warn :res_table,[res_table,res_table.length]
 res_table.each_with_index do |res_ligne,li| #
   {#>]\noindent [#>}
   #Dyndoc.warn :res_ligne,[li,res_ligne]
   res_ligne.each do |res_elt| #
-    cpt+=1
-    label=(("A".ord)+cpt).chr
+    label=QCM.item_label
     h1,answer=(res_elt[:h1][-1,1]=="*" ? [res_elt[:h1][0...-1],:good] : [res_elt[:h1],:bad] )
     size=res_elt[:size] || ""
     size=#{=size} if size.empty? and #{+?size}
-    quest << {label: label, answer: answer}
+    QCM.add_question_item label, answer
     {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#}{#qcmSrvH1]:{h1}[#,]:{res_elt[:what] || "AsIs"}[#cadre]:{res_elt[:cadre] || "a"}[#data]:{res_elt[:data] || "#{data}"}[#initR]:{res_elt[:init] || ""}[#envR]:{res_elt[:env] ||"envHypoTestExo"}[#}{#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
   end
   {#>]\\[#>} if li != res_table.length-1
 end
-# format of title is: <family title>::<key>
-prj,title,k=#{=title}.split("/")
-# ensure that $qcm and $qcm[title] exists
-$qcm={} unless $qcm
-$qcm[prj]={} unless $qcm[prj]
-$qcm[prj][title]={} unless $qcm[prj][title]
-$qcm[prj][title][k] = quest
-## QUESTION: can be also saved as a whole object in ~/dyndoc/???
-dir=File.expand_path File.join("~",".qcmAMC")
-unless File.directory? dir
-  require 'fileutils'
-  FileUtils.mkdir_p dir
-end
-File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
+QCM.save_question #{=title}
 [#def}
 
 {#def]qcmRedStd[#,]title[][#,]PP[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
@@ -189,7 +182,7 @@ content.keys.each do |k| #
     end
     txt=txt.join("\n")
 #p :txt,txt.inspect
-    {#>][#=]test.:{k.to_s}[{#qcmTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmTest}][#>}
+    {#>][#=]test.:{k.to_s}[{#qcmHypoTest]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmHypoTest}][#>}
   end
 end
 [#>]
@@ -213,15 +206,18 @@ end
 [#qcmFramed}
 [#def}
 
+
+#######################################################
+### This part is devoted to the document with answers!
+#######################################################
 {#def]qcmLoadHypoTest[#,]title[]
-[#rb<]prj,title=#{=title}.split("/")
+[#rb<]QCM.set_questions =#{=title}
 #p #{=title}
-[#<]{#qcmInit]:{prj}[#}
-[#rb<]#p [:q,prj,title,$qcm[prj][title]]
+QCM.read_project
 [#rb>]
-if $qcm[prj] and qcm=$qcm[prj][title]
+if (questions=QCM.questions)
 #Dyndoc.warn :q,[:q,qcm]
-    qcm.keys.each do |key| #
+    questions.keys.each do |key| #
       txt = case key
       when "pp"
         "\\noindent \\underline{Partie Préliminaire}~:"
@@ -236,7 +232,7 @@ if $qcm[prj] and qcm=$qcm[prj][title]
       when "an"
         "\\noindent \\underline{Conclusion}~:"
       end
-      {#>]:{txt} {#qcmLoad]:{prj}/:{title}/:{key}[#}[#nl][#nl][#>}
+      {#>]:{txt} {#qcmLoadQuestion]:{QCM.question_title}[#}[#nl][#nl][#>}
     end
 end
 [#def}

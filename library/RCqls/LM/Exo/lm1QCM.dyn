@@ -1,0 +1,117 @@
+[#require]RCqls/QCM/Base
+RCqls/LM/Exo/lm1
+[#main][#<]
+
+{#hide]
+[{#case]#{item}
+[#when][#>][]
+[#case}]
+[#hide}
+
+{#meth]qcmSrv.ExoLM1[#,]what[]
+[#rb<]question,item=#{=what}.split("-").map{|e| e.strip}
+[#>]
+[{#case]:{question}
+[#when]calculable[#>]
+  [{#case]:{item}
+  [#when]infGood[#>] [{il faudrait ``en théorie'' une infinité de données}*]
+  [#when]estimGood[#>] [{Ces paramètres ne sont qu'estimables à partir d'un jeu de données}*]
+  [#when]dataBad[#>] [{Nous ne disposons pas encore de données}]
+  [#when]data2Bad[#>] [{Nous ne disposons pas encore de données}]
+  [#case}]
+[#when]estim[#>]
+[#case}]
+[#}
+
+{#meth]qcm.ExoLM1[#,]title[][#,]what[]
+[#=]items[]
+[#rb<]items_lines=#{=what}.split("\n").map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
+items_lines.each do |line| #
+  items=line.split("|").map{|e| e.strip}
+  items.each_with_index do |item,i| #
+    add=(i==items.length-1 ? "<\n>" : " | " )
+    {#<][#+]items[{#qcmSrv]self[#what]:{item}[#} :{add}][#<}
+  end
+end
+[#>]
+[{#qcmChoicesList]#{title}[#content]
+#{items}
+[#}]
+[#meth}
+
+
+{#meth]estimQCM.ExoLM1[#,]what[][#>]
+[{#case]#{what}
+[#when][#>][]
+[#case}]
+  |En notant $\Vect{y}=\Vect{#{.y}}$ et $\Mat{x}=(\Vect{1},\Vect{x^{(1)}}:=\Vect{#{.x}})$,
+  |
+  |\begin{eqnarray*}
+  |\Est{\beta_1}{\Vect{y}|\Mat{x}}&=& \frac{cov(\Vect{y},\Vect{x^{(1)}})}{var(\Vect{x^{(1)}})}
+  |=\frac{#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}})}{#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2}
+  |\simeq#r{#{.indicR.beta1R}}\\
+  |\Est{\beta_0}{\Vect{y}|\Mat{x}}&=& \overline{\Vect{y}}-\Est{\beta_1}{\Vect{y}|\Mat{x}} \overline{\Vect{x^{(1)}}}
+  |=#r{#{.indicR.my}} - #r{beta1Est}\times #r{#{.indicR.mx}}
+  |\simeq #r{ #{.indicR.beta0R}}.
+  |\end{eqnarray*}
+  |Vérification en \texttt{R}~:
+  |{#rverb]
+  |#{.indicR.beta1R}
+  |beta1Est
+  |#{.indicR.beta0R}
+  |[#}
+[#}
+
+{#meth]corrQCM.ExoLM1[#,]corrOnly[false]
+[#?]#{corrOnly}[#>]
+  [
+  |Le coefficient de corrélation linéaire vaut
+  |\[
+  |corr(\Vect{y},\Vect{x}) = \frac{cov(\Vect{y},\Vect{x^{(1)}})}{\sqrt{var(\Vect{y}) \times var(\Vect{x^{(1)}})} } =\frac{#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}})}{\sqrt{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}}
+  |\simeq #r{#{.indicR.cxy}},
+  |\]
+  |et  plus il est proche de 1 en valeur absolue plus la dispersion des points autour de la droite ajustée est faible.
+  |\end{Correction}]
+[#?]else[#>]
+  [\begin{Correction}
+  |Dans le cadre de la régression simple, $R^2$ vaut le carré du coefficient de corrélation linéaire~:
+  |\[
+  |R^2 = \frac{cov(\Vect{y},\Vect{x^{(1)}})^2}{var(\Vect{y}) \times var(\Vect{x^{(1)}}) }
+  |=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}
+  |\simeq #r{(tmp<-#{.indicR.cxy})^2}.
+  |\]
+  |D'où $corr(\Vect{x},\Vect{y})=#R{ifelse(tmp<0, "-", "+")}\sqrt{#r{tmp^2}}\simeq #r{tmp}$ qui a en particulier le même signe que $\Est{\beta_1}{\Vect{y}|\Mat{x}}$. Plus $|corr(\Vect{x},\Vect{y})|$ est proche de 1 et plus la dispersion des points autour de la droite ajustée est faible.
+[#}
+
+{#meth]signif2QCM.ExoLM1
+[#>]
+  [\begin{Correction}
+  |{#rverb]
+  |summary(lm(#{.y}~#{.x}))
+  |sqrt(#r{#{.objR}$summary$r.sq})
+  |sqrt(sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)) -> sigmaEst;sigmaEst
+  |sigmaEst/sqrt(#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2)) -> sigmaBeta1Est;sigmaBeta1Est
+  |beta1Est/sigmaBeta1Est
+  |[#}
+[#meth}
+
+{#meth]summaryQCM.ExoLM1
+[#>]neg.deb[][#>]neg.fin[]
+[#?]:r{#{.objR}$summary$coeff[2,4]>.05}
+[#>]neg.deb[ ne ][#>]neg.fin[ pas ]
+[#?]true[#>][\begin{Correction}
+On retrouve les résultats des deux questions précédentes. En particulier, la colonne \texttt{Estimate} fournit les estimations des paramètres $\beta_0$ et $\beta_1$ et \texttt{Multiple R-squared} le $R^2$. Notons que la dernière colonne du tableau \texttt{Coefficients} fournit les p$-$valeurs des tests de significativité locales des paramètres $\beta_0$ et $\beta_1$. La dernière #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}.
+\end{Correction}]
+[#}
+
+{#meth]graphQCM.ExoLM1
+[#>][Les notions de résidu et de valeur ajustée sont illustrés dans le polycopié p.23.]
+[#}
+
+
+{#meth]signifQCM.ExoLM1[#>]
+[#>]
+  [
+  |Pour pouvoir accepter $\mathbf{H_1}: \beta_1\neq 0$, i.e. le régresseur \texttt{#{.x}} apporte de l'information pour expliquer la variable \texttt{#{.y}}, le risque à encourir est de l'ordre de $#r{#{.objR}$summary$coeff[2,4]}$.
+  |]
+[#}

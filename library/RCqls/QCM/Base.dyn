@@ -1,5 +1,96 @@
 [#package]\usepackage{framed}
-[#main][#<]
+[#main]
+[#rb<]
+
+module QCM
+  @@qcm={}
+  @@qcmBareme={}
+  @@question=[]
+  @@cpt_item=-1
+  @@prj,@@title,@@key=nil,nil,nil
+
+  def QCM.qcm
+    @@qcm
+  end
+
+  def QCM.bareme
+    @@qcmBareme
+  end
+
+  def QCM.new_question
+    @@question=[]
+    @@cpt_item=-1
+  end
+
+  def QCM.item_label
+    @@cpt_item += 1
+    (("A".ord)+@@cpt_item).chr
+  end
+
+  def QCM.add_question_item(label,answer)
+    @@question << {label: label, answer: answer}
+  end
+
+  def QCM.add_question_element(elt)
+    @@question << elt
+  end
+
+  def QCM.set_question(title)
+    @@prj,@@title,@@key=title.split("/")
+  end
+
+  def QCM.set_questions(title)
+    @@prj,@@title=title.split("/")
+  end
+
+  def QCM.save_question(title=nil)
+    QCM.set_question title if title
+    @@qcm[@@prj]={} unless @@qcm[@@prj]
+    @@qcm[@@prj][@@title]={} unless @@qcm[@@prj][@@title]
+    @@qcm[@@prj][@@title][@@key] = @@question
+    dir=File.expand_path File.join("~",".qcmAMC")
+    unless File.directory? dir
+      require 'fileutils'
+      FileUtils.mkdir_p dir
+    end
+    File.open(File.join(dir,@@prj+".qcm"),"w") {|f| f << @@qcm[@@prj].inspect}
+  end
+
+  def QCM.read_project
+    unless @@qcm[@@prj]
+      qcmAMC=File.expand_path File.join("~",".qcmAMC",@@prj+".qcm")
+      #p [qcmAMC,(File.exists? qcmAMC)]
+      if File.exist? qcmAMC
+        @@qcm[@@prj]=eval(File.read(qcmAMC))
+        ##p [:qcm,$qcm[prj]]
+      end
+    end
+  end
+
+  def QCM.question_title
+    "#{@@prj}/#{@@title}/#{@@key}"
+  end
+
+  def QCM.question
+    ( @@qcm[@@prj] and @@qcm[@@prj][@@title] ) ? @@qcm[@@prj][@@title][@@key] : nil
+  end
+
+  def QCM.questions
+    ( @@qcm[@@prj] and @@qcm[@@prj][@@title] ) ? @@qcm[@@prj][@@title] : nil
+  end
+
+  def QCM.question_bareme
+    ( @@qcmBareme[@@prj] and @@qcmBareme[@@prj][@@title] and @@qcmBareme[@@prj][@@title][@@key] ) ? @@qcmBareme[@@prj][@@title][@@key] : nil
+  end
+
+  def QCM.set_question_bareme(prj,title,key,bareme)
+    @@qcmBareme[prj]={} unless @@qcmBareme[prj]
+    @@qcmBareme[prj][title]={} unless @@qcmBareme[prj][title]
+    @@qcmBareme[prj][title][key] = bareme
+  end
+end
+
+[#<]
 
 ##### qcmChoices and qcmChoicesList
 
@@ -32,8 +123,7 @@ lignes.each do |ligne| #
 end
 #p [:res_table,res_table]
 [#rb>]
-cpt=-1
-quest=[]
+QCM.new_question
 #Dyndoc.warn :res_table,[res_table,res_table.length]
 res_table.each_with_index do |res_ligne,li| #
   {#>]\noindent [#>}
@@ -41,33 +131,19 @@ res_table.each_with_index do |res_ligne,li| #
   res_ligne.each do |res_elt| #
     if res_elt.is_a? String
       {#>]:{res_elt}[#>}
-      quest << res_elt
+      QCM.add_question_element res_elt
     else
-      cpt+=1
-      label=(("A".ord)+cpt).chr
+      label=QCM.item_label
       txt,answer=(res_elt[:txt][-1,1]=="*" ? [res_elt[:txt][0...-1],:good] : [res_elt[:txt],:bad] )
       size=res_elt[:size] || ""
       size=#{=size} if size.empty? and #{+?size}
-      quest << {label: label, answer: answer}
+      QCM.add_question_item label,answer
       {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#} :{txt} {#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
     end
   end
   {#>]\\[#>} if li != res_table.length-1 and !(res_ligne.length==1 and res_ligne[0].is_a? String)
 end
-# format of title is: <family title>::<key>
-prj,title,k=#{=title}.split("/")
-# ensure that $qcm and $qcm[title] exists
-$qcm={} unless $qcm
-$qcm[prj]={} unless $qcm[prj]
-$qcm[prj][title]={} unless $qcm[prj][title]
-$qcm[prj][title][k] = quest
-## QUESTION: can be also saved as a whole object in ~/dyndoc/???
-dir=File.expand_path File.join("~",".qcmAMC")
-unless File.directory? dir
-  require 'fileutils'
-  FileUtils.mkdir_p dir
-end
-File.open(File.join(dir,prj+".qcm"),"w") {|f| f << $qcm[prj].inspect}
+QCM.save_question #{=title}
 [#def}
 
 ### NOT FINISHED!!!
@@ -102,38 +178,20 @@ end
 #####################################
 #### QCM File: new, free, save load
 #####################################
-{#def]qcmInit[#,]prj[]
-[#rb<]
-$qcm={} unless $qcm
-prj=#{=prj}
-##p [:prj,prj]
-unless $qcm[prj]
-  qcmAMC=File.expand_path File.join("~",".qcmAMC",prj+".qcm")
-  #p [qcmAMC,(File.exists? qcmAMC)]
-  if File.exist? qcmAMC
-    $qcm[prj]=eval(File.read(qcmAMC))
-    ##p [:qcm,$qcm[prj]]
-  end
-end
-[#def}
 
-{#def]qcmLoad[#,]title[]
-[#rb<]prj,title,key=#{=title}.split("/")
-bareme="mz=1"
-bareme=$qcmBareme[prj][title][key] if $qcmBareme and $qcmBareme[prj] and $qcmBareme[prj][title] and $qcmBareme[prj][title][key]
-#p [:qcmLoad,prj,title,key]
-[#<]{#qcmInit]:{prj}[#}
-[#rb<]#p [:qcm,$qcm[prj]]
+{#def]qcmLoadQuestion[#,]title[]
+[#rb<]QCM.set_question #{=title}
+bareme=QCM.question_bareme || "mz=1"
+QCM.read_project
 [#rb>]
-if $qcm[prj] and $qcm[prj][title]
-  choices=$qcm[prj][title][key]
-  if choices[0].is_a? String
-    txt=choices[0]
+if (question=QCM.question)
+  if question[0].is_a? String
+    txt=question[0]
     {#>]:{txt} [#>}
-    choices=choices[1..-1]
+    question=question[1..-1]
   end
   {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{:{bareme}}\begin{reponsesperso}[o]][#>}
-  choices.each do |a| #
+  question.each do |a| #
     choice="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
     {#>]:{choice}{:{a[:label]}\quad}[#>}
   end
@@ -141,20 +199,19 @@ if $qcm[prj] and $qcm[prj][title]
 end
 [#def}
 
-{#def]qcmLoadAuto[#,]title[]
-[#rb<]prj,title=#{=title}.split("/")
+{#def]qcmLoadQuestions[#,]title[]
+[#rb<]QCM.set_questions #{=title}
 #p #{=title}
-[#<]{#qcmInit]:{prj}[#}
+QCM.read_project
 [#rb>]
-if $qcm[prj] and qcm=$qcm[prj][title]
-  qcm.keys.each do |k| #
-    {#>]\noindent {#qcmLoad]#{title}/:{k}[#}\\[#>}
+if (questions=QCM.questions)
+  questions.keys.each do |key| #
+    {#>]\noindent {#qcmLoadQuestion]#{title}/:{key}[#}\\[#>}
   end
 end
 [#def}
 
 {#def]qcmBareme[#,]content[][#rb<]
-$qcmBareme={} unless $qcmBareme
 lignes=#{=content}.strip.split("\n").map{|e| e.strip}
 lignes.each do |ligne| #
   elts=ligne.split(" | ")
@@ -167,11 +224,7 @@ lignes.each do |ligne| #
     else
       key=path.strip
     end
-    $qcmBareme[prj]={} unless $qcmBareme[prj]
-    $qcmBareme[prj][title]={} unless $qcmBareme[prj][title]
-    $qcmBareme[prj][title][key] = bareme
+    QCM.set_question_bareme(prj,title,key,bareme)
   end
 end
-#
-p [:bareme,$qcmBareme]
 [#def}
