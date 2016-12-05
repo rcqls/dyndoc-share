@@ -33,7 +33,9 @@ RCqls/Exo/exos
   [#?]#{.log}[#>] .df[log(#{.df})]
 [#}
 
-{#meth]corr.ExoLM[#,] seuil[.3] [#>]
+{#meth]corr.ExoLM[#,] seuil[.3]
+[#%]saved for QCM[#=].qcm.corr.seuil[#{seuil}]
+[#>]
   [{#Question#}{A la vue de la matrice de corrélation ci-après, quels sont les régresseurs qui vous semblent être les plus explicatifs~?}
 
   {#rverb]cor(#{.df})[#}<\n>]
@@ -46,7 +48,9 @@ RCqls/Exo/exos
   \end{Correction}
 [#}
 
-{#meth]summary.ExoLM[#,] seuilR[.05] [#>]
+{#meth]summary.ExoLM[#,] seuilR[.05]
+[#%]saved for QCM[#=].qcm.summary.seuil[#{seuilR}]
+[#>]
 [{#Question#}{Interprétez la sortie ci-dessous, en particulier les p$-$valeurs des tests de significativité locale, le $R^2$.}
 
 {#rverb]summary(lm(#{.formula}))[#}
@@ -83,7 +87,9 @@ La colinéarité entre régresseurs peut entraîner artificiellement une augment
 [#}
 
 
-{#meth]vif.ExoLM[#,] seuilR[5] [#>]
+{#meth]vif.ExoLM[#,] seuilR[5]
+[#%]saved for QCM[#=].qcm.vif.seuil[#{seuilR}]
+[#>]
 [{#Question#}{Rappelez la définition du VIF, et son interprétation générale. Ensuite, interprétez-les quant au jeu de données étudié.}
 
 {#rverb]vif(lm(#{.formula}))[#}<\n><\n>]
@@ -105,7 +111,7 @@ Par définition, $VIF_j = \frac{1}{1-R_j^2}$ où $R_j^2$ est le coefficient de d
 
 {#meth]vifCorr.ExoLM[#,] df[] [#,] formula[] [#r<]
 [maxvif<-#{.objR}$data.vars[match(names(rev(sort(vif(lm(#{.formula}))))),#{.objR}$vars,0)]]
-[#=].vifCorr.v1[#R{maxvif[1]}][#=].vifCorr.v2[#R{maxvif[2]}]
+[#%]for qcm[#=].qcm.vifCorr.v1[#R{maxvif[1]}][#=].qcm.vifCorr.v2[#R{maxvif[2]}]
 [#>]
 [{#Question#}{(\textbf{Relation avec la matrice de corrélation}) Justifier l'ordre de grandeur des VIFs des covariables
 {#case]#{.log}
@@ -206,7 +212,14 @@ a un pouvoir explicatif assez fort ($R^2= 87.45\%$). Remarquons également que l
 [#}
 
 
-{#meth]deltaH0Asymp.ExoLM[#,] indVar[1] [#,] betaRef[1] [#,]   side[<] [#,] alphaR[.05] [#,] alphaTex[5\%] [#,] round[5] [#,]indicR[true][#>]
+{#meth]deltaH0Asymp.ExoLM[#,] indVar[1] [#,] betaRef[1] [#,]   side[<] [#,] alphaR[.05] [#,] alphaTex[5\%] [#,] round[5] [#,]indicR[true]
+[#%]saved for QCM
+[#=].qcm.deltaH0Asymp.indVar[#{indVar}]
+[#=].qcm.deltaH0Asymp.betaRef[#{betaRef}]
+[#=].qcm.deltaH0Asymp.side[#{side}]
+[#=].qcm.deltaH0Asymp.alphaR[#{alphaR}][#=].qcm.deltaH0Asymp.alphaTex[#{alphaTex}]
+[#=].qcm.deltaH0Asymp.round[#{round}]
+[#>]
 [{#Question#}{A partir de cette question, nous ne considèrerons que le modèle final. Peut-on montrer au vu des données que le paramètre $\beta_#{indVar}#{side}#{betaRef}$ au seuil de #{alphaTex}~?}
 ]
 [#?]#{indicR}[#>]{#rverb]
@@ -225,7 +238,12 @@ D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{indVar}
 \end{Correction}]
 [#}
 
-{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5\%] [#>]
+{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5\%]
+[#%]saved for QCM
+[#=].qcm.pvalAsymp.indVar[#{indVar}]
+[#=].qcm.pvalAsymp.betaRef[#{betaRef}]
+[#=].qcm.pvalAsymp.alphaR[#{alphaR}][#=].qcm.pvalAsymp.alphaTex[#{alphaTex}]
+[#>]
 [{#Question#}{A partir de l'instruction \texttt{R} suivante, que peut-on avancer au vu des données comme assertion(s) d'intérêt au seuil #{alphaTex}~?}
 
 {#rverb]

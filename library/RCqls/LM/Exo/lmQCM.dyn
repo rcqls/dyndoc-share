@@ -2,18 +2,41 @@
 RCqls/LM/Exo/lm
 [#main][#<]
 
+## This method can be improved by not repeating twice successively the same actions
+
+{#meth]qcmPrelim.ExoLM[#,]what[]
+[#<]
+{#case]#{what}
+[#when]corr[#rb<]
+tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{.qcm.corr.seuil}])])".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#when]summary[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
+tmp="names(sort(tmpCoeff[tmpCoeff<#{.qcm.summary.seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#when]vif[#rb<]
+tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{.qcm.vif.seuil}]))".to_R
+tmp=[tmp] unless tmp.is_a? Array
+tmp.map!{|nm| '\texttt{'+nm+'}'} if tmp
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
+[#when]vifCorr[#r<]round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9) -> tmp
+[#when]deltaH0Asymp[#r<]
+(#R{round(#{.objR}$summary$coef[#{.qcm.deltaH0Asymp.indVar}+1,1],#{.qcm.deltaH0Asymp.round})}-(#{.qcm.deltaH0Asymp.betaRef}))/#R{round(#{.objR}$summary$coef[#{.qcm.deltaH0Asymp.indVar}+1,2],#{.qcm.deltaH0Asymp.round})}->tmp
+tmpLim<-qnorm(#{.qcm.deltaH0Asymp.alphaR})
+[#when]pvalAsymp[#r<](#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,1]}-(#{.qcm.pvalAsymp.betaRef}))/#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,2]}->tmp
+pnorm(tmp)->tmpPValG
+[#case}
+[#meth}
+
+
 {#meth]qcmSrv.ExoLM[#,]what[][#,]seuil[]
 [#>]
 [{#case]#{what}
   [#%]corr
-  [#when]corr-formuleGood[#?]#{0?seuil}[#=]seuil[.3][#?]end[#rb<] tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{seuil}])])".to_R.map{|nm| '\texttt{'+nm+'}'}
-  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+  [#when]corr-formuleGood[#<]{#qcmPrelim]self[#what]corr[#}
   [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
 
   [#%]summary
-  [#when]summary-pvalGood[#?]#{0?seuil}[#=]seuil[.05][#?]end[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
-  tmp="names(sort(tmpCoeff[tmpCoeff<#{seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
-  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+  [#when]summary-pvalGood[#<]{#qcmPrelim]self[#what]summary[#}
   [#>][Les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{seuil}*100}\%}*]
 
   [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
@@ -32,12 +55,7 @@ RCqls/LM/Exo/lm
   [#when]vif-R2jGood[#>] [{$R_j^2$ est le $R^2$ associé au modèle expliquant $\Vect{x}^{(j)}$ en fonction des $\Vect{x}^{(k)}$ avec $k\neq j$}*]
   [#when]vif-defGood[#>] [{$VIF_j = \frac{1}{1-R_j^2}$}*]
   [#when]vif-R2jVIFGood[#>] [{$R_j^2 = 1-\frac{1}{VIF_j}$}*]
-  [#when]vif-interpGood[#?]#{0?seuil}[#=]seuil[5][#?]end
-  [#rb<]
-  tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{seuil}]))".to_R
-  tmp=[tmp] unless tmp.is_a? Array
-  tmp.map!{|nm| '\texttt{'+nm+'}'} if tmp
-  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
+  [#when]vif-interpGood[#<]{#qcmPrelim]self[#what]vif[#}
   [#>][{|
   [#?]tmp and tmp.length>1[#>][les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{seuil}]
   [#?]tmp and tmp.length==1[#>][le VIF de :{tmp} est relativement important, ici supérieur à #{seuil}.
@@ -49,25 +67,40 @@ RCqls/LM/Exo/lm
 
   [#%]vifCorr
   [#when]vifCorr-R2AugmenteGood[#>][{le $R^2$ augmente par ajout d'une variable explicative dans le modèle}*]
-  [#when]vifCorr-R2jGood
-  [#r<]round(cor(#{.df})["#{.vifCorr.v1}","#{.vifCorr.v2}"],9) -> tmp
-  [#>][{le $R^2$ obtenu en régressant \texttt{#{.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{v1}} sur \texttt{#{v2}}  (de l'ordre de $#R{tmp}^2$)}*]
-  [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.vifCorr.v1}}$ et $VIF_{#{.vifCorr.v2}}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
+  [#when]vifCorr-R2jGood[#<]{#qcmPrelim]self[#what]vifCorr[#}
+  [#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{v1}} sur \texttt{#{v2}}  (de l'ordre de $#R{tmp}^2$)}*]
+  [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.qcm.vifCorr.v1}}$ et $VIF_{#{.qcm.vifCorr.v2}}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
   [#when]vifCorr-Good[#>][{}*]
 
   [#%]desc
-  [#when]desc-Good[#>][{}*]
-
-  [#%]oneStep
-  [#when]vif-Good[#>][{}*]
+  [#when]desc-methGood[#>][{La stratégie adoptée est d'appliquer la règle d'or consistant à retirer à chaque étape une unique variable explicative.}*]
+  [#when]desc-pvalGrandeGood[#>][{A chaque étape, on retire la variable ayant la plus grande p-valeur du test de significativité locale}*]
+  [#when]desc-VIFGrandBad[#>][[{A chaque étape, on retire la variable ayant le plus grand VIF}*]]
 
   [#%]increment
   [#when]increment-Good[#>][{}*]
 
   [#%]deltaH0Asymp
+  [#when]deltaH0Asymp-Good[#<]{#qcmPrelim]self[#what]deltaH0Asymp[#}
+  [#>]\begin{Correction}
+  D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ évaluée sur les données correspond justement au calcul fourni et vaut donc approximativement $#r{tmp}$. Sous $\mathbf{H_0}$ on sait également que la statistique de test sur les futures données suit approximativement une loi $\mathcal{N}(0,1)$. Par conséquent, puisque $\Est{\delta_{\beta_#{indVar},#{betaRef}}}{\Vect{y}|\Mat{x}}\simeq #r{tmp} #R{ifelse(tmp<tmpLim,"<",">")} \delta_{lim,#{.qcm.deltaH0Asymp.alphaTex}}^- \stackrel{R}{=}\mathtt{qnorm(#{.qcm.deltaH0Asymp.alphaR})}\simeq #r{qnorm(#{.qcm.deltaH0Asymp.alphaR})}$, on
+  [#r<]pnorm(tmp)->tmpPVal;tmpPVal<-ifelse("#{.qcm.deltaH0Asymp.side}"=="<",tmpPVal,ifelse("#{.qcm.deltaH0Asymp.side}"==">",1-tmpPVal,2*min(tmpPVal,1-tmpPVal)))
+  [#?]#R{tmpPVal}<#R{#{.qcm.deltaH0Asymp.alphaR}}[#>] peut [#?]else[#>] ne peut pas [#?]end
+  [#>][plutôt penser avec un risque de #{.qcm.deltaH0Asymp.alphaTex} que l'assertion d'intérêt  $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ est vraie.
+  \end{Correction}]
   [#when]deltaH0Asymp-Good[#>][{}*]
 
   [#%]pvalAsymp
+  [#when]pvalAsymp-Good[#<]{#qcmPrelim]self[#what]pvalAsymp[#}
+  [#>]
+  L'instruction fournie correspond à la p$-$valeur (gauche) du test $\mathbf{H_1}: \beta_#{.qcm.pvalAsym.indVar}< #{.qcm.pvalAsym.betaRef}$.
+  [#?]#r{tmpPValG<#{.qcm.pvalAsym.alphaR} | 1-tmpPValG<#{.qcm.pvalAsym.alphaR}} [#>]Par conséquent puisque la p$-$valeur
+  [#?]#r{tmpPValG<#{.qcm.pvalAsym.alphaR}}[#>]
+  [gauche associée au test $\mathbf{H_1}: \beta_#{.qcm.pvalAsym.indVar} < #{.qcm.pvalAsym.betaRef}$ qui vaut approximativement $#r{tmpPValG*100}\%$]
+  [#?]#r{1-tmpPValG<#{.qcm.pvalAsym.alphaR}}[#>]
+  [droite associée au test $\mathbf{H_1}: \beta_#{.qcm.pvalAsym.indVar} > #{.qcm.pvalAsym.betaRef}$ qui vaut approximativement $#r{(1-tmpPValG)*100}\%$][#?]end
+  [#>] est inférieure à #{.qcm.pvalAsym.alphaTex} , on peut plutôt penser que cette assertion est vraie.
+  [#?]#r{tmpPValG<#{.qcm.pvalAsym.alphaR} | 1-tmpPValG<#{.qcm.pvalAsym.alphaR}}[#>] Notons, qu'il [#?]#r{2*min(tmpPValG,1-tmpPValG)<#{alphaR}}[#>]est[#?]else[#>]n'est pas[#?]end[#>] possible de penser que $\mathbf{H_1}: \beta_#{indVar}\neq  #{betaRef}$ est vraie car la p$-$valeur de ce test vaut approximativement $2\times #r{min(tmpPValG,1-tmpPValG)*100}\%=#r{2*min(tmpPValG,1-tmpPValG)*100}\%$.
   [#when]pvalAsymp-Good[#>][{}*]
 
   [#%]icAsymp
