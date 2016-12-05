@@ -11,23 +11,48 @@ RCqls/LM/Exo/lm
   [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
 
   [#%]summary
-  [#when]summary-pvalGood[#?]#{0?seuil}[#=]seuil[.3][#?]end[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
-  tmp="names(sort(tmpCoeff[tmpCoeff<#{seuilR}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
+  [#when]summary-pvalGood[#?]#{0?seuil}[#=]seuil[.05][#?]end[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
+  tmp="names(sort(tmpCoeff[tmpCoeff<#{seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
   tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
-  [#>][
-    Les régresseurs  :{tmp} sont significatifs au seuil de #r{#{seuilR}*100}\%.  Enfin, le pouvoir explicatif de ce modèle, mesuré par la part de variance $R^2$ expliquée par celui-ci, est particulièrement bon puisqu'il est de l'ordre de #r{#{.objR}$summary$r.sq*100}\%.
-  ]
+  [#>][Les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{seuil}*100}\%}*]
+
+  [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
+  [#when]summary-defR2Good[#>][{Le $R^2$ représente la part de variance expliquée par le modèle}*]
+  [#when]summary-R2BadSigma[#>][{Le $R^2$ représente la part d'écart-type expliquée par le modèle}]
 
   [#%]colin
-  [#when]colin-Good[#>][{}*]
+  [#when]colin-stderrGood[#>][{La colinéarité entre variables explicatives entraîne une augmentation des erreurs standard des paramètres associés}*]
+  [#when]colin-stattestGood[#>][{La colinéarité entre variables explicatives entraîne une une diminution en valeur absolue des statistiques de test de significativité locale associées}*]
+  [#when]colin-pvalGood[#>][{La colinéarité entre variables explicatives entraîne une augmentation de la p$-$valeur des tests de significativité locale associés}*]
 
   [#%]colinCorr
   [#when]colinCorr-Good[#>][{}*]
 
   [#%]vif
+  [#when]vif-R2jGood[#>] [{$R_j^2$ est le $R^2$ associé au modèle expliquant $\Vect{x}^{(j)}$ en fonction des $\Vect{x}^{(k)}$ avec $k\neq j$}*]
+  [#when]vif-defGood[#>] [{$VIF_j = \frac{1}{1-R_j^2}$}*]
+  [#when]vif-R2jVIFGood[#>] [{$R_j^2 = 1-\frac{1}{VIF_j}$}*]
+  [#when]vif-interpGood[#?]#{0?seuil}[#=]seuil[5][#?]end
+  [#rb<]
+  tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{seuil}]))".to_R
+  tmp=[tmp] unless tmp.is_a? Array
+  tmp.map!{|nm| '\texttt{'+nm+'}'} if tmp
+  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
+  [#>][{|
+  [#?]tmp and tmp.length>1[#>][les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{seuil}]
+  [#?]tmp and tmp.length==1[#>][le VIF de :{tmp} est relativement important, ici supérieur à #{seuil}.
+  [#?]!tmp[#>][aucun VIF n'est relativement important, ici supérieur à #{seuil}][#?]end
+  [#>]|}*]
+  [#when]vif-colinGood[#>] [{un $VIF_j$ relativement important traduit que $\Vect{x}^{(j)}$ est atteint par un phénomène de colinéarité}*]
   [#when]vif-Good[#>][{}*]
+  [#when]vif-Bad[#>][{}]
 
   [#%]vifCorr
+  [#when]vifCorr-R2AugmenteGood[#>][{le $R^2$ augmente par ajout d'une variable explicative dans le modèle}*]
+  [#when]vifCorr-R2jGood
+  [#r<]round(cor(#{.df})["#{.vifCorr.v1}","#{.vifCorr.v2}"],9) -> tmp
+  [#>][{le $R^2$ obtenu en régressant \texttt{#{.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{v1}} sur \texttt{#{v2}}  (de l'ordre de $#R{tmp}^2$)}*]
+  [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.vifCorr.v1}}$ et $VIF_{#{.vifCorr.v2}}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
   [#when]vifCorr-Good[#>][{}*]
 
   [#%]desc
