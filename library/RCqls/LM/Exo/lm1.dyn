@@ -30,6 +30,7 @@ RCqls/Exo/exos
   [#?]#{=#.indicR.beta1R}>80[#rb>].indicR.beta1R[#{=.indicR.beta1R}.split("/").join("/\n")][#?]end
   [#>].indicR.beta0R[#{.indicR.my} - beta1Est*#{.indicR.mx}]
   [#>].indicR.cxy[(#{.indicR.mxy}-#{.indicR.mx}*#{.indicR.my})/sqrt((#{.indicR.mx2}-#{.indicR.mx}^2)*(#{.indicR.my2}-#{.indicR.my}^2))]
+  [#R<]#{.indicR.beta1R};beta0Est<-#{.indicR.beta0R}
 [#}
 
 {#meth]model.ExoLM1 [#>]
@@ -47,23 +48,23 @@ RCqls/Exo/exos
 [#}
 
 
-{#meth]estim.ExoLM1[#>]
+{#meth]estim.ExoLM1[#,]multicol[][#>]
   [{#Question#}{On s'intéresse tout naturellement à l'estimation des paramètres $\beta_0$  et $\beta_1$. Déterminez les estimations obtenues par la méthode des moindres carrés.}
   |
   |On rappelle {\`a} titre indicatif que
-  |\begin{list}{$\bullet$}{}
+  |{#if]#{+?multicol}[#>]\begin{multicols}{3}[#if}\begin{list}{$\bullet$}{}
   |\item $var(\Vect{x})= \overline{x^2}- \overline{x}^2$
   |\item $cov(\Vect{x},\Vect{y})=\overline{x \times y} - \overline{x} \times \overline{y}.$
-  |\end{list}]
+  |\end{list}{#if]#{+?multicol}[#>]\end{multicols}[#if}]
 
   [#>]
-    [{#rverb]
+    [{#if]#{+?multicol}[#>]\begin{multicols}{3}[#if}{#rverb]
     |#{.indicR.mx}
     |#{.indicR.mx2}
     |#{.indicR.my}
     |#{.indicR.my2}
     |#{.indicR.mxy}
-    |[#}]
+    |[#}{#if]#{+?multicol}[#>]\end{multicols}[#if}]
   [#tag]exam[#>]reponse?[5cm][#>]\Reponse{#{reponse}}
   [#tag]reponse[#>]
   [\begin{Correction}

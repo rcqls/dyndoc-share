@@ -175,6 +175,25 @@ end
 \end{framed}
 [#def}
 
+## This method is used in lm1QCM and lmQCM.
+## Define #qcmSrv.ExoLm1 and #qcmSrv.ExoLM  
+
+{#meth]qcm.QCM[#,]title[][#,]what[]
+[#=]items[]
+[#rb<]items_lines=#{=what}.split("\n").map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
+items_lines.each do |line| #
+  items=line.split("|").map{|e| e.strip}
+  items.each_with_index do |item,i| #
+    add=(i==items.length-1 ? "<\n>" : " | " )
+    {#<][#+]items[{#qcmSrv]self[#what]:{item}[#} :{add}][#<}
+  end
+end
+[#>]
+[{#qcmChoicesList]#{title}[#content]
+#{items}
+[#}]
+[#meth}
+
 #####################################
 #### QCM File: new, free, save load
 #####################################

@@ -1,0 +1,55 @@
+[#require]RCqls/QCM/Base
+RCqls/LM/Exo/lm
+[#main][#<]
+
+{#meth]qcmSrv.ExoLM[#,]what[][#,]seuil[]
+[#>]
+[{#case]#{what}
+  [#%]corr
+  [#when]corr-formuleGood[#?]#{0?seuil}[#=]seuil[.3][#?]end[#rb<] tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{seuil}])])".to_R.map{|nm| '\texttt{'+nm+'}'}
+  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+  [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
+
+  [#%]summary
+  [#when]summary-pvalGood[#?]#{0?seuil}[#=]seuil[.3][#?]end[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
+  tmp="names(sort(tmpCoeff[tmpCoeff<#{seuilR}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
+  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+  [#>][
+    Les régresseurs  :{tmp} sont significatifs au seuil de #r{#{seuilR}*100}\%.  Enfin, le pouvoir explicatif de ce modèle, mesuré par la part de variance $R^2$ expliquée par celui-ci, est particulièrement bon puisqu'il est de l'ordre de #r{#{.objR}$summary$r.sq*100}\%.
+  ]
+
+  [#%]colin
+  [#when]colin-Good[#>][{}*]
+
+  [#%]colinCorr
+  [#when]colinCorr-Good[#>][{}*]
+
+  [#%]vif
+  [#when]vif-Good[#>][{}*]
+
+  [#%]vifCorr
+  [#when]vifCorr-Good[#>][{}*]
+
+  [#%]desc
+  [#when]desc-Good[#>][{}*]
+
+  [#%]oneStep
+  [#when]vif-Good[#>][{}*]
+
+  [#%]increment
+  [#when]increment-Good[#>][{}*]
+
+  [#%]deltaH0Asymp
+  [#when]deltaH0Asymp-Good[#>][{}*]
+
+  [#%]pvalAsymp
+  [#when]pvalAsymp-Good[#>][{}*]
+
+  [#%]icAsymp
+  [#when]icAsymp-Good[#>][{}*]
+
+  [#%]ipAsymp
+  [#when]ipAsymp-Good[#>][{}*]
+
+[#case}]
+[#}
