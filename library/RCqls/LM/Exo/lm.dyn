@@ -115,14 +115,14 @@ Par définition, $VIF_j = \frac{1}{1-R_j^2}$ où $R_j^2$ est le coefficient de d
 [#>]
 [{#Question#}{(\textbf{Relation avec la matrice de corrélation}) Justifier l'ordre de grandeur des VIFs des covariables
 {#case]#{.log}
-[#when]true[#>] [\texttt{log(#{.vifCorr.v1})} et \texttt{log(#{.vifCorr.v2})}]
-[#else] [\texttt{#{.vifCorr.v1}} et \texttt{#{.vifCorr.v2}}]
+[#when]true[#>] [\texttt{log(#{.qcm.vifCorr.v1})} et \texttt{log(#{.qcm.vifCorr.v2})}]
+[#else] [\texttt{#{.qcm.vifCorr.v1}} et \texttt{#{.qcm.vifCorr.v2}}]
 [#}
 en utilisant  l'instruction suivante.}
 
-{#rverb]1/(1-(#R{round(cor(#{.df})["#{.vifCorr.v1}","#{.vifCorr.v2}"],9)})^2)[#}<\n><\n>]
+{#rverb]1/(1-(#R{round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9)})^2)[#}<\n><\n>]
 [#tag]exam[#>]reponse?[ 3cm][#>]\Reponse{#{reponse}}
-[#tag]reponse[#r<]round(cor(#{.df})["#{.vifCorr.v1}","#{.vifCorr.v2}"],9) -> tmp
+[#tag]reponse[#r<]round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9) -> tmp
 [#>]\begin{Correction}
 Il est connu que lorsque l'on ajoute des régresseurs le coefficient $R^2$ augmente nécessairement. Ainsi par exemple, le $R^2$ obtenu en régressant \texttt{#{v1}} sur tous les autres ou \texttt{#{v2}} sur tous les autres est nécessairement supérieurs au $R^2$ obtenu en régressant simplement \texttt{#{v1}} sur \texttt{#{v2}} (de l'ordre de $#R{tmp}^2$). Par conséquent les VIF associées à ces deux régresseurs sont nécessairement supérieurs à $#r{1/(1-tmp^2)}$.
 \end{Correction}

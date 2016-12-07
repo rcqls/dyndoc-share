@@ -12,10 +12,10 @@ RCqls/LM/Exo/lm1
   [#when]calculable-data2Bad[#>] [{Nous ne disposons pas encore de données}]
 
   [#%]estim
-  [#when]estim-beta0Good[#>] [$\Est{\beta_0}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{beta0Est}$]
+  [#when]estim-beta0Good[#>] [{$\Est{\beta_0}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{beta0Est}$}*]
   [#when]estim-beta0BadBeta1[#>] [ici]
   [#when]estim-beta0BadMinusBeta0[#>] [ici2]
-  [#when]estim-beta1Good[#>] [$\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{beta1Est}$]
+  [#when]estim-beta1Good[#>] [{$\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{beta1Est}$}*]
   [#when]estim-beta1BadBeta0[#>] [ici3]
   [#when]estim-beta1BadMinusBeta1[#>] [ici4]
 

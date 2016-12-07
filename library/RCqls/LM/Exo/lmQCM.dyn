@@ -37,8 +37,7 @@ pnorm(tmp)->tmpPValG
 
   [#%]summary
   [#when]summary-pvalGood[#<]{#qcmPrelim]self[#what]summary[#}
-  [#>][Les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{seuil}*100}\%}*]
-
+  [#>][{Les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
   [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
   [#when]summary-defR2Good[#>][{Le $R^2$ représente la part de variance expliquée par le modèle}*]
   [#when]summary-R2BadSigma[#>][{Le $R^2$ représente la part d'écart-type expliquée par le modèle}]
@@ -68,7 +67,7 @@ pnorm(tmp)->tmpPValG
   [#%]vifCorr
   [#when]vifCorr-R2AugmenteGood[#>][{le $R^2$ augmente par ajout d'une variable explicative dans le modèle}*]
   [#when]vifCorr-R2jGood[#<]{#qcmPrelim]self[#what]vifCorr[#}
-  [#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{v1}} sur \texttt{#{v2}}  (de l'ordre de $#R{tmp}^2$)}*]
+  [#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vif.v1}} sur \texttt{#{.qcm.vif.v2}}  (de l'ordre de $#R{tmp}^2$)}*]
   [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.qcm.vifCorr.v1}}$ et $VIF_{#{.qcm.vifCorr.v2}}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
   [#when]vifCorr-Good[#>][{}*]
 
@@ -82,12 +81,11 @@ pnorm(tmp)->tmpPValG
 
   [#%]deltaH0Asymp
   [#when]deltaH0Asymp-Good[#<]{#qcmPrelim]self[#what]deltaH0Asymp[#}
-  [#>]\begin{Correction}
+  [#>]
   D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ évaluée sur les données correspond justement au calcul fourni et vaut donc approximativement $#r{tmp}$. Sous $\mathbf{H_0}$ on sait également que la statistique de test sur les futures données suit approximativement une loi $\mathcal{N}(0,1)$. Par conséquent, puisque $\Est{\delta_{\beta_#{indVar},#{betaRef}}}{\Vect{y}|\Mat{x}}\simeq #r{tmp} #R{ifelse(tmp<tmpLim,"<",">")} \delta_{lim,#{.qcm.deltaH0Asymp.alphaTex}}^- \stackrel{R}{=}\mathtt{qnorm(#{.qcm.deltaH0Asymp.alphaR})}\simeq #r{qnorm(#{.qcm.deltaH0Asymp.alphaR})}$, on
   [#r<]pnorm(tmp)->tmpPVal;tmpPVal<-ifelse("#{.qcm.deltaH0Asymp.side}"=="<",tmpPVal,ifelse("#{.qcm.deltaH0Asymp.side}"==">",1-tmpPVal,2*min(tmpPVal,1-tmpPVal)))
   [#?]#R{tmpPVal}<#R{#{.qcm.deltaH0Asymp.alphaR}}[#>] peut [#?]else[#>] ne peut pas [#?]end
-  [#>][plutôt penser avec un risque de #{.qcm.deltaH0Asymp.alphaTex} que l'assertion d'intérêt  $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ est vraie.
-  \end{Correction}]
+  [#>][plutôt penser avec un risque de #{.qcm.deltaH0Asymp.alphaTex} que l'assertion d'intérêt  $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ est vraie.]
   [#when]deltaH0Asymp-Good[#>][{}*]
 
   [#%]pvalAsymp

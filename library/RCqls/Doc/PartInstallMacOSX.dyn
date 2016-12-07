@@ -3,10 +3,15 @@
 
 #### Requirements
 
-* `ruby` installation depends on [Xcode](https://developer.apple.com/downloads/)
-* [homebrew](http://brew.sh) is based on ruby.
+* `ruby` installation depends on Xcode. Install it:
+    + apple store (preferred)
+    + or by download [Xcode](https://developer.apple.com/downloads/)
+* Accept the license: `sudo xcodebuild -license accept`
+* If ruby not yet provided (open console and type `ruby`): `xcode-select --install`
+* Install [homebrew](http://brew.sh) based on ruby.
 
-A step by step install is then described below. For a quicker automatic install, just copy and paste the following command in a terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-mac.sh)"`
+
+A step by step install is then described belowbut for a quicker automatic install, just copy and paste the following command in a terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-mac.sh)"`
 
 #### **Step by step install**
 

@@ -53,7 +53,8 @@ module QCM
       require 'fileutils'
       FileUtils.mkdir_p dir
     end
-    File.open(File.join(dir,@@prj+".qcm"),"w") {|f| f << @@qcm[@@prj].inspect}
+    require 'ap'
+    File.open(File.join(dir,@@prj+".qcm"),"w") {|f| f << @@qcm[@@prj].ai(plain: :text, index: false) } #inspect}
   end
 
   def QCM.read_project
@@ -69,6 +70,10 @@ module QCM
 
   def QCM.question_title
     "#{@@prj}/#{@@title}/#{@@key}"
+  end
+
+  def QCM.answer_title
+    "#{@@title}-#{@@key}"
   end
 
   def QCM.question
@@ -128,7 +133,7 @@ QCM.new_question
 res_table.each_with_index do |res_ligne,li| #
   {#>]\noindent [#>}
   #Dyndoc.warn :res_ligne,[li,res_ligne]
-  res_ligne.each do |res_elt| #
+  res_ligne.each_with_index do |res_elt,i| #
     if res_elt.is_a? String
       {#>]:{res_elt}[#>}
       QCM.add_question_element res_elt
@@ -176,7 +181,7 @@ end
 [#def}
 
 ## This method is used in lm1QCM and lmQCM.
-## Define #qcmSrv.ExoLm1 and #qcmSrv.ExoLM  
+## Define #qcmSrv.ExoLm1 and #qcmSrv.ExoLM
 
 {#meth]qcm.QCM[#,]title[][#,]what[]
 [#=]items[]
@@ -209,10 +214,14 @@ if (question=QCM.question)
     {#>]:{txt} [#>}
     question=question[1..-1]
   end
-  {#>][\begin{questionmult}{q:{title}-:{key}}\bareme{:{bareme}}\begin{reponsesperso}[o]][#>}
-  question.each do |a| #
+  {#>][\begin{questionmult}{q:{QCM.answer_title}}\bareme{:{bareme}}\begin{reponsesperso}[o]][#>}
+  question.each_with_index do |a,i| #
     choice="\\" + (a[:answer] == :good ? "bonne" : "mauvaise")
-    {#>]:{choice}{:{a[:label]}\quad}[#>}
+    if i<question.length-1
+      {#>]:{choice}{:{a[:label]}\quad}[#>}
+    else
+      {#>]:{choice}{:{a[:label]}}[#>}
+    end
   end
   {#>][\end{reponsesperso}\end{questionmult}][#>}
 end
