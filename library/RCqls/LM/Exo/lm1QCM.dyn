@@ -2,6 +2,16 @@
 RCqls/LM/Exo/lm1
 [#main][#<]
 
+{#meth]qcmPrelim.ExoLM1[#,]what[]
+[#<]
+{#case]#{what}
+[#when]graph[#R<]
+beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
+beta1Est<-tmp[2]
+
+[#case}
+[#meth}
+
 {#meth]qcmSrv.ExoLM1[#,]what[]
 [#>]
 [{#case]#{what}
@@ -38,9 +48,13 @@ RCqls/LM/Exo/lm1
   [#when]summary-R2Good[#>][{$R^2=:r{#{.objR}$summary$r.sq}$}*]
 
   [#%]graph
-  [#when]graph-Good[#>][{}*]
+  [#when]graph-ptsGood[#>][{}*]
+  [#when]graph-fitGood[#>][{}*]
+  [#when]graph-residGood[#>][{}*]
 
   [#%]signif Pour pouvoir accepter $\mathbf{H_1}: \beta_1\neq 0$, i.e. le régresseur \texttt{#{.x}} apporte de l'information pour expliquer la variable \texttt{#{.y}}, le risque à encourir est de l'ordre de $#r{#{.objR}$summary$coeff[2,4]}$.
+  [#when]signif-pvalGood[#>][{}*]
   [#when]signif-Good[#>][{}*]
+
 [#case}]
 [#}

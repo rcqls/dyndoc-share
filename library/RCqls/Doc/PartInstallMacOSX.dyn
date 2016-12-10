@@ -11,7 +11,7 @@
 * Install [homebrew](http://brew.sh) based on ruby.
 
 
-A step by step install is then described belowbut for a quicker automatic install, just copy and paste the following command in a terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-mac.sh)"`
+A step by step install is then described below but for a quicker automatic install, just copy and paste the following command in a terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-mac.sh)"`
 
 #### **Step by step install**
 
