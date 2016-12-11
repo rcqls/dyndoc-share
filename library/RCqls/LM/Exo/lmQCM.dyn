@@ -8,7 +8,7 @@ RCqls/LM/Exo/lm
 [#<]
 {#case]#{what}
 [#when]corr[#rb<]
-tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{.qcm.corr.seuil}])])".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp="rev(names(#{.df}[-1])[order(tmp<-(abs(cor(#{.df}[-1])[1,-1]))[tmp>#{.qcm.corr.seuil}]])".to_R.map{|nm| '\texttt{'+nm+'}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [#when]summary[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
 tmp="names(sort(tmpCoeff[tmpCoeff<#{.qcm.summary.seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
@@ -35,12 +35,19 @@ pnorm(tmp)->tmpPValG
   [#when]corr-formuleGood[#<]{#qcmPrelim]self[#what]corr[#}
   [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
 
+  [#when]corr-varsGood[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(agr)}, \texttt{log(urb)}, \texttt{log(pib)} et  \texttt{log(ind)}}*]
+  [#when]corr-varsBadNeg[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(urb)}, \texttt{log(pib)}, \texttt{log(ind)} et \texttt{log(agr)}}]
+  [#when]corr-varsBadNeg2[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(urb)}, \texttt{log(pib)} et \texttt{log(ind)}}]
+
   [#%]summary
   [#when]summary-pvalGood[#<]{#qcmPrelim]self[#what]summary[#}
-  [#>][{Les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
+  [#>][{seuls les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
   [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
-  [#when]summary-defR2Good[#>][{Le $R^2$ représente la part de variance expliquée par le modèle}*]
-  [#when]summary-R2BadSigma[#>][{Le $R^2$ représente la part d'écart-type expliquée par le modèle}]
+  [#when]summary-defR2Good[#>][{$R^2$ représente la part de variance expliquée par le modèle}*]
+  [#when]summary-R2BadSigma[#>][{$R^2$ représente la part d'écart-type expliquée par le modèle}]
+
+  [#when]summary-pvalBad[#<]{#qcmPrelim]self[#what]summary[#}
+  [#>][{seuls les tests de signficativité locale \texttt{log(pib)} et \texttt{log(urb)} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
 
   [#%]colin
   [#when]colin-stderrGood[#>][{La colinéarité entre variables explicatives entraîne une augmentation des erreurs standard des paramètres associés}*]
@@ -48,7 +55,9 @@ pnorm(tmp)->tmpPValG
   [#when]colin-pvalGood[#>][{La colinéarité entre variables explicatives entraîne une augmentation de la p$-$valeur des tests de significativité locale associés}*]
 
   [#%]colinCorr
-  [#when]colinCorr-Good[#>][{}*]
+  [#when]colinCorr-Good1[#>][{La corrélation entre \texttt{log(sur)} et \texttt{log(pop)} présage d'un phénomène de colinéarité}*]
+  [#when]colinCorr-Good2[#>][{\texttt{log(pib)} est affecté par le phénomène de colinéarité}*]
+  [#when]colinCorr-Bad1[#>][{\texttt{log(co2)} n'est pas affecté par le phénomène de colinéarité}]
 
   [#%]vif
   [#when]vif-R2jGood[#>] [{$R_j^2$ est le $R^2$ associé au modèle expliquant $\Vect{x}^{(j)}$ en fonction des $\Vect{x}^{(k)}$ avec $k\neq j$}*]
