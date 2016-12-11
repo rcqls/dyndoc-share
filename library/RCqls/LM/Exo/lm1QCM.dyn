@@ -8,33 +8,43 @@ RCqls/LM/Exo/lm1
 [#when]graph[#R<]
 beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
 beta1Est<-tmp[2]
-
 [#case}
 [#meth}
 
-{#meth]qcmSrv.ExoLM1[#,]what[]
+{#meth]qcmSrv.ExoLM1[#,]what[][#,]round[3]
 [#>]
 [{#case]#{what}
   [#%]calculable
   [#when]calculable-infGood[#>] [{il faudrait ``en théorie'' une infinité de données}*]
-  [#when]calculable-estimGood[#>] [{Ces paramètres ne sont qu'estimables à partir d'un jeu de données}*]
-  [#when]calculable-dataBad[#>] [{Nous ne disposons pas encore de données}]
-  [#when]calculable-data2Bad[#>] [{Nous ne disposons pas encore de données}]
+  [#when]calculable-estimGood[#>] [{ces paramètres ne sont qu'estimables à partir d'un jeu de données}*]
+  [#when]calculable-dataBad[#>] [{nous ne disposons pas encore de données}]
+  [#when]calculable-data2Bad[#>] [{il faudrait ``en théorie'' un nombre fini de données}]
+  [#when]
 
   [#%]estim
-  [#when]estim-beta0Good[#>] [{$\Est{\beta_0}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{beta0Est}$}*]
-  [#when]estim-beta0BadBeta1[#>] [ici]
-  [#when]estim-beta0BadMinusBeta0[#>] [ici2]
-  [#when]estim-beta1Good[#>] [{$\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{beta1Est}$}*]
-  [#when]estim-beta1BadBeta0[#>] [ici3]
-  [#when]estim-beta1BadMinusBeta1[#>] [ici4]
+  [#when]estim-beta0Good[#>] [{$\Est{\beta_0}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{round(beta0Est,#{round})}$}*]
+  [#when]estim-beta0BadBeta1[#>] [{$\Est{\beta_0}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{round(beta1Est,#{round})}$}]
+  [#when]estim-beta0BadMinus[#>] [{$\Est{\beta_0}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{round(-beta0Est,#{round})}$}]
+  [#when]estim-beta1Good[#>] [{$\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{round(beta1Est,#{round})}$}*]
+  [#when]estim-beta1BadBeta0[#>] [{$\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{round(beta0Est,#{round})}$}]
+  [#when]estim-beta1BadMinus[#>] [{$\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}\simeq #r{round(-beta1Est,#{round})}$}]
 
   [#%]corr
   [#when]corr-formuleGood[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) = \frac{cov(\Vect{y},\Vect{x^{(1)}})}{\sqrt{var(\Vect{y}) \times var(\Vect{x^{(1)}})} }$}*]
   [#when]corr-calculGood[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) = \frac{#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}})}{\sqrt{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}}$}*]
-  [#when]corr-valeurGood[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) \simeq #r{#{.indicR.cxy}}$}*]
+  [#when]corr-calculBadSquare[#>][{$corr(\Vect{y},\Vect{x^{(1)}})=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}$}]
+
+
+  [#when]corr-valeurGood[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) \simeq #r{round(#{.indicR.cxy},#{round})}$}*]
+  [#when]corr-valeurBadMinus[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) \simeq #r{round((-1)*(#{.indicR.cxy}),#{round})}$}]
+  [#when]corr-valeurBadSquare[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) \simeq #r{round((#{.indicR.cxy})^2,#{round})}$}]
+
   [#when]corr-interpGood[#>][{plus $\|corr(\Vect{y},\Vect{x^{(1)}})\|$ est proche de 1 plus les points sont alignés}*]
+  [#when]corr-interpBad[#>][{plus $\|corr(\Vect{y},\Vect{x^{(1)}})\|$ est proche de 0 plus les points sont alignés}]
+
   [#when]corr-signeGood[#>][{$corr(\Vect{y},\Vect{x^{(1)}})$ et $\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}$ ont le même signe}*]
+  [#when]corr-signeBad[#>][{$corr(\Vect{y},\Vect{x^{(1)}})$ et $\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}$ sont de signes opposés}]
+
   [#when]corr-R2_formuleGood[#>][{$R^2 = \frac{cov(\Vect{y},\Vect{x^{(1)}})^2}{var(\Vect{y}) \times var(\Vect{x^{(1)}}) }$}*]
   [#when]corr-R2_carreGood[#>][{$R^2=corr(\Vect{y},\Vect{x^{(1)}})^2$}*]
   [#when]corr-R2_calculGood[#>][{$R^2=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}$}*]
@@ -45,16 +55,33 @@ beta1Est<-tmp[2]
   [#%]summary
   [#when]summary-pvalGood[#=]neg.deb[][#=]neg.fin[][#?]:r{#{.objR}$summary$coeff[2,4]>.05}[#+]neg.deb[ ne ][#+]neg.fin[ pas ][#?]end
   [#>][{La dernière colonne #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}}*]
-  [#when]summary-R2Good[#>][{$R^2=:r{#{.objR}$summary$r.sq}$}*]
+  [#when]summary-R2Good[#>][{$R^2=:r{round(#{.objR}$summary$r.sq*100,2)}\%$}*]
+
+  [#when]summary-pvalBad[#>][{on ne peut pas dire que \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}}]
+  [#when]summary-R2Bad[#>][{La part de variance expliquée par le modèle est de $56.68\%$}]
 
   [#%]graph
-  [#when]graph-ptsGood[#>][{}*]
-  [#when]graph-fitGood[#>][{}*]
+  [#when]graph-interGood[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{La droite ajustée passe par le point $(0,#r{round(beta0Est,2)})$}*]
+  [#when]graph-interBad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{La droite ajustée passe par le point $(0,#r{round(beta1Est,2)})$}]
+  [#when]graph-pt2Good[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{La droite ajustée passe par le point $(4,#r{round(beta0Est+beta1Est*4,2)})$}*]
+  [#when]graph-pt2Bad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{La droite ajustée passe par le point $(4,#r{round(beta0Est+beta1Est*5,2)})$}]
+
+  [#when]graph-fitGood[#>][{pour un point donné $(x_i^{(1)},y_i)$, la valeur ajustée est l'ordonnée du point de la droite ajustée correspond d'abscisse $x_i^{(1)}$}*]
+  [#when]graph-fitBad[#>][{pour un point donné $(x_i^{(1)},y_i)$, le résidu est l'ordonnée du point de la droite ajustée correspond d'abscisse $x_i^{(1)}$}]
+
   [#when]graph-residGood[#>][{}*]
 
   [#%]signif Pour pouvoir accepter $\mathbf{H_1}: \beta_1\neq 0$, i.e. le régresseur \texttt{#{.x}} apporte de l'information pour expliquer la variable \texttt{#{.y}}, le risque à encourir est de l'ordre de $#r{#{.objR}$summary$coeff[2,4]}$.
-  [#when]signif-pvalGood[#>][{}*]
-  [#when]signif-Good[#>][{}*]
+  [#when]signif-pvalGood[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[2,3],2)})}}*]
+  [#when]signif-pvalBadSide[#>][{La p-valeur du test de significativité locale vaut \texttt{2*(1-pnorm(#R{round(#{.objR}$summary$coef[2,3],2)}))}}]
+  [#when]signif-pvalExprGood[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[2,1],2)}/#R{round(#{.objR}$summary$coef[2,2],2)})}}*]
+  [#when]signif-pvalExprBadSide[#>][{La p-valeur du test de significativité locale vaut \texttt{2*(1-pnorm(#R{round(#{.objR}$summary$coef[2,1],2)}/#R{round(#{.objR}$summary$coef[2,2],2)}))}}]
+  [#when]signif-pvalBadBeta0[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[1,3],2)})}}]
+  [#when]signif-pvalBadEstim[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[2,2],2)})}}]
 
 [#case}]
 [#}

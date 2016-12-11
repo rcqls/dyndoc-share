@@ -67,7 +67,7 @@ pnorm(tmp)->tmpPValG
   [#%]vifCorr
   [#when]vifCorr-R2AugmenteGood[#>][{le $R^2$ augmente par ajout d'une variable explicative dans le modèle}*]
   [#when]vifCorr-R2jGood[#<]{#qcmPrelim]self[#what]vifCorr[#}
-  [#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vif.v1}} sur \texttt{#{.qcm.vif.v2}}  (de l'ordre de $#R{tmp}^2$)}*]
+  [#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.v1}} sur \texttt{#{.qcm.vifCorr.v2}}  (de l'ordre de $#R{tmp}^2$)}*]
   [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.qcm.vifCorr.v1}}$ et $VIF_{#{.qcm.vifCorr.v2}}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
   [#when]vifCorr-Good[#>][{}*]
 
