@@ -40,81 +40,117 @@ pnorm(tmp)->tmpPValG
   [#when]corr-varsBadNeg2[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(urb)}, \texttt{log(pib)} et \texttt{log(ind)}}]
 
   [#%]summary
-  [#when]summary-pvalGood[#<]{#qcmPrelim]self[#what]summary[#}
-  [#>][{seuls les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
+  [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
+  [#when]summary-pvalGood[#>][{seuls les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
   [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
   [#when]summary-defR2Good[#>][{$R^2$ représente la part de variance expliquée par le modèle}*]
   [#when]summary-R2BadSigma[#>][{$R^2$ représente la part d'écart-type expliquée par le modèle}]
 
-  [#when]summary-pvalBad[#<]{#qcmPrelim]self[#what]summary[#}
-  [#>][{seuls les tests de signficativité locale \texttt{log(pib)} et \texttt{log(urb)} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
-
-  [#%]colin
-  [#when]colin-stderrGood[#>][{La colinéarité entre variables explicatives entraîne une augmentation des erreurs standard des paramètres associés}*]
-  [#when]colin-stattestGood[#>][{La colinéarité entre variables explicatives entraîne une une diminution en valeur absolue des statistiques de test de significativité locale associées}*]
-  [#when]colin-pvalGood[#>][{La colinéarité entre variables explicatives entraîne une augmentation de la p$-$valeur des tests de significativité locale associés}*]
+  [#when]summary-pvalBad[#>][{seuls les tests de signficativité locale \texttt{log(pib)} et \texttt{log(urb)} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
 
   [#%]colinCorr
   [#when]colinCorr-Good1[#>][{La corrélation entre \texttt{log(sur)} et \texttt{log(pop)} présage d'un phénomène de colinéarité}*]
   [#when]colinCorr-Good2[#>][{\texttt{log(pib)} est affecté par le phénomène de colinéarité}*]
   [#when]colinCorr-Bad1[#>][{\texttt{log(co2)} n'est pas affecté par le phénomène de colinéarité}]
 
+  [#%]colin
+  [#when]colin-stderrGood[#>][{la colinéarité entre variables explicatives entraîne une augmentation des erreurs standard des paramètres associés}*]
+  [#when]colin-stattestGood[#>][{la colinéarité entre variables explicatives entraîne une diminution en valeur absolue des statistiques de test de significativité locale associées}*]
+  [#when]colin-pvalGood[#>][{la colinéarité entre variables explicatives entraîne une augmentation de la p$-$valeur des tests de significativité locale associés}*]
+  [#when]colin-stderrBad[#>][{la colinéarité entre variables explicatives entraîne une diminution des erreurs standard des paramètres associés}]
+  [#when]colin-stattestBad[#>][{la colinéarité entre variables explicatives entraîne une augmentation en valeur absolue des statistiques de test de significativité locale associées}]
+  [#when]colin-pvalBad[#>][{la colinéarité entre variables explicatives entraîne une diminution de la p$-$valeur des tests de significativité locale associés}]
+
   [#%]vif
   [#when]vif-R2jGood[#>] [{$R_j^2$ est le $R^2$ associé au modèle expliquant $\Vect{x}^{(j)}$ en fonction des $\Vect{x}^{(k)}$ avec $k\neq j$}*]
   [#when]vif-defGood[#>] [{$VIF_j = \frac{1}{1-R_j^2}$}*]
   [#when]vif-R2jVIFGood[#>] [{$R_j^2 = 1-\frac{1}{VIF_j}$}*]
   [#when]vif-interpGood[#<]{#qcmPrelim]self[#what]vif[#}
-  [#>][{|
-  [#?]tmp and tmp.length>1[#>][les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{seuil}]
-  [#?]tmp and tmp.length==1[#>][le VIF de :{tmp} est relativement important, ici supérieur à #{seuil}.
-  [#?]!tmp[#>][aucun VIF n'est relativement important, ici supérieur à #{seuil}][#?]end
-  [#>]|}*]
+  [#>][{]
+  [#?]tmp and tmp.length>1[#>][les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{.qcm.vif.seuil}]
+  [#?]tmp and tmp.length==1[#>][le VIF de :{tmp} est relativement important, ici supérieur à #{.qcm.vif.seuil}]
+  [#?]!tmp[#>][aucun VIF n'est relativement important, ici supérieur à #{.qcm.vif.seuil}][#?]end
+  [#>][}*]
   [#when]vif-colinGood[#>] [{un $VIF_j$ relativement important traduit que $\Vect{x}^{(j)}$ est atteint par un phénomène de colinéarité}*]
-  [#when]vif-Good[#>][{}*]
-  [#when]vif-Bad[#>][{}]
+  [#when]vif-phraseGood[#>][{un VIF est un facteur multiplicatif supérieur au égal à 1}*]
+
+  [#when]vif-R2jBad[#>] [{$R_j^2$ est le $R^2$ associé au modèle expliquant $\Vect{y}$ en fonction de tous les régresseurs sauf le $j^{\grave eme}$}]
+  [#when]vif-defBad[#>] [{$VIF_j = 1-\frac{1}{R^2_j}$}]
+  [#when]vif-R2jVIFBad[#>] [{$R^2_j = \frac{1}{1-VIF_j}$}]
+  [#when]vif-phraseBad[#>][{un VIF est un facteur multiplicatif positif et pouvant s'annuler}]
+  [#when]vif-interpBad[#>][{le VIF de \texttt{log(ind)} est mauvais car trop proche de 1}]
 
   [#%]vifCorr
+  [#when]vifCorr-prelim[#<]{#qcmPrelim]self[#what]vifCorr[#}
   [#when]vifCorr-R2AugmenteGood[#>][{le $R^2$ augmente par ajout d'une variable explicative dans le modèle}*]
-  [#when]vifCorr-R2jGood[#<]{#qcmPrelim]self[#what]vifCorr[#}
-  [#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.v1}} sur \texttt{#{.qcm.vifCorr.v2}}  (de l'ordre de $#R{tmp}^2$)}*]
-  [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.qcm.vifCorr.v1}}$ et $VIF_{#{.qcm.vifCorr.v2}}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
-  [#when]vifCorr-Good[#>][{}*]
+  [#when]vifCorr-R2jGood[#>][{le $R^2$ obtenu en régressant \texttt{log(#{.qcm.vifCorr.v1})} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{log(#{.qcm.vifCorr.v1})} sur \texttt{log(#{.qcm.vifCorr.v2})}  (de l'ordre de $#R{tmp}^2$)}*]
+  [#when]vifCorr-VIFjGood[#>][{$VIF_{log(#{.qcm.vifCorr.v1})}$ et $VIF_{log(#{.qcm.vifCorr.v2})}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
+
+  [#when]vifCorr-R2jBad[#>][{le $R^2$ obtenu en régressant \texttt{log(#{.qcm.vifCorr.v1})} sur tous les autres variables explicatives  est inférieur au $R^2$ du modèle expliquant \texttt{log(#{.qcm.vifCorr.v1})} sur \texttt{log(#{.qcm.vifCorr.v2})}  (de l'ordre de $#R{tmp}^2$)}]
+  [#when]vifCorr-R2jBadLog[#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.v1}} sur \texttt{#{.qcm.vifCorr.v2}}  (de l'ordre de $#R{tmp}^2$)}]
+  [#when]vifCorr-VIFjBad[#>][{$VIF_{log(#{.qcm.vifCorr.v1})}$ est nécessairement plus petit que  $VIF_{log(#{.qcm.vifCorr.v2})}$}]
 
   [#%]desc
   [#when]desc-methGood[#>][{La stratégie adoptée est d'appliquer la règle d'or consistant à retirer à chaque étape une unique variable explicative.}*]
   [#when]desc-pvalGrandeGood[#>][{A chaque étape, on retire la variable ayant la plus grande p-valeur du test de significativité locale}*]
+  [#when]desc-R2Good[#>][{à la dernière étape, le $R^2$ est correct}*]
+  [#when]desc-pvalGood[#>][{à la dernière étape,  toutes les p-valeurs des tests de significativité locale sont petites}*]
+
   [#when]desc-VIFGrandBad[#>][[{A chaque étape, on retire la variable ayant le plus grand VIF}*]]
+  [#when]desc-methBad[#>][{La stratégie adoptée est d'appliquer la règle d'or consistant à retirer à chaque étape toutes les variables explicatives avec grande p-valeur du test de significativité locale}]
+  [#when]desc-pvalPetiteBad[#>][{A chaque étape, on retire la variable ayant la plus petite p-valeur du test de significativité locale}]
+  [#when]desc-VIFPetitBad[#>][{A chaque étape, on retire la variable ayant le plus petit VIF}]
+  [#when]desc-R2Bad[#>][{à la dernière étape, le $R^2$ est maximal}]
+  [#when]desc-pvalBad[#>][{à la dernière étape,  toutes les p-valeurs des tests de significativité locale sont grandes}]
+
 
   [#%]increment
   [#when]increment-Good[#>][{}*]
 
   [#%]deltaH0Asymp
-  [#when]deltaH0Asymp-Good[#<]{#qcmPrelim]self[#what]deltaH0Asymp[#}
-  [#>]
-  D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ évaluée sur les données correspond justement au calcul fourni et vaut donc approximativement $#r{tmp}$. Sous $\mathbf{H_0}$ on sait également que la statistique de test sur les futures données suit approximativement une loi $\mathcal{N}(0,1)$. Par conséquent, puisque $\Est{\delta_{\beta_#{indVar},#{betaRef}}}{\Vect{y}|\Mat{x}}\simeq #r{tmp} #R{ifelse(tmp<tmpLim,"<",">")} \delta_{lim,#{.qcm.deltaH0Asymp.alphaTex}}^- \stackrel{R}{=}\mathtt{qnorm(#{.qcm.deltaH0Asymp.alphaR})}\simeq #r{qnorm(#{.qcm.deltaH0Asymp.alphaR})}$, on
-  [#r<]pnorm(tmp)->tmpPVal;tmpPVal<-ifelse("#{.qcm.deltaH0Asymp.side}"=="<",tmpPVal,ifelse("#{.qcm.deltaH0Asymp.side}"==">",1-tmpPVal,2*min(tmpPVal,1-tmpPVal)))
-  [#?]#R{tmpPVal}<#R{#{.qcm.deltaH0Asymp.alphaR}}[#>] peut [#?]else[#>] ne peut pas [#?]end
-  [#>][plutôt penser avec un risque de #{.qcm.deltaH0Asymp.alphaTex} que l'assertion d'intérêt  $\mathbf{H_1}: \beta_#{.qcm.deltaH0Asymp.indVar}< #{.qcm.deltaH0Asymp.betaRef}$ est vraie.]
-  [#when]deltaH0Asymp-Good[#>][{}*]
+  [#when]deltaH0Asymp-prelim[#<]{#qcmPrelim]self[#what]deltaH0Asymp[#}
+  [#when]deltaH0Asymp-valeurGood[#>][{la statistique de test vaut $#R{round(tmp,3)}$}*]
+  [#when]deltaH0Asymp-quantileGood[#>][{la statistique de test est inférieure à $#R{round(tmpLim,3)}$}*]
+  [#when]deltaH0Asymp-conclGood[#>][{on peut plutôt penser que $\beta_#{.qcm.deltaH0Asymp.indVar}#{.qcm.deltaH0Asymp.side}#{.qcm.deltaH0Asymp.betaRef}$}*]
+  [#when]deltaH0Asymp-valeurBadMinus[#>][{la statistique de test vaut $#R{round(-tmp,3)}$}]
+  [#when]deltaH0Asymp-quantileBad[#>][{la statistique de test est supérieure à $#R{round(tmpLim,3)}$}]
+  [#when]deltaH0Asymp-conclBadSigne[#>][{on peut plutôt penser que $\beta_#{.qcm.deltaH0Asymp.indVar}>#{.qcm.deltaH0Asymp.betaRef}$}]
+
 
   [#%]pvalAsymp
-  [#when]pvalAsymp-Good[#<]{#qcmPrelim]self[#what]pvalAsymp[#}
-  [#>]
-  L'instruction fournie correspond à la p$-$valeur (gauche) du test $\mathbf{H_1}: \beta_#{.qcm.pvalAsym.indVar}< #{.qcm.pvalAsym.betaRef}$.
-  [#?]#r{tmpPValG<#{.qcm.pvalAsym.alphaR} | 1-tmpPValG<#{.qcm.pvalAsym.alphaR}} [#>]Par conséquent puisque la p$-$valeur
-  [#?]#r{tmpPValG<#{.qcm.pvalAsym.alphaR}}[#>]
-  [gauche associée au test $\mathbf{H_1}: \beta_#{.qcm.pvalAsym.indVar} < #{.qcm.pvalAsym.betaRef}$ qui vaut approximativement $#r{tmpPValG*100}\%$]
-  [#?]#r{1-tmpPValG<#{.qcm.pvalAsym.alphaR}}[#>]
-  [droite associée au test $\mathbf{H_1}: \beta_#{.qcm.pvalAsym.indVar} > #{.qcm.pvalAsym.betaRef}$ qui vaut approximativement $#r{(1-tmpPValG)*100}\%$][#?]end
-  [#>] est inférieure à #{.qcm.pvalAsym.alphaTex} , on peut plutôt penser que cette assertion est vraie.
-  [#?]#r{tmpPValG<#{.qcm.pvalAsym.alphaR} | 1-tmpPValG<#{.qcm.pvalAsym.alphaR}}[#>] Notons, qu'il [#?]#r{2*min(tmpPValG,1-tmpPValG)<#{alphaR}}[#>]est[#?]else[#>]n'est pas[#?]end[#>] possible de penser que $\mathbf{H_1}: \beta_#{indVar}\neq  #{betaRef}$ est vraie car la p$-$valeur de ce test vaut approximativement $2\times #r{min(tmpPValG,1-tmpPValG)*100}\%=#r{2*min(tmpPValG,1-tmpPValG)*100}\%$.
-  [#when]pvalAsymp-Good[#>][{}*]
+  [#when]pvalAsymp-gaucheBad[#>][{$\beta_4<0.6$}]
+  [#when]pvalAsymp-droiteGood[#>][{$\beta_4>0.6$}*]
+  [#when]pvalAsymp-biGood[#>][{$\beta_4\neq 0.6$}*]
+  [#when]pvalAsymp-gaucheBadBeta2[#>][{$\beta_2<0.6$}]
+  [#when]pvalAsymp-droiteBadBeta2[#>][{$\beta_2>0.6$}]
+  [#when]pvalAsymp-biBadBeta2[#>][{$\beta_2 \neq 0.6$}]
+  [#when]pvalAsymp-gaucheBadRef[#>][{$\beta_4< -0.6$}]
+  [#when]pvalAsymp-droiteBadRef[#>][{$\beta_4> -0.6$}]
+  [#when]pvalAsymp-biBadRef[#>][{$\beta_4\neq -0.6$}]
 
   [#%]icAsymp
-  [#when]icAsymp-Good[#>][{}*]
+  [#when]icAsymp-formuleRGood[#>][{la formule \texttt{R} d'obtention est \texttt{#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})}}}*]
+  [#when]icAsymp-valeurGood[#>][{l'intervalle de confiance à $#R{100-#{.qcm.icAsymp.alphaP}}\%$ est \texttt{[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})},3)}}]}*]
+  [#when]icAsymp-aepGood[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont $#R{(1-#{.qcm.icAsymp.alphaP}/200)*100}\%$ approximativement contiendraient $\beta_#{.qcm.icAsymp.indVar}$}*]
+  [#when]icAsymp-testGood[#>][{le test de significativité locale a une p-valeur inférieure à $#{.qcm.icAsymp.alphaP}\%$ si $0$ n'appartient pas à l'intervalle de confiance}*]
+  [#when]icAsymp-formuleRBad[#>][{la formule \texttt{R} d'obtention est \texttt{#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})}}}]
+  [#when]icAsymp-valeurBad[#>][{l'intervalle de confiance à 95\% est \texttt{[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})},3)}}]}]
+  [#when]icAsymp-aepBad[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont $#{.qcm.icAsymp.alphaP}\%$ approximativement contiendraient $\beta_#{.qcm.icAsymp.indVar}$}]
+  [#when]icAsymp-testBad[#>][{le test de significativité locale a une p-valeur inférieure à $#{.qcm.icAsymp.alphaP}\%$ si $\beta_#{.qcm.icAsymp.indVar}$ n'appartient pas à l'intervalle de confiance}]
+
 
   [#%]ipAsymp
-  [#when]ipAsymp-Good[#>][{}*]
-
+  [#when]ipAsymp2-prelim[#R<]
+  round(#{.objR}$summary$coef[,1],2)->tmp
+  modelsTmp<-list(#{.qcm.ipAsymp2.model})
+  predictTmp<-paste(sapply( modelsTmp,function(l) paste('predict(lm(',deparse(l),'),xTau,interval="prediction")')),collapse="\n")
+  [#R<]xTau <- #{.qcm.ipAsymp2.newData}
+  #R{predictTmp}->ip
+  [#=].qcm.ipAsymp2.formR[#R{tmp[1]}{#if]#R{tmp[2]>=0}[#>]+[#if}#R{tmp[2]}*log(123456789){#if]#R{tmp[3]>=0}[#>]+[#if}#R{tmp[3]}*log(51){#if]#R{tmp[4]>=0}[#>]+[#if}#R{tmp[4]}*log(800000){#if]#R{tmp[5]>=0}[#>]+[#if}#R{tmp[5]}*log(10)]
+  [#when]ipAsymp2-formuleRGood[#>][{la formule \texttt{R} d'obtention de la prévision ponctuelle est \\ \texttt{exp(#{.qcm.ipAsymp2.formR})}}*]
+  [#when]ipAsymp2-valeurGood[#>][{la prévision ponctuelle vaut  approximativement par le calcul #R{round(exp(#{.qcm.ipAsymp2.formR}),3)}}*]
+  [#when]ipAsymp2-formuleRBadLog[#>][{la formule \texttt{R} d'obtention de la prévision ponctuelle est \\ \texttt{#{.qcm.ipAsymp2.formR}}}]
+  [#when]ipAsymp2-valeurBadLog[#>][{la prévision ponctuelle vaut approximativement par le calcul #R{round(#{.qcm.ipAsymp2.formR},3)}}]
+  [#when]ipAsymp2-ipGood[#>][{l'intervalle de prévision à $#R{100-#{.qcm.ipAsymp2.alphaP}}\%$ est \texttt{[#R{round(exp(ip[-1]),3)}]}}*]
 [#case}]
 [#}

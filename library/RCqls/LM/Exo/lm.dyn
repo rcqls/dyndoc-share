@@ -128,8 +128,8 @@ Il est connu que lorsque l'on ajoute des régresseurs le coefficient $R^2$ augme
 \end{Correction}
 [#}
 
-{#meth]desc.ExoLM[#,] formula[] [#,] alpha[.05] [#>]
-[{#Question#}{Quelle est la stratégie qui a été adoptée dans la série d'instructions ci-dessous~? A la dernière étape, précisez l'équation du modèle sélectionné et analysez brièvement les sorties.}]
+{#meth]desc.ExoLM[#,] formula[] [#,] alpha[.05] [#,]equation[true] [#>]
+[{#Question#}{Quelle est la stratégie qui a été adoptée dans la série d'instructions ci-dessous~? A la dernière étape, {#if]#{equation}[#>]précisez l'équation du modèle sélectionné et[#if} analysez brièvement les sorties.}]
 [#r<]
 i<-0
 form<-#{.formula}
@@ -244,7 +244,7 @@ D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{indVar}
 [#=].qcm.pvalAsymp.betaRef[#{betaRef}]
 [#=].qcm.pvalAsymp.alphaR[#{alphaR}][#=].qcm.pvalAsymp.alphaTex[#{alphaTex}]
 [#>]
-[{#Question#}{A partir de l'instruction \texttt{R} suivante, que peut-on avancer au vu des données comme assertion(s) d'intérêt au seuil #{alphaTex}~?}
+[{#Question#}{A partir de l'instruction \texttt{R} suivante, que peut-on avancer au vu des données comme affirmation(s) d'intérêt au seuil #{alphaTex}~?}
 
 {#rverb]
 pnorm((#R{round(#{.objR}$summary$coef[#{indVar}+1,1],5)}-(#{betaRef}))/#R{round(#{.objR}$summary$coef[#{indVar}+1,2],5)})
@@ -265,7 +265,12 @@ L'instruction fournie correspond à la p$-$valeur (gauche) du test $\mathbf{H_1}
 \end{Correction}
 [#}
 
-{#meth]icAsymp.ExoLM[#,] indVar[2] [#,] alphaP[5] [#,] round[5] [#,] indicR[true] [#>]
+{#meth]icAsymp.ExoLM[#,] indVar[2] [#,] alphaP[5] [#,] round[5] [#,] indicR[true]
+[#%]saved for QCM
+[#=].qcm.icAsymp.indVar[#{indVar}]
+[#=].qcm.icAsymp.round[#{round}]
+[#=].qcm.icAsymp.alphaP[#{alphaP}]
+[#>]
 [{#Question#}{En vous aidant de l'instruction~\texttt{R} ci-dessous, proposez un intervalle de confiance à $#R{as.integer(100-#{alphaP})}\%$ pour le paramètre $\beta_#{indVar}$ et interprétez-le (via l'approche expérimentale).  Quelle relation y-a-t-il entre cet intervalle et le test de significativité locale du paramètre $\beta_#{indVar}$~?}
 {#rverb]
 {#if]#{indicR}[#>]#R{round(#{.objR}$summary$coef[#{indVar}+1,1],#{round})}+c(-1,1)*qnorm(#R{1-#{alphaP}/200})*#R{round(#{.objR}$summary$coef[#{indVar}+1,2],#{round})}[#else]qnorm(#R{1-#{alphaP}/200})[#if}
@@ -294,6 +299,12 @@ predict(lm(#R{formch}),xTau,interval="prediction")
 
 {#meth]ipAsymp2.ExoLM[#,] newData[] [#,] model[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,]log[false]
 [#?]#{0?indNew}[#r>indNew]#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1[#?]end
+[#%]saved for QCM
+[#=].qcm.ipAsymp2.newData[#{newData}]
+[#=].qcm.ipAsymp2.indVar[#{indVar}]
+[#=].qcm.ipAsymp2.model[#{model}]
+[#=].qcm.ipAsymp2.alphaP[#{alphaP}]
+
 [#r<]
 modelsTmp<-list(#{model})
 predictTmp<-paste(sapply( modelsTmp,function(l) paste('predict(lm(',deparse(l),'),xTau,interval="prediction")')),collapse="\n")
