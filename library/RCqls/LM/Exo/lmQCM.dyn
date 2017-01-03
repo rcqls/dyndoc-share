@@ -13,6 +13,7 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [#when]summary[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
 tmp="names(sort(tmpCoeff[tmpCoeff<#{.qcm.summary.seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#=].qcm.summary.goodVars[:{tmp}]
 [#when]vif[#rb<]
 tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{.qcm.vif.seuil}]))".to_R
 tmp=[tmp] unless tmp.is_a? Array
@@ -41,7 +42,7 @@ pnorm(tmp)->tmpPValG
 
   [#%]summary
   [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
-  [#when]summary-pvalGood[#>][{seuls les tests de signficativité locale :{tmp} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
+  [#when]summary-pvalGood[#>][{seuls les tests de signficativité locale #{.qcm.summary.goodVars} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
   [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
   [#when]summary-defR2Good[#>][{$R^2$ représente la part de variance expliquée par le modèle}*]
   [#when]summary-R2BadSigma[#>][{$R^2$ représente la part d'écart-type expliquée par le modèle}]

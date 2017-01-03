@@ -3,7 +3,15 @@
 
 Note that linux user from other distributions generally knows how to adapt the following steps to his own linux distribution: [R](http://sites.psu.edu/theubunturblog/installing-r-in-ubuntu/),  [ruby](https://www.brightbox.com/docs/ruby/ubuntu/), git and dyndoc install
 
-A step by step install is described below. For a quicker automatic install, just copy and paste the following command in a terminal: `bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-ubuntu.sh)"`
+A step by step install is described below. For a quicker automatic install, just copy and paste the following command in a terminal:
+
+* Ubuntu-16:
+
+`bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-ubuntu16.sh)"`
+
+* Older Ubuntu:
+
+`bash -c "$(curl -fs http://www.dyndoc.fr/tools/install/dyndoc/install-ubuntu.sh)"`
 
 #### **Step by step install**
 
@@ -16,6 +24,9 @@ sudo apt-get update -y
 sudo apt-get install -y r-base r-base-dev
 
 # ruby install
+## for Ubuntu from 16-04
+sudo apt-get install -y ruby ruby-dev libruby
+## for Ubuntu before 16-04
 sudo apt-get install -y software-properties-common
 sudo apt-add-repository -y ppa:brightbox/ruby-ng
 sudo apt-get update -y
