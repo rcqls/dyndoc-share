@@ -213,12 +213,14 @@ end
 ### This part is devoted to the document with answers!
 #######################################################
 {#def]qcmLoadHypoTest[#,]title[]
-[#rb<]QCM.set_questions =#{=title}
-#p #{=title}
+[#rb<]
+#Dyndoc.warn :loadHypoTest, Dyndoc.vars["title"]
+QCM.set_questions Dyndoc.vars["title"]
+
 QCM.read_project
 [#rb>]
 if (questions=QCM.questions)
-#Dyndoc.warn :q,[:q,qcm]
+#Dyndoc.warn :q,questions
     questions.keys.each do |key| #
       txt = case key
       when "pp"
@@ -234,7 +236,7 @@ if (questions=QCM.questions)
       when "an"
         "\\noindent \\underline{Conclusion}~:"
       end
-      {#>]:{txt} {#qcmLoadQuestion]:{QCM.question_title}[#}[#nl][#nl][#>}
+      {#>]:{txt} {#qcmLoadQuestion]#{title}/:{key}[#}[#nl][#nl][#>}
     end
 end
 [#def}
