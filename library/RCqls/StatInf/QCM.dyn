@@ -168,10 +168,12 @@ QCM.save_question #{=title}
 [#=]title[:{#{=title}.strip}]
 [#=]test.pp[]
 [#rb<]content={pp: '#{PP}'.strip.split("\n"), h0: '#{H0}'.strip.split("\n"), h1: '#{H1}'.strip.split("\n"), st: '#{StatTest}'.strip.split("\n"), rd: '#{RD}'.strip.split("\n"), an: '#{Conclusion}'.strip.split("\n")}
+#Dyndoc.warn :content, content
 content.keys.each do |k| #
   txt=content[k]
-  if !(k==:pp and txt.empty?)
-#p :txt,[k,txt]
+  #Dyndoc.warn :txt, [k,txt]
+  if !(txt.empty?)
+  #Dyndoc.warn :txt2,[k,txt]
     opts={}
     first=txt[0].strip
     if first[0,1]=='(' and first[-1,1]==')'
@@ -188,21 +190,21 @@ end
 [#>]
 {#qcmFramed]
 [{#if]#{+?test.pp}[#>]\noindent \underline{Partie Préliminaire~:}\\ #{test.pp}\\[#}|
-\noindent \underline{Hypothèses de test}~:\\
+{#if]#{+?test.h0}[#>]\noindent \underline{Hypothèses de test}~:\\
 \noindent $\mathbf{H_0}$:\quad
 #{test.h0}
-
-\noindent $\mathbf{H_1}$:\quad
+[#if}
+{#if]#{+?test.h1}[#>]\noindent $\mathbf{H_1}$:\quad
 #{test.h1}
-
-\noindent\underline{Statistique de test sous $\mathbf{H_0}$}~:\\
+[#if}
+{#if]#{+?test.st}[#>]\noindent\underline{Statistique de test sous $\mathbf{H_0}$}~:\\
 #{test.st}
-
-\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:\\
+[#if}
+{#if]#{+?test.rd}[#>]\noindent\underline{Règle de Décision}~: Accepter $\mathbf{H_1}$ si~:\\
 #{test.rd}
-
-\noindent\underline{Conclusion}~: Au vu des données, \\
-#{test.an}]
+[#if}
+{#if]#{+?test.an}[#>]\noindent\underline{Conclusion}~: Au vu des données, \\
+#{test.an}[#if}]
 [#qcmFramed}
 [#def}
 
