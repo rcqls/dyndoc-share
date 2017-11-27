@@ -33,8 +33,8 @@ RCqls/Exo/exos
   [#?]#{.log}[#>] .df[log(#{.df})]
 [#}
 
-{#meth]corr.ExoLM[#,] seuil[.3]
-[#%]saved for QCM[#=].qcm.corr.seuil[#{seuil}]
+{#meth]corr.ExoLM[#,] seuil[0.3][#,]yIndex[1]
+[#%]saved for QCM[#=].qcm.corr.seuil[#{seuil}][#=].qcm.corr.yIndex[#{yIndex}]
 [#>]
   [{#Question#}{A la vue de la matrice de corrélation ci-après, quels sont les régresseurs qui vous semblent être les plus explicatifs~?}
 

@@ -7,10 +7,39 @@ RCqls/LM/Exo/lm
 {#meth]qcmPrelim.ExoLM[#,]what[]
 [#<]
 {#case]#{what}
-[#when]corr[#rb<]
-tmp="rev(names(#{.df}[-1])[order(tmp<-(abs(cor(#{.df}[-1])[1,-1]))[tmp>#{.qcm.corr.seuil}]])".to_R.map{|nm| '\texttt{'+nm+'}'}
+[#when]corr
+[#R<][
+  tmp <-abs(cor(#{.df})[#{.qcm.corr.yIndex},-#{.qcm.corr.yIndex}])
+  tmp <- tmp[tmp > #{.qcm.corr.seuil}]
+  vars.tmp <- names(tmp)[order(tmp,decreasing=TRUE)]
+  {#if]#{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
+]
+[#rb<]
+tmp=#R{=vars.tmp}.map{|nm| '\texttt{'+nm+'}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
-[#when]summary[#r<][tmpCoeff<-#{.objR}$summary$coeff[,4][-1]][#rb<]
+[#when]corr-positive-bad
+[#R<][
+  tmp <-cor(#{.df})[#{.qcm.corr.yIndex},-#{.qcm.corr.yIndex}]
+  tmp <- tmp[tmp > #{.qcm.corr.seuil}]
+  vars.tmp <- names(tmp)[order(tmp,decreasing=TRUE)]
+  {#if]#{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
+]
+[#rb<]
+tmp=#R{=vars.tmp}.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#when]corr-increasing-bad
+[#R<][
+  tmp <-abs(cor(#{.df})[#{.qcm.corr.yIndex},-#{.qcm.corr.yIndex}])
+  tmp <- tmp[tmp > #{.qcm.corr.seuil}]
+  vars.tmp <- names(tmp)[order(tmp)]
+  {#if]#{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
+]
+[#rb<]
+tmp=#R{=vars.tmp}.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#when]summary
+[#R<][tmpCoeff<- #{.objR}$summary$coeff[,4][-1]]
+[#rb<]
 tmp="names(sort(tmpCoeff[tmpCoeff<#{.qcm.summary.seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [#=].qcm.summary.goodVars[:{tmp}]
@@ -25,6 +54,18 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
 tmpLim<-qnorm(#{.qcm.deltaH0Asymp.alphaR})
 [#when]pvalAsymp[#r<](#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,1]}-(#{.qcm.pvalAsymp.betaRef}))/#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,2]}->tmp
 pnorm(tmp)->tmpPValG
+[#when]colinCorr
+[#R<][
+  tmp <-abs(cor(#{.df})[-#{.qcm.corr.yIndex},-#{.qcm.corr.yIndex}])
+  index.tmp<-order(tmp,decreasing=TRUE)[[1]]
+  vars.tmp <- names(#{.df})[-#{.qcm.corr.yIndex}]
+  vars.tmp <- vars.tmp[c((index.tmp-1 %% nrow(tmp))+1,(index.tmp-1 %/% nrow(tmp))+1)]
+  print(vars.tmp)
+  {#if]#{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
+]
+[#%]
+tmp=#R{=vars.tmp}.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [#case}
 [#meth}
 
@@ -33,12 +74,9 @@ pnorm(tmp)->tmpPValG
 [#>]
 [{#case]#{what}
   [#%]corr
-  [#when]corr-formuleGood[#<]{#qcmPrelim]self[#what]corr[#}
-  [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
-
-  [#when]corr-varsGood[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(agr)}, \texttt{log(urb)}, \texttt{log(pib)} et  \texttt{log(ind)}}*]
-  [#when]corr-varsBadNeg[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(urb)}, \texttt{log(pib)}, \texttt{log(ind)} et \texttt{log(agr)}}]
-  [#when]corr-varsBadNeg2[#>] [{les variables les plus explicatives semblent être de la meilleure à la moins bonne : \texttt{log(urb)}, \texttt{log(pib)} et \texttt{log(ind)}}]
+  [#when]corr-varsGood[#<]{#qcmPrelim]self[#what]corr[#} [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
+  [#when]corr-varsPositiveBad[#<]{#qcmPrelim]self[#what]corr-positive-bad[#}[#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}]
+  [#when]corr-varsIncreasingBad{#qcmPrelim]self[#what]corr-increasing-bad[#}[#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}]
 
   [#%]summary
   [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
@@ -50,7 +88,8 @@ pnorm(tmp)->tmpPValG
   [#when]summary-pvalBad[#>][{seuls les tests de signficativité locale \texttt{log(pib)} et \texttt{log(urb)} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
 
   [#%]colinCorr
-  [#when]colinCorr-Good1[#>][{La corrélation entre \texttt{log(sur)} et \texttt{log(pop)} présage d'un phénomène de colinéarité}*]
+  [#when]colinCorr-prelim[#<]{#qcmPrelim]self[#what]colinCorr[#}
+  [#when]colinCorr-Good1[#>][{La corrélation entre :{tmp} présage d'un phénomène de colinéarité}*]
   [#when]colinCorr-Good2[#>][{\texttt{log(pib)} est affecté par le phénomène de colinéarité}*]
   [#when]colinCorr-Bad1[#>][{\texttt{log(co2)} n'est pas affecté par le phénomène de colinéarité}]
 
