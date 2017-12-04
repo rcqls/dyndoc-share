@@ -89,7 +89,8 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
 
 {#meth]qcmSrv.ExoLM[#,]what[][#,]seuil[]
-[#>]
+[#rb<]p #{=what}
+[#=]result
 [{#case]#{what}
   [#%]corr
   [#when]corr-varsGood[#<]{#qcmPrelim]self[#what]corr[#} [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
@@ -176,9 +177,9 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
 
   [#%]pvalAsymp
-  [#when]pvalAsymp-gauche[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}]
-  [#when]pvalAsymp-droite[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}*]
-  [#when]pvalAsymp-bi[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}*]
+  [#when]pvalAsymp-gauche[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}{#if]#r{tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-droite[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}{#if]#r{1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-bi[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}{#if]#r{(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
   [#when]pvalAsymp-gaucheBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}<#{.qcm.pvalAsymp.betaRef}$}]
   [#when]pvalAsymp-droiteBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}>#{.qcm.pvalAsymp.betaRef}$}]
   [#when]pvalAsymp-biBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad} \neq #{.qcm.pvalAsymp.betaRef}$}]
@@ -211,4 +212,5 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#when]ipAsymp2-valeurBadLog[#>][{la prévision ponctuelle vaut approximativement par le calcul #R{round(#{.qcm.ipAsymp2.formR},3)}}]
   [#when]ipAsymp2-ipGood[#>][{l'intervalle de prévision à $#R{100-#{.qcm.ipAsymp2.alphaP}}\%$ est \texttt{[#R{round(exp(ip[-1]),3)}]}}*]
 [#case}]
+[#>][#{result}]
 [#}

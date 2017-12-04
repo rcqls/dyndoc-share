@@ -53,7 +53,8 @@ module QCM
       require 'fileutils'
       FileUtils.mkdir_p dir
     end
-    require 'ap'
+    require 'awesome_print'
+    ##Dyndoc.warn :qcm_save_question,@@qcm[@@prj], @@qcm[@@prj].ai(plain: :text, index: false)
     File.open(File.join(dir,@@prj+".qcm"),"w") {|f| f << @@qcm[@@prj].ai(plain: :text, index: false) } #inspect}
   end
 
@@ -126,7 +127,7 @@ lignes.each do |ligne| #
     res_table << res_ligne
   end
 end
-#p [:res_table,res_table]
+##p [:res_table,res_table]##
 [#rb>]
 QCM.new_question
 #Dyndoc.warn :res_table,[res_table,res_table.length]

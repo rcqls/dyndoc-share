@@ -243,6 +243,8 @@ D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{indVar}
 [#=].qcm.pvalAsymp.indVar[#{indVar}][#=].qcm.pvalAsymp.indVarBad[:r{setdiff(1:(nrow(#{.objR}$summary$coef)-1),#{indVar})[1]}]
 [#=].qcm.pvalAsymp.betaRef[#{betaRef}][#=].qcm.pvalAsymp.betaRefMinusBad[#R{-#{betaRef}}]
 [#=].qcm.pvalAsymp.alphaR[#{alphaR}][#=].qcm.pvalAsymp.alphaTex[#{alphaTex}]
+[#r<](#R{#{.objR}$summary$coef[#{indVar}+1,1]}-(#{betaRef}))/#R{#{.objR}$summary$coef[#{indVar}+1,2]}->tmp
+pnorm(tmp)->tmp.PValG
 [#>]
 [{#Question#}{A partir de l'instruction \texttt{R} suivante, que peut-on avancer au vu des données comme affirmation(s) d'intérêt au seuil #{alphaTex}~?}
 
@@ -251,17 +253,16 @@ pnorm((#R{round(#{.objR}$summary$coef[#{indVar}+1,1],5)}-(#{betaRef}))/#R{round(
 [#}
 ]
 [#tag]exam[#>]reponse?[3cm][#>][\Reponse{#{reponse}}]
-[#tag]reponse[#r<](#R{#{.objR}$summary$coef[#{indVar}+1,1]}-(#{betaRef}))/#R{#{.objR}$summary$coef[#{indVar}+1,2]}->tmp
-pnorm(tmp)->tmpPValG
+[#tag]reponse
 [#>] \begin{Correction}
 L'instruction fournie correspond à la p$-$valeur (gauche) du test $\mathbf{H_1}: \beta_#{indVar}< #{betaRef}$.
-[#?]#r{tmpPValG<#{alphaR} | 1-tmpPValG<#{alphaR}} [#>]Par conséquent puisque la p$-$valeur
-[#?]#r{tmpPValG<#{alphaR}}[#>]
-[gauche associée au test $\mathbf{H_1}: \beta_#{indVar} < #{betaRef}$ qui vaut approximativement $#r{tmpPValG*100}\%$]
-[#?]#r{1-tmpPValG<#{alphaR}}[#>]
-[droite associée au test $\mathbf{H_1}: \beta_#{indVar} > #{betaRef}$ qui vaut approximativement $#r{(1-tmpPValG)*100}\%$][#?]end
+[#?]#r{tmp.PValG<#{alphaR} | 1-tmp.PValG<#{alphaR}} [#>]Par conséquent puisque la p$-$valeur
+[#?]#r{tmp.PValG<#{alphaR}}[#>]
+[gauche associée au test $\mathbf{H_1}: \beta_#{indVar} < #{betaRef}$ qui vaut approximativement $#r{tmp.PValG*100}\%$]
+[#?]#r{1-tmp.PValG<#{alphaR}}[#>]
+[droite associée au test $\mathbf{H_1}: \beta_#{indVar} > #{betaRef}$ qui vaut approximativement $#r{(1-tmp.PValG)*100}\%$][#?]end
 [#>] est inférieure à #{alphaTex} , on peut plutôt penser que cette assertion est vraie.
-[#?]#r{tmpPValG<#{alphaR} | 1-tmpPValG<#{alphaR}}[#>] Notons, qu'il [#?]#r{2*min(tmpPValG,1-tmpPValG)<#{alphaR}}[#>]est[#?]else[#>]n'est pas[#?]end[#>] possible de penser que $\mathbf{H_1}: \beta_#{indVar}\neq  #{betaRef}$ est vraie car la p$-$valeur de ce test vaut approximativement $2\times #r{min(tmpPValG,1-tmpPValG)*100}\%=#r{2*min(tmpPValG,1-tmpPValG)*100}\%$.
+[#?]#r{tmp.PValG<#{alphaR} | 1-tmp.PValG<#{alphaR}}[#>] Notons, qu'il [#?]#r{2*min(tmp.PValG,1-tmp.PValG)<#{alphaR}}[#>]est[#?]else[#>]n'est pas[#?]end[#>] possible de penser que $\mathbf{H_1}: \beta_#{indVar}\neq  #{betaRef}$ est vraie car la p$-$valeur de ce test vaut approximativement $2\times #r{min(tmp.PValG,1-tmp.PValG)*100}\%=#r{2*min(tmp.PValG,1-tmp.PValG)*100}\%$.
 \end{Correction}
 [#}
 
