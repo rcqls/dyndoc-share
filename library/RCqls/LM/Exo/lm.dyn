@@ -240,8 +240,8 @@ D'après ce qui précède, la statistique du test $\mathbf{H_1}: \beta_#{indVar}
 
 {#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5\%]
 [#%]saved for QCM
-[#=].qcm.pvalAsymp.indVar[#{indVar}]
-[#=].qcm.pvalAsymp.betaRef[#{betaRef}]
+[#=].qcm.pvalAsymp.indVar[#{indVar}][#=].qcm.pvalAsymp.indVarBad[:r{setdiff(1:(nrow(#{.objR}$summary$coef)-1),#{indVar})[1]}]
+[#=].qcm.pvalAsymp.betaRef[#{betaRef}][#=].qcm.pvalAsymp.betaRefMinusBad[#R{-#{betaRef}}]
 [#=].qcm.pvalAsymp.alphaR[#{alphaR}][#=].qcm.pvalAsymp.alphaTex[#{alphaTex}]
 [#>]
 [{#Question#}{A partir de l'instruction \texttt{R} suivante, que peut-on avancer au vu des données comme affirmation(s) d'intérêt au seuil #{alphaTex}~?}

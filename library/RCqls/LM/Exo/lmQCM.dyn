@@ -43,29 +43,47 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 tmp="names(sort(tmpCoeff[tmpCoeff<#{.qcm.summary.seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [#=].qcm.summary.goodVars[:{tmp}]
+[#when]summary-bad-vars
+[#rb<]
+tmp="names(sort(tmpCoeff[tmpCoeff>#{.qcm.summary.seuil}]))".to_R.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#=].qcm.summary.badVars[:{tmp}]
 [#when]vif[#rb<]
-tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{.qcm.vif.seuil}]))".to_R
+tmp="rev(names(sort(#{.objR}$vif[#{.objR}$vif>#{.qcm.vif.seuil}])))".to_R
 tmp=[tmp] unless tmp.is_a? Array
 tmp.map!{|nm| '\texttt{'+nm+'}'} if tmp
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
-[#when]vifCorr[#r<]round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9) -> tmp
+[#when]vifCorr[#r<]round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9) -> tmpVifCorr
+[#?]#{.log}[#=].qcm.vifCorr.transf[<<v1[log(#{.qcm.vifCorr.v1})]<<v2[log(#{.qcm.vifCorr.v2})]][#?]else[#=].qcm.vifCorr.transf[<<v1[#{.qcm.vifCorr.v1}]<<v2[#{.qcm.vifCorr.v2}]]
 [#when]deltaH0Asymp[#r<]
-(#R{round(#{.objR}$summary$coef[#{.qcm.deltaH0Asymp.indVar}+1,1],#{.qcm.deltaH0Asymp.round})}-(#{.qcm.deltaH0Asymp.betaRef}))/#R{round(#{.objR}$summary$coef[#{.qcm.deltaH0Asymp.indVar}+1,2],#{.qcm.deltaH0Asymp.round})}->tmp
-tmpLim<-qnorm(#{.qcm.deltaH0Asymp.alphaR})
+(#R{round(#{.objR}$summary$coef[#{.qcm.deltaH0Asymp.indVar}+1,1],#{.qcm.deltaH0Asymp.round})}-(#{.qcm.deltaH0Asymp.betaRef}))/#R{round(#{.objR}$summary$coef[#{.qcm.deltaH0Asymp.indVar}+1,2],#{.qcm.deltaH0Asymp.round})}->tmp.deltaH0Asymp
+tmpLim.deltaH0Asymp<-qnorm(#{.qcm.deltaH0Asymp.alphaR})
 [#when]pvalAsymp[#r<](#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,1]}-(#{.qcm.pvalAsymp.betaRef}))/#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,2]}->tmp
 pnorm(tmp)->tmpPValG
-[#when]colinCorr
-[#R<][
+[#when]colinCorr[#R<]
   tmp <-abs(cor(#{.df})[-#{.qcm.corr.yIndex},-#{.qcm.corr.yIndex}])
-  index.tmp<-order(tmp,decreasing=TRUE)[[1]]
+  index.tmp<-order(tmp,decreasing=TRUE)
   vars.tmp <- names(#{.df})[-#{.qcm.corr.yIndex}]
-  vars.tmp <- vars.tmp[c((index.tmp-1 %% nrow(tmp))+1,(index.tmp-1 %/% nrow(tmp))+1)]
-  print(vars.tmp)
-  {#if]#{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
-]
-[#%]
-tmp=#R{=vars.tmp}.map{|nm| '\texttt{'+nm+'}'}
+  vars.tmpGood1 <- vars.tmp[c(((index.tmp[[1+nrow(tmp)]]-1) %% nrow(tmp))+1,((index.tmp[[1+nrow(tmp)]]-1) %/% nrow(tmp))+1)]
+  vars.tmpGood2 <- vars.tmp[((index.tmp[[1+nrow(tmp)]]-1) %/% nrow(tmp))+1]
+  vars.tmpBad <- vars.tmp[c(((index.tmp[[length(index.tmp)]]-1) %% nrow(tmp))+1,((index.tmp[[length(index.tmp)]]-1) %/% nrow(tmp))+1)]
+  {#if]#{.log}[#R<] 
+  vars.tmpGood1 <- paste0("log(",vars.tmpGood1,")")
+  vars.tmpGood2 <- paste0("log(",vars.tmpGood2,")")
+  vars.tmpBad <- paste0("log(",vars.tmpBad,")")
+  [#if}
+[#when]colinCorr-good1[#rb<]
+tmp=#R{=vars.tmpGood1}.map{|nm| '\texttt{'+nm+'}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#=].qcm.colinCorr[:{tmp}]
+[#when]colinCorr-good2[#rb<]
+tmp=#R{=vars.tmpGood2}.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#=].qcm.colinCorr[:{tmp}]
+[#when]colinCorr-bad[#rb<]
+tmp=#R{=vars.tmpBad}.map{|nm| '\texttt{'+nm+'}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#=].qcm.colinCorr[:{tmp}]
 [#case}
 [#meth}
 
@@ -85,13 +103,13 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#when]summary-defR2Good[#>][{$R^2$ représente la part de variance expliquée par le modèle}*]
   [#when]summary-R2BadSigma[#>][{$R^2$ représente la part d'écart-type expliquée par le modèle}]
 
-  [#when]summary-pvalBad[#>][{seuls les tests de signficativité locale \texttt{log(pib)} et \texttt{log(urb)} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
+  [#when]summary-pvalBad[#<]{#qcmPrelim]self[#what]summary-bad-vars[#}[#>][{seuls les tests de signficativité locale #{.qcm.summary.badVars} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
 
   [#%]colinCorr
   [#when]colinCorr-prelim[#<]{#qcmPrelim]self[#what]colinCorr[#}
-  [#when]colinCorr-Good1[#>][{La corrélation entre :{tmp} présage d'un phénomène de colinéarité}*]
-  [#when]colinCorr-Good2[#>][{\texttt{log(pib)} est affecté par le phénomène de colinéarité}*]
-  [#when]colinCorr-Bad1[#>][{\texttt{log(co2)} n'est pas affecté par le phénomène de colinéarité}]
+  [#when]colinCorr-Good1[#<]{#qcmPrelim]self[#what]colinCorr-good1[#}[#>][{La corrélation entre #{.qcm.colinCorr} présage du plus fort phénomène de colinéarité}*]
+  [#when]colinCorr-Good2[#<]{#qcmPrelim]self[#what]colinCorr-good2[#}[#>][{#{.qcm.colinCorr} est affecté par le phénomène de colinéarité}*]
+  [#when]colinCorr-Bad1[#<]{#qcmPrelim]self[#what]colinCorr-bad[#}[#>][{La corrélation entre #{.qcm.colinCorr} présage du plus fort phénomène de colinéarité}]
 
   [#%]colin
   [#when]colin-stderrGood[#>][{la colinéarité entre variables explicatives entraîne une augmentation des erreurs standard des paramètres associés}*]
@@ -123,12 +141,12 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#%]vifCorr
   [#when]vifCorr-prelim[#<]{#qcmPrelim]self[#what]vifCorr[#}
   [#when]vifCorr-R2AugmenteGood[#>][{le $R^2$ augmente par ajout d'une variable explicative dans le modèle}*]
-  [#when]vifCorr-R2jGood[#>][{le $R^2$ obtenu en régressant \texttt{log(#{.qcm.vifCorr.v1})} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{log(#{.qcm.vifCorr.v1})} sur \texttt{log(#{.qcm.vifCorr.v2})}  (de l'ordre de $#R{tmp}^2$)}*]
-  [#when]vifCorr-VIFjGood[#>][{$VIF_{log(#{.qcm.vifCorr.v1})}$ et $VIF_{log(#{.qcm.vifCorr.v2})}$  sont supérieurs à $#r{1/(1-tmp^2)}$}*]
+  [#when]vifCorr-R2jGood[#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.transf.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.transf.v1}} sur \texttt{#{.qcm.vifCorr.transf.v2}}  (de l'ordre de $#R{tmpVifCorr}^2$)}*]
+  [#when]vifCorr-VIFjGood[#>][{$VIF_{#{.qcm.vifCorr.transf.v1}}$ et $VIF_{#{.qcm.vifCorr.transf.v2}}$  sont supérieurs à $#r{1/(1-tmpVifCorr^2)}$}*]
 
-  [#when]vifCorr-R2jBad[#>][{le $R^2$ obtenu en régressant \texttt{log(#{.qcm.vifCorr.v1})} sur tous les autres variables explicatives  est inférieur au $R^2$ du modèle expliquant \texttt{log(#{.qcm.vifCorr.v1})} sur \texttt{log(#{.qcm.vifCorr.v2})}  (de l'ordre de $#R{tmp}^2$)}]
-  [#when]vifCorr-R2jBadLog[#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.v1}} sur \texttt{#{.qcm.vifCorr.v2}}  (de l'ordre de $#R{tmp}^2$)}]
-  [#when]vifCorr-VIFjBad[#>][{$VIF_{log(#{.qcm.vifCorr.v1})}$ est nécessairement plus petit que  $VIF_{log(#{.qcm.vifCorr.v2})}$}]
+  [#when]vifCorr-R2jBad[#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.transf.v1}} sur tous les autres variables explicatives  est inférieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.transf.v1}} sur \texttt{#{.qcm.vifCorr.transf.v2}}  (de l'ordre de $#R{tmpVifCorr}^2$)}]
+  [#when]vifCorr-R2jBadLog[#>][{le $R^2$ obtenu en régressant \texttt{#{.qcm.vifCorr.transf.v1}} sur tous les autres variables explicatives  est supérieur au $R^2$ du modèle expliquant \texttt{#{.qcm.vifCorr.transf.v1}} sur \texttt{#{.qcm.vifCorr.transf.v2}}  (de l'ordre de $#R{tmpVifCorr}^2$)}]
+  [#when]vifCorr-VIFjBad[#>][{$VIF_{#{.qcm.vifCorr.transf.v1}}$ est nécessairement plus petit que  $VIF_{#{.qcm.vifCorr.transf.v2}}$}]
 
   [#%]desc
   [#when]desc-methGood[#>][{La stratégie adoptée est d'appliquer la règle d'or consistant à retirer à chaque étape une unique variable explicative.}*]
@@ -149,24 +167,24 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
   [#%]deltaH0Asymp
   [#when]deltaH0Asymp-prelim[#<]{#qcmPrelim]self[#what]deltaH0Asymp[#}
-  [#when]deltaH0Asymp-valeurGood[#>][{la statistique de test vaut $#R{round(tmp,3)}$}*]
-  [#when]deltaH0Asymp-quantileGood[#>][{la statistique de test est inférieure à $#R{round(tmpLim,3)}$}*]
+  [#when]deltaH0Asymp-valeurGood[#>][{la statistique de test vaut $#R{round(tmp.deltaH0Asymp,3)}$}*]
+  [#when]deltaH0Asymp-quantileGood[#>][{la statistique de test est inférieure à $#R{round(tmpLim.deltaH0Asymp,3)}$}*]
   [#when]deltaH0Asymp-conclGood[#>][{on peut plutôt penser que $\beta_#{.qcm.deltaH0Asymp.indVar}#{.qcm.deltaH0Asymp.side}#{.qcm.deltaH0Asymp.betaRef}$}*]
-  [#when]deltaH0Asymp-valeurBadMinus[#>][{la statistique de test vaut $#R{round(-tmp,3)}$}]
-  [#when]deltaH0Asymp-quantileBad[#>][{la statistique de test est supérieure à $#R{round(tmpLim,3)}$}]
+  [#when]deltaH0Asymp-valeurBadMinus[#>][{la statistique de test vaut $#R{round(-tmp.deltaH0Asymp,3)}$}]
+  [#when]deltaH0Asymp-quantileBad[#>][{la statistique de test est supérieure à $#R{round(tmpLim.deltaH0Asymp,3)}$}]
   [#when]deltaH0Asymp-conclBadSigne[#>][{on peut plutôt penser que $\beta_#{.qcm.deltaH0Asymp.indVar}>#{.qcm.deltaH0Asymp.betaRef}$}]
 
 
   [#%]pvalAsymp
-  [#when]pvalAsymp-gaucheBad[#>][{$\beta_4<0.6$}]
-  [#when]pvalAsymp-droiteGood[#>][{$\beta_4>0.6$}*]
-  [#when]pvalAsymp-biGood[#>][{$\beta_4\neq 0.6$}*]
-  [#when]pvalAsymp-gaucheBadBeta2[#>][{$\beta_2<0.6$}]
-  [#when]pvalAsymp-droiteBadBeta2[#>][{$\beta_2>0.6$}]
-  [#when]pvalAsymp-biBadBeta2[#>][{$\beta_2 \neq 0.6$}]
-  [#when]pvalAsymp-gaucheBadRef[#>][{$\beta_4< -0.6$}]
-  [#when]pvalAsymp-droiteBadRef[#>][{$\beta_4> -0.6$}]
-  [#when]pvalAsymp-biBadRef[#>][{$\beta_4\neq -0.6$}]
+  [#when]pvalAsymp-gauche[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}]
+  [#when]pvalAsymp-droite[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}*]
+  [#when]pvalAsymp-bi[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}*]
+  [#when]pvalAsymp-gaucheBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}<#{.qcm.pvalAsymp.betaRef}$}]
+  [#when]pvalAsymp-droiteBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}>#{.qcm.pvalAsymp.betaRef}$}]
+  [#when]pvalAsymp-biBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad} \neq #{.qcm.pvalAsymp.betaRef}$}]
+  [#when]pvalAsymp-gaucheBadRef[#>][{$\beta_#{.qcm.pvalAsymp.indVar}< #{.qcm.pvalAsymp.betaRefMinusBad}$}]
+  [#when]pvalAsymp-droiteBadRef[#>][{$\beta_#{.qcm.pvalAsymp.indVar}> #{.qcm.pvalAsymp.betaRefMinusBad}$}]
+  [#when]pvalAsymp-biBadRef[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRefMinusBad}$}]
 
   [#%]icAsymp
   [#when]icAsymp-formuleRGood[#>][{la formule \texttt{R} d'obtention est \texttt{#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})}}}*]
