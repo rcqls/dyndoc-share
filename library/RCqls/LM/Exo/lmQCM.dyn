@@ -89,7 +89,7 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
 
 {#meth]qcmSrv.ExoLM[#,]what[][#,]seuil[]
-[#rb<]p #{=what}
+[#rb<]##p #{=what}
 [#=]result
 [{#case]#{what}
   [#%]corr
