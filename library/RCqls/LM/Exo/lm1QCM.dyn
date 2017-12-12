@@ -39,8 +39,8 @@ beta1Est<-tmp[2]
   [#when]corr-valeurBadMinus[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) \simeq #r{round((-1)*(#{.indicR.cxy}),#{round})}$}]
   [#when]corr-valeurBadSquare[#>][{$corr(\Vect{y},\Vect{x^{(1)}}) \simeq #r{round((#{.indicR.cxy})^2,#{round})}$}]
 
-  [#when]corr-interpGood[#>][{plus $\|corr(\Vect{y},\Vect{x^{(1)}})\|$ est proche de 1 plus les points sont alignés}*]
-  [#when]corr-interpBad[#>][{plus $\|corr(\Vect{y},\Vect{x^{(1)}})\|$ est proche de 0 plus les points sont alignés}]
+  [#when]corr-interpGood[#>][{plus $|corr(\Vect{y},\Vect{x^{(1)}})|$ est proche de 1 plus les points sont alignés}*]
+  [#when]corr-interpBad[#>][{plus $|corr(\Vect{y},\Vect{x^{(1)}})|$ est proche de 0 plus les points sont alignés}]
 
   [#when]corr-signeGood[#>][{$corr(\Vect{y},\Vect{x^{(1)}})$ et $\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}$ ont le même signe}*]
   [#when]corr-signeBad[#>][{$corr(\Vect{y},\Vect{x^{(1)}})$ et $\Est{\beta_1}{\Vect{y}|\Vect{x^{(1)}}}$ sont de signes opposés}]
