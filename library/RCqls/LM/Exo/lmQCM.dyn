@@ -177,9 +177,9 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
 
   [#%]pvalAsymp
-  [#when]pvalAsymp-gauche[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}{#if]#r{tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
-  [#when]pvalAsymp-droite[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}{#if]#r{1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
-  [#when]pvalAsymp-bi[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}{#if]#r{(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-gaucheGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}{#if]#r{tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-droiteGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}{#if]#r{1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-biGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}{#if]#r{(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
   [#when]pvalAsymp-gaucheBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}<#{.qcm.pvalAsymp.betaRef}$}]
   [#when]pvalAsymp-droiteBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}>#{.qcm.pvalAsymp.betaRef}$}]
   [#when]pvalAsymp-biBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad} \neq #{.qcm.pvalAsymp.betaRef}$}]
