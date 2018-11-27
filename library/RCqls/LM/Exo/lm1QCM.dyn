@@ -11,7 +11,7 @@ beta1Est<-tmp[2]
 [#case}
 [#meth}
 
-{#meth]qcmSrv.ExoLM1[#,]what[][#,]round[3]
+{#meth]qcmSrv.ExoLM1[#,]what[][#,]round[3][#,]ptx1[0][#,]ptx2[4]
 [#>]
 [{#case]#{what}
   [#%]calculable
@@ -62,13 +62,15 @@ beta1Est<-tmp[2]
 
   [#%]graph
   [#when]graph-interGood[#<]{#qcmPrelim]self[#what]graph[#}
-  [#>][{La droite ajustée passe par le point $(0,#r{round(beta0Est,2)})$}*]
+  [#>][{Pour tracer la droite ajustée, on utilise le point $(#{ptx1},#r{round(beta0Est+beta1Est*#{ptx1},2)})$}*]
   [#when]graph-interBad[#<]{#qcmPrelim]self[#what]graph[#}
-  [#>][{La droite ajustée passe par le point $(0,#r{round(beta1Est,2)})$}]
+  [#>][{Pour tracer la droite ajustée, on utilise le point $(#{ptx1},#r{round(beta1Est+beta0Est*#{ptx1},2)})$}]
+  [#when]graph-interOrigBad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point $(0,#r{round(beta0Est,2)})$}]
   [#when]graph-pt2Good[#<]{#qcmPrelim]self[#what]graph[#}
-  [#>][{La droite ajustée passe par le point $(4,#r{round(beta0Est+beta1Est*4,2)})$}*]
+  [#>][{Pour tracer la droite ajustée, on utilise le point $(#{ptx2},#r{round(beta0Est+beta1Est*#{ptx2},2)})$}*]
   [#when]graph-pt2Bad[#<]{#qcmPrelim]self[#what]graph[#}
-  [#>][{La droite ajustée passe par le point $(4,#r{round(beta0Est+beta1Est*5,2)})$}]
+  [#>][{Pour tracer la droite ajustée, on utilise le point $(#{ptx2},#r{round(beta0Est+beta1Est*(#{ptx2}+1),2)})$}]
 
   [#when]graph-fitGood[#>][{pour un point donné $(x_i^{(1)},y_i)$, la valeur ajustée est l'ordonnée du point de la droite ajustée correspond d'abscisse $x_i^{(1)}$}*]
   [#when]graph-fitBad[#>][{pour un point donné $(x_i^{(1)},y_i)$, le résidu est l'ordonnée du point de la droite ajustée correspond d'abscisse $x_i^{(1)}$}]

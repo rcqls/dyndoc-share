@@ -266,7 +266,7 @@ $$
 [#}
 
 {#meth]ipQuali.ExoLM1[#,] newData[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,] short[false]
-[#?]#{0?indNew}[#r>indNew]#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1[#?]end
+[#?]#{0?indNew}[#=]indNew[#R{as.integer(#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1)}][#?]end
 [#>]
 [{#Question#}{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
 mais pas encore la valeur de \texttt{#{.y}}.
