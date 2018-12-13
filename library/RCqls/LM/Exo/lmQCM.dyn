@@ -190,11 +190,12 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#%]icAsymp
   [#when]icAsymp-formuleRGood[#>][{la formule \texttt{R} d'obtention est \texttt{#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})}}}*]
   [#when]icAsymp-valeurGood[#>][{l'intervalle de confiance à $#R{100-#{.qcm.icAsymp.alphaP}}\%$ est \texttt{[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})},3)}}]}*]
-  [#when]icAsymp-aepGood[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont $#R{(1-#{.qcm.icAsymp.alphaP}/200)*100}\%$ approximativement contiendraient $\beta_#{.qcm.icAsymp.indVar}$}*]
+  [#when]icAsymp-aepGood[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont $#R{(1-#{.qcm.icAsymp.alphaP}/100)*100}\%$ approximativement contiendraient $\beta_#{.qcm.icAsymp.indVar}$}*]
   [#when]icAsymp-testGood[#>][{le test de significativité locale a une p-valeur inférieure à $#{.qcm.icAsymp.alphaP}\%$ si $0$ n'appartient pas à l'intervalle de confiance}*]
   [#when]icAsymp-formuleRBad[#>][{la formule \texttt{R} d'obtention est \texttt{#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})}}}]
   [#when]icAsymp-valeurBad[#>][{l'intervalle de confiance à  $#R{(1-#{.qcm.icAsymp.alphaP}/100)*100}\%$ est \texttt{[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})},3)}}]}]
   [#when]icAsymp-aepBad[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont $#{.qcm.icAsymp.alphaP}\%$ approximativement contiendraient $\beta_#{.qcm.icAsymp.indVar}$}]
+  [#when]icAsymp-aepBad2[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont $#R{(1-#{.qcm.icAsymp.alphaP}/200)*100}\%$ approximativement contiendraient $\beta_#{.qcm.icAsymp.indVar}$}]
   [#when]icAsymp-testBad[#>][{le test de significativité locale a une p-valeur inférieure à $#{.qcm.icAsymp.alphaP}\%$ si $\beta_#{.qcm.icAsymp.indVar}$ n'appartient pas à l'intervalle de confiance}]
 
 

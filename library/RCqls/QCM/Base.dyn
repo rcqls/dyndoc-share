@@ -194,6 +194,7 @@ items_lines.each do |line| #
     {#<][#+]items[{#qcmSrv]self[#what]:{item}[#} :{add}][#<}
   end
 end
+[#rb<]#TO DEBUG: Dyndoc.warn :debug, [#{=items}]
 [#>]
 [{#qcmChoicesList]#{title}[#content]
 #{items}

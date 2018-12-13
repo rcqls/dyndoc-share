@@ -11,7 +11,7 @@ beta1Est<-tmp[2]
 [#case}
 [#meth}
 
-{#meth]qcmSrv.ExoLM1[#,]what[][#,]round[3][#,]ptx1[0][#,]ptx2[4]
+{#meth]qcmSrv.ExoLM1[#,]what[][#,]round[3][#,]ptx1[0][#,]ptx2[4][#,]breaks[]
 [#>]
 [{#case]#{what}
   [#%]calculable
@@ -75,7 +75,8 @@ beta1Est<-tmp[2]
   [#when]graph-fitGood[#>][{pour un point donné $(x_i^{(1)},y_i)$, la valeur ajustée est l'ordonnée du point de la droite ajustée correspond d'abscisse $x_i^{(1)}$}*]
   [#when]graph-fitBad[#>][{pour un point donné $(x_i^{(1)},y_i)$, le résidu est l'ordonnée du point de la droite ajustée correspond d'abscisse $x_i^{(1)}$}]
 
-  [#when]graph-residGood[#>][{}*]
+  [#when]graph-residGood[#>][{pour un point donné $(x_i^{(1)},y_i)$, le résidu est la différence entre les ordonnées des points observé et de la droite ajustée correspond à l'abscisse $x_i^{(1)}$}*]
+  [#when]graph-residBad[#>][{pour un point donné $(x_i^{(1)},y_i)$, le valeur ajustée est la différence entre les ordonnées des points observé et de la droite ajustée correspond à l'abscisse $x_i^{(1)}$}]
 
   [#%]signif Pour pouvoir accepter $\mathbf{H_1}: \beta_1\neq 0$, i.e. le régresseur \texttt{#{.x}} apporte de l'information pour expliquer la variable \texttt{#{.y}}, le risque à encourir est de l'ordre de $#r{#{.objR}$summary$coeff[2,4]}$.
   [#when]signif-pvalGood[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[2,3],2)})}}*]
@@ -85,5 +86,22 @@ beta1Est<-tmp[2]
   [#when]signif-pvalBadBeta0[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[1,3],2)})}}]
   [#when]signif-pvalBadEstim[#>][{La p-valeur du test de significativité locale vaut \texttt{2*pnorm(#R{round(#{.objR}$summary$coef[2,2],2)})}}]
 
+  [#when]quali2-mod1Good[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x1})),z=rep(#{breaks.z1},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z1}} de $z$}*]
+  [#when]quali2-mod2Good[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x2})),z=rep(#{breaks.z2},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z2}} de $z$}*]
+  [#when]quali2-mod3Good[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x3})),z=rep(#{breaks.z3},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z3}} de $z$}*]
+  [#when]quali2-mod1Bad2[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x1})),z=rep(#{breaks.z1},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z2}} de $z$}]
+  [#when]quali2-mod1Bad3[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x1})),z=rep(#{breaks.z1},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z3}} de $z$}]
+  [#when]quali2-mod2Bad1[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x2})),z=rep(#{breaks.z2},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z1}} de $z$}]
+  [#when]quali2-mod2Bad3[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x2})),z=rep(#{breaks.z2},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z3}} de $z$}]
+  [#when]quali2-mod3Bad1[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x3})),z=rep(#{breaks.z3},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z1}} de $z$}]
+  [#when]quali2-mod3Bad2[#R<]tmpy<-predict(lm(#{.y}~z*#{.x}),data.frame(#{.x}=(tmpx<-c(#{breaks.x3})),z=rep(#{breaks.z3},2)),interval="prediction")[#>][{Les points $(:r{round(tmpx[1],#{breaks.xround})},:r{round(tmpy[1,1],#{breaks.yround})})$ et $(:r{round(tmpx[2],#{breaks.xround})},:r{round(tmpy[2,1],#{breaks.yround})})$ sont utilisés pour la modalité :{#{breaks.z2}} de $z$}]
+  
+  [#when]ipQuali-predictGood[#>][{:r{round(tmpTau[1,1],#{breaks.yround})} est la valeur prédite}*]
+  [#when]ipQuali-predictBad1[#>][{:r{round(tmpTau[1,2],#{breaks.yround})} est la valeur prédite}]
+  [#when]ipQuali-predictBad2[#>][{:r{round(tmpTau[1,3],#{breaks.yround})} est la valeur prédite}]
+  [#when]ipQuali-interGood[#>][{$[:r{round(tmpTau[1,c(2,3)],#{breaks.yround})}]$ est l'intervalle de prévision}*]
+  [#when]ipQuali-interBad1[#>][{$[:r{round(tmpTau[1,c(1,2)],#{breaks.yround})}]$ est l'intervalle de prévision}]
+  [#when]ipQuali-interBad2[#>][{$[:r{round(tmpTau[1,c(1,3)],#{breaks.yround})}]$ est l'intervalle de prévision}]
+  [#else][#>][#{what}]
 [#case}]
 [#}

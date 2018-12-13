@@ -265,17 +265,30 @@ $$
 \end{Correction}
 [#}
 
+{#meth]quali1.ExoLM1[#,] qualiTex[] [#,] qualiR[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]modal[] [#,]short[false][#>]
+[{#Question#}{Quelle variable nommée \texttt{z} ][#?]#{+?modal}[#>](ayant pour modalités #{modal})[#?]end[#>] dans la sortie suivante a été introduite~? Comparez brièvement les résultats obtenus avec ceux du précédent modèle.}
+[#r<]z<-#{qualiR}
+[#>]{#rverb]
+summary(lm(#{.y}~z*#{.x}))
+[#}
+[#}
+
+{#meth]quali2.ExoLM1[#>]
+{#Question#} Représentation graphique de ce nouveau modèle~: quels sont les points qui permettent de tracer le(s) droite(s) du modèle ?
+[#}
+
 {#meth]ipQuali.ExoLM1[#,] newData[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,] short[false]
 [#?]#{0?indNew}[#=]indNew[#R{as.integer(#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1)}][#?]end
 [#>]
 [{#Question#}{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
 mais pas encore la valeur de \texttt{#{.y}}.
-Dans la sortie \texttt{R} ci-dessous, pourriez-vous prévoir sa valeur puis calculer son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%~?}<\n>]
-[#?]#{short}[#>]{#rverb]predict(lm(#{.y}~#{.x}*z),#{newData},interval="prediction")[#}
+Dans la sortie \texttt{R} ci-dessous, pourriez-vous prévoir sa valeur puis fournir son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%~?}<\n>]
+[#?]#{short}[#>]{#rverb]predict(lm(#{.y}~z*#{.x}),#{newData},interval="prediction")[#}
 [#?]else[#>]{#rverb]
 xTau <- #{newData}
-predict(lm(#{.y}~#{.x}*z),xTau,interval="prediction")
+predict(lm(#{.y}~z*#{.x}),xTau,interval="prediction")
 [#}[#?]end
+[#R<]tmpTau<-predict(lm(#{.y}~z*#{.x}),#{newData},interval="prediction")
 [#tag]exam[#>]reponse?[4cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#>]
 \begin{Correction}
