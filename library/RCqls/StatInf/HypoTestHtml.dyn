@@ -1,8 +1,12 @@
+[#require]RCqls/Styles/CqlsLatex [#main]
+[#%]This is fact a replacement of HypoTest.dyn compatible with for both latex and katex[#<]
 %%% Facility Class combining at once ParamFrame (.par) and TestParam (.test)
 {#meth]new.HypoTestExo
 [#,]paramType[m][#,]sampleType[asymptotique]
 [#,]nomPb[][#,]yR[][#,]nom1Pb[][#,]y1R[][#,]nom2Pb[][#,]y2R[]
+[#,]ny[][#,]n1y[][#,]n2y[]
 [#,]side[>][#,]theta0R[.15][#,]alphaR[.05][#,]indic[pval]
+[#,]thetaEstR[]
 [#,]affirmation[]
 [#%]Fix the .yR, .y1R, .y2R (even for md case) => Rmk (for me): toto?[titi] means that toto is initialized only if toto is not (empty init is an init)
 [#?]#{0?yR} and #{+?nomPb}[#=]yR[y#{nomPb}][#?]#{0?y1R} and #{+?nom1Pb}[#=]y1R[y#{nom1Pb}][#?]#{0?y2R} and #{+?nom2Pb}[#=]y2R[y#{nom2Pb}]
@@ -10,7 +14,9 @@
 [#?]#{=paramType}=="md"[#=]nomPb[D]
 [#?]end
 [#yield]default
-[#<]{#new].param[#of]ParamFrame[#in]#{.Renvir}[#,]#{paramType}[#,]#{sampleType}[#,].nomPb[#{nomPb}][#,].yR[#{yR}][#,].nom1Pb[#{nom1Pb}][#,].y1R[#{y1R}][#,].nom2Pb[#{nom2Pb}][#,].y2R[#{y2R}][#}
+[#?]#{0?n1y} and #{+?y1R}[#=]n1y[#R{length(#{y1R})}][#?]#{0?n2y} and #{+?y2R}[#=]n2y[#R{length(#{y2R})}]
+[#?]#{0?ny} and #{+?yR}[#=]ny[#R{length(#{yR})}][#?]end
+[#<]{#new].param[#of]ParamFrame[#in]#{.Renvir}[#,]#{paramType}[#,]#{sampleType}[#,].nomPb[#{nomPb}][#,].yR[#{yR}][#,].ny[#{ny}][#,].nom1Pb[#{nom1Pb}][#,].y1R[#{y1R}][#,].n1y[#{n1y}][#,].nom2Pb[#{nom2Pb}][#,].y2R[#{y2R}][#,].n2y[#{n2y}][#,].thetaEstR[#{thetaEstR}][#}
 {#new].test[#of]TestParam[#in]#{.Renvir}[#,].frame[:self.param][#,].side[#{side}][#,].indic[#{indic}][#,].theta0R[#{theta0R}][#,].alphaR[#{alphaR}][#,].assertion[#{affirmation}][#}
 [#meth}
 
@@ -18,16 +24,8 @@
 [{#redaction].test[#type]#{type}[#}]
 [#}
 
-%%% Try to create all bad contexts. Idea: generate QCM in 1 shot.... 
-{#meth]new.HypoTestQCM
-[#,]paramType[m][#,]sampleType[asymptotique]
-[#,]nomPb[][#,]yR[][#,]nom1Pb[][#,]y1R[][#,]nom2Pb[][#,]y2R[]
-[#,]side[>][#,]theta0R[.15][#,]alphaR[.05][#,]indic[pval]
-[#,]affirmation[]
-[#,]bad[][#%]values expected for bad are: par,ref,side,n
-  required variables when:
-    - par:  
-[#meth}
+{#meth]getVar.ParamFrame[#,]key[][#>]#{.#{key}}[#}
+{#meth]getVar.TestParam[#,]key[][#>]#{.#{key}}[#}
 
 
 %%% Class
@@ -71,34 +69,34 @@
     [#>].YTex?[#{.Y1Tex},#{.Y2Tex}] [#>].yTex?[#{.y1Tex},#{.y2Tex}]
     [#>].n1y?[length(#{.y1R})][#>].n2y?[length(#{.y2R})]
     [#when]p-a[#>].thetaTex?[p^{#{.nomPb}}]
-    [#>].thetaEstFctR[mean]
+    [#=].thetaEstFctR[mean]
     [#when]m-a,md-a,m-g,md-g[#>].thetaTex?[\mu^{#{.nomPb}}]
-    [#when]p-a,m-a,md-a,m-g,md-g[#>].thetaEstFctR[mean][#>].seThetaFctR[seMean]
-    [#when]v-a,v-g[#>].thetaTex?[\sigma^2_{#{.nomPb}}][#>].thetaEstFctR[var]
-    [#when]v-a[#>].seThetaFctR[seVar]
+    [#when]p-a,m-a,md-a,m-g,md-g[#=].thetaEstFctR[mean][#=].seThetaFctR[seMean]
+    [#when]v-a,v-g[#>].thetaTex?[\sigma^2_{#{.nomPb}}][#=].thetaEstFctR[var]
+    [#when]v-a[#=].seThetaFctR[seVar]
     [#when]dm-a,dm-g[#>].theta1Tex?[\mu^{#{.nom1Pb}}][#>].theta2Tex?[\mu^{#{.nom2Pb}}][#>].thetaTex?[d_\mu]
-    [#>].thetaExprTex[#{.theta1Tex}-#{.theta2Tex}]
-    [#>].thetaEstFctR[mean][#>].operation[-]
-    [#when]dm-a[#>].seThetaFctR[seDMean]
-    [#when]dm-g[#>].seThetaFctR[seDMeanG]
+    [#=].thetaExprTex[#{.theta1Tex}-#{.theta2Tex}]
+    [#=].thetaEstFctR[mean][#>].operation[-]
+    [#when]dm-a[#=].seThetaFctR[seDMean]
+    [#when]dm-g[#=].seThetaFctR[seDMeanG]
     [#when]dv-a[#>].theta1Tex?[\sigma^2_{#{.nom1Pb}}][#>].theta2Tex?[\sigma^2_{#{.nom2Pb}}][#>].thetaTex?[d_{\sigma^2}]
     [#>].thetaExprTex?[#{.theta1Tex}-#{.theta2Tex}]
-    [#>].thetaEstFctR[var][#>].operation[-][#>].seThetaFctR[seDVar]
+    [#=].thetaEstFctR[var][#=].operation[-][#=].seThetaFctR[seDVar]
     [#when]rm-a[#>].theta1Tex?[\mu^{#{.nom1Pb}}][#>].theta2Tex?[\mu^{#{.nom2Pb}}][#>].thetaTex?[r_\mu]
-    [#>].thetaExprTex?[\displaystyle \frac{#{.theta1Tex}}{#{.theta2Tex}}]
-    [#>].thetaEstFctR[mean][#>].operation[/][#>].seThetaFctR[seRMean]
+    [#>].thetaExprTex?[{\displaystyle \frac{#{.theta1Tex}}{#{.theta2Tex}}}]
+    [#=].thetaEstFctR[mean][#=].operation[/][#=].seThetaFctR[seRMean]
     [#when]rv-a,rv-g[#>].theta1Tex?[\sigma^2_{#{.nom1Pb}}][#>].theta2Tex?[\sigma^2_{#{.nom2Pb}}][#>].thetaTex?[r_{\sigma^2}]
     [#>].thetaExprTex?[\displaystyle \frac{#{.theta1Tex}}{#{.theta2Tex}}]
-    [#>].thetaEstFctR[var][#>].operation[/]
-    [#when]rv-a[#>].seThetaFctR[seRVar]
+    [#=].thetaEstFctR[var][#=].operation[/]
+    [#when]rv-a[#=].seThetaFctR[seRVar]
     [#when]p-a,m-a,md-a,v-a,m-g,md-g,v-g
-    [#>].thetaEstR?[#{.thetaEstFctR}(#{.yR})]
+    [#=].thetaEstR[{#if]#{+?.thetaEstR}[#>]#{.thetaEstR}[#else]#{.thetaEstFctR}(#{.yR})[#if}]
     [#when]p-a,m-a,md-a,v-a,m-g,md-g
     [#>].seThetaR?[#{.seThetaFctR}(#{.yR})]
     [#when]dm-a,dv-a,rm-a,rv-a,dm-g,rv-g
-    [#>].theta1EstR?[#{.thetaEstFctR}(#{.y1R})]
-    [#>].theta2EstR?[#{.thetaEstFctR}(#{.y2R})]
-    [#>].thetaEstR?[#{.theta1EstR}#{.operation}#{.theta2EstR}]
+    [#=].theta1EstR[{#if]#{+?.theta1EstR}[#>]#{.theta1EstR}[#else]#{.thetaEstFctR}(#{.y1R})[#if}]
+    [#=].theta2EstR[{#if]#{+?.theta2EstR}[#>]#{.theta2EstR}[#else]#{.thetaEstFctR}(#{.y2R})[#if}]
+    [#=].thetaEstR[{#if]#{+?.thetaEstR}[#>]#{.thetaEstR}[#else]#{.theta1EstR}#{.operation}#{.theta2EstR}[#if}]
     [#when]dm-a,dm-g,dv-a,rm-a,rv-a[#>].seThetaR?[#{.seThetaFctR}(#{.y1R},#{.y2R})]
   [#}
 [#}
@@ -107,7 +105,7 @@
 [#>]
 {#case]#{.paramType}-#{.sampleType}
 [#when]p-a[#>][\sqrt{\frac{#{.thetaTex}\times (1-#{.thetaTex})} {#r{as.integer(#{.ny})}}}]
-[#else][\sigma_{\cqlshat{#{.thetaTex}}}]
+[#else][\sigma_{{#cqlshat]#{.thetaTex}[#}}]
 [#}
 [#}
 
@@ -115,7 +113,7 @@
 [#>]
 [{#case]#{.paramType}-#{.sampleType}
 [#when]p-a[#>][\sqrt{\frac{#{.thetaTex}\times (1-#{.thetaTex})} {#r{as.integer(#{.ny})}}}]
-[#else][\Est{\sigma_{\cqlshat{#{.thetaTex}}}}{{#if]#{va}[#>]#{.YTex}[#else]#{.yTex}[#}}]
+[#else][{#Est]\sigma_{{#cqlshat]#{.thetaTex}[#}}[#,]{#if]#{va}[#>]#{.YTex}[#else]#{.yTex}[#}[#}]
 [#}]
 [#}
 
@@ -127,40 +125,40 @@
 
 {#meth]initH1.TestParam[#,]side[][#,]theta0[][#<]
 {#case]#{.frame.paramType}-#{.frame.sampleType}
-[#when]p-a[#?]#{+?theta0}[#>].theta0R[#{theta0}][#>].theta0Tex[#r{#{.theta0R}*100}\%][#?]end
-[#when]m-a,md-a,v-a,dm-a,dv-a,rm-a,rv-a,m-g,md-g,v-g,rv-g[#?]#{+?theta0}[#>].theta0R[#{theta0}][#>].theta0Tex[#{.theta0R}][#?]end
+[#when]p-a[#?]#{+?theta0}[#=].theta0R[#{theta0}][#=].theta0Tex[#r{#{.theta0R}*100}\%][#?]end
+[#when]m-a,md-a,v-a,dm-a,dv-a,rm-a,rv-a,m-g,md-g,v-g,rv-g[#?]#{+?theta0}[#=].theta0R[#{theta0}][#=].theta0Tex[#{.theta0R}][#?]end
 [#case}
-[#?]#{+?side}[#>].side[#{side}][#?]end
+[#?]#{+?side}[#=].side[#{side}][#?]end
 [#}
 
 {#meth]initAlpha.TestParam[#,]alpha[][#<]
-[#?]#{+?alpha}[#>].alphaR[#{alpha}][#>].alphaTex[#r{#{.alphaR}*100}\%][#?]end
+[#?]#{+?alpha}[#=].alphaR[#{alpha}][#=].alphaTex[#r{#{.alphaR}*100}\%][#?]end
 [#}
 
 {#meth]init.TestParam[#<]
 {#case]#{.indic}
-[#when]p,pval,pv,p-val,p-value,pvalue,pvaleur,p-valeur[#>].indic[p]
-[#when]q,quantile,deltaH0,deltaEstH0,delta,deltaEst.H0[#>].indic[q]
+[#when]p,pval,pv,p-val,p-value,pvalue,pvaleur,p-valeur[#=].indic[p]
+[#when]q,quantile,deltaH0,deltaEstH0,delta,deltaEst.H0[#=].indic[q]
 [#}
 {#case]#{.frame.paramType}-#{.frame.sampleType}
-[#when]p-a[#>].deltaH0R[(#{.frame.thetaEstR}-#{.theta0R})/sqrt(#{.theta0R}*(1-#{.theta0R})/#{.frame.ny})]
+[#when]p-a[#=].deltaH0R[(#{.frame.thetaEstR}-#{.theta0R})/sqrt(#{.theta0R}*(1-#{.theta0R})/#{.frame.ny})]
 [#when]m-a,md-a,m-g,md-g,v-a,dm-a,dm-g,dv-a,rm-a,rv-a
 [#>]theta0R[{#if]#r{#{.theta0R}}<0[#>](#{.theta0R})[#else]#{.theta0R}[#}]
 [#>].deltaH0R[(#{.frame.thetaEstR}-#{theta0R})/#{.frame.seThetaR}]
 [#when]p-a,m-a,md-a,v-a,dm-a,dv-a,rm-a,rv-a
-[#>].loiStatR[norm]
-[#>].paramLoiStatExprR,.paramLoiStatR[]
-[#>].loiStatTex[\mathcal{N}(0,1)]
-[#when]m-g,md-g[#>].loiStatTex[\mathcal{S}t(#R{as.integer(#{.frame.ny})}-1)]
-[#>].loiStatR[t][#>].paramLoiStatExprR[,#{.frame.ny}-1][#>].paramLoiStatR[,#r{#{.frame.ny}-1}]
-[#when]v-g[#>].deltaH0R[(#{.frame.ny}-1)*#{.frame.thetaEstR}/#{.theta0R}]
-[#>].loiStatTex[\chi^2(#R{as.integer(#{.frame.ny})}-1)]
-[#>].loiStatR[chisq][#>].paramLoiStatExprR[,#{.frame.ny}-1][#>].paramLoiStatR[,#r{#{.frame.ny}-1}]
-[#when]dm-g[#>].loiStatTex[\mathcal{S}t(#R{as.integer(#{.frame.n1y})}+#R{as.integer(#{.frame.n2y})}-2) ]
-[#>].loiStatR[t][#>].paramLoiStatExprR[,#{.frame.n1y}+#{.frame.n2y}-2][#>].paramLoiStatR[,#r{#{.frame.n1y}+#{.frame.n2y}-2}]
-[#when]rv-g[#>].deltaH0R[(#{.frame.thetaEstR})/#{.theta0R}]
-[#>].loiStatTex[\mathcal{F}(#R{as.integer(#{.frame.n1y})}-1,#R{as.integer(#{.frame.n2y})}-1) ]
-[#>].loiStatR[f][#>].paramLoiStatExprR[,#{.frame.n1y}-1,#{.frame.n2y}-1][#>].paramLoiStatR[,#r{#{.frame.n1y}-1},#r{#{.frame.n2y}-1}]
+[#=].loiStatR[norm]
+[#=].paramLoiStatExprR[#=].paramLoiStatR[]
+[#=].loiStatTex[\mathcal{N}(0,1)]
+[#when]m-g,md-g[#=].loiStatTex[\mathcal{S}t(#R{as.integer(#{.frame.ny})}-1)]
+[#=].loiStatR[t][#=].paramLoiStatExprR[,#{.frame.ny}-1][#=].paramLoiStatR[,#r{#{.frame.ny}-1}]
+[#when]v-g[#=].deltaH0R[(#{.frame.ny}-1)*#{.frame.thetaEstR}/#{.theta0R}]
+[#=].loiStatTex[\chi^2(#R{as.integer(#{.frame.ny})}-1)]
+[#=].loiStatR[chisq][#=].paramLoiStatExprR[,#{.frame.ny}-1][#=].paramLoiStatR[,#r{#{.frame.ny}-1}]
+[#when]dm-g[#=].loiStatTex[\mathcal{S}t(#R{as.integer(#{.frame.n1y})}+#R{as.integer(#{.frame.n2y})}-2) ]
+[#=].loiStatR[t][#=].paramLoiStatExprR[,#{.frame.n1y}+#{.frame.n2y}-2][#=].paramLoiStatR[,#r{#{.frame.n1y}+#{.frame.n2y}-2}]
+[#when]rv-g[#=].deltaH0R[(#{.frame.thetaEstR})/#{.theta0R}]
+[#=].loiStatTex[\mathcal{F}(#R{as.integer(#{.frame.n1y})}-1,#R{as.integer(#{.frame.n2y})}-1) ]
+[#=].loiStatR[f][#=].paramLoiStatExprR[,#{.frame.n1y}-1,#{.frame.n2y}-1][#=].paramLoiStatR[,#r{#{.frame.n1y}-1},#r{#{.frame.n2y}-1}]
 [#when]p-a,m-a,md-a,v-a,dm-a,dv-a,rm-a,rv-a,m-g,md-g
 [#>].alphaTable?[c(0.9,0.95,0.975,0.99)]
 [#when]v-g,rv-g[#>].alphaTable?[c(0.01,0.025,0.05,0.1,0.9,0.95,0.975,0.99)]
@@ -168,7 +166,7 @@
 [#when]m-a,md-a,v-a,dm-a,dv-a,rm-a,rv-a,m-g,md-g,v-g,dm-g,rv-g[#>].theta0Tex?[#{.theta0R}]
 [#}
 [#>].alphaTex?[#r{#{.alphaR}*100}\%]
-[#>].side[{#case]#{.side}[#when]!=[#>]\neq[#else]#{.side}[#}]
+[#=].side[{#case]#{.side}[#when]!=[#>]\neq[#else]#{.side}[#}]
 [#r<]
 #if(exists("#{.frame.yR}") || (exists("#{.frame.y1R}") && exists("#{.frame.y2R}") )) {
   require(asympTest)
@@ -202,7 +200,7 @@ okH1<- pval<#{.alphaR}
 [#}
 
 {#meth]deltaH0ExprTex.TestParam
-[#>]theta0Tex[{#if]#R{#{.theta0R}<0}[#>](#{.theta0Tex})[#else]#{.theta0Tex}[#}]
+[#=]theta0Tex[{#if]#R{#{.theta0R}<0}[#>](#{.theta0Tex})[#else]#{.theta0Tex}[#}]
 [#>]
 [{#case]#{.frame.paramType}-#{.frame.sampleType}
 [#when]v-g[#>]
@@ -215,20 +213,20 @@ okH1<- pval<#{.alphaR}
 [#}
 
 {#meth]deltaEstH0Tex.TestParam[#,]va[true][#>]
-[\Est{\delta_{#{.frame.thetaTex},#{.theta0Tex}}}{{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}}]
+[{#Est]\delta_{#{.frame.thetaTex},#{.theta0Tex}}[#,]{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}[#}]
 [#}
 
 {#meth]deltaEstH0ExprTex.TestParam[#,]va[true]
-[#>]yy[{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}]
-[#>]theta0Tex[{#if]#R{#{.theta0R}<0}[#>](#{.theta0Tex})[#else]#{.theta0Tex}[#}]
+[#=]yy[{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}]
+[#=]theta0Tex[{#if]#R{#{.theta0R}<0}[#>](#{.theta0Tex})[#else]#{.theta0Tex}[#}]
 [#>]
 [{#case]#{.frame.paramType}-#{.frame.sampleType}
 [#when]v-g[#>]
-[{\displaystyle (#R{as.integer(#{.frame.ny})}-1)\frac{\Est{#{.frame.thetaTex}}{#{yy}}}{#{theta0Tex}}}]
+[{\displaystyle (#R{as.integer(#{.frame.ny})}-1)\frac{{#Est]#{.frame.thetaTex}[#,]#{yy}[#}}{#{theta0Tex}}}]
 [#when]rv-g[#>]
-[{\displaystyle \frac{\Est{#{.frame.thetaTex}}{#{yy}}}{#{theta0Tex}}}]
+[{\displaystyle \frac{{#Est]#{.frame.thetaTex}[#,]#{yy}[#}}{#{theta0Tex}}}]
 [#else]
-[{\displaystyle \frac{\Est{#{.frame.thetaTex}}{#{yy}}-#{theta0Tex}}{{#seThetaTex]self[#,]#{va}[#}}}]
+[{\displaystyle \frac{{#Est]#{.frame.thetaTex}[#,]#{yy}[#}-#{theta0Tex}}{{#seThetaTex]self[#,]#{va}[#}}}]
 [#}]
 [#}
 
@@ -237,7 +235,7 @@ okH1<- pval<#{.alphaR}
 [#}
 
 {#meth]deltaLimTex.TestParam[#,]type[right]
-[#>]alpha[{#case]#{.side}[#when]!=,\neq[#>][\frac{#{.alphaTex}}{2}] [#else] [#{.alphaTex}][#}]
+[#=]alpha[{#case]#{.side}[#when]!=,\neq[#>][\frac{#{.alphaTex}}{2}] [#else] [#{.alphaTex}][#}]
 [#>][{#case]#{type}
     [#when]right,>,+[#>]
     [\delta^+_{lim,#{alpha}}]
@@ -249,9 +247,9 @@ okH1<- pval<#{.alphaR}
 {#meth]deltaH0R.TestParam[#>]#{.deltaH0R}[#}
 
 {#meth]deltaLimR.TestParam[#,] short[false]
-[#>]Expr[{#if]#{short}[#>][Expr][#else][][#}]
-[#>]alphaR[{#case]#{.side}[#when]!=,\neq[#>]#{.alphaR}/2[#else]#{.alphaR}[#}]
-[#>]side[{#case]#{.side}
+[#=]Expr[{#if]#{short}[#>][Expr][#else][][#}]
+[#=]alphaR[{#case]#{.side}[#when]!=,\neq[#>]#{.alphaR}/2[#else]#{.alphaR}[#}]
+[#=]side[{#case]#{.side}
         [#when]!=,\neq[#>][{#if]#R{leftpval<.5}[#>]<[#else]>[#}]
         [#else][#{.side}]
         [#}]
@@ -284,7 +282,7 @@ okH1<- pval<#{.alphaR}
 {#meth]H0Theta.TestParam[#>][$#{.frame.thetaTex}=#{.theta0Tex}$] [#}
 
 {#meth]H1Theta.TestParam[#,] expr[false]
-[#>]side?[#{.side}]
+[#=]side[#{.side}]
 [#>] [$#{.frame.thetaTex}{#if]#{expr} and #{.frame.nbEch}==2[#>] [:=#{.frame.thetaExprTex}] [#}#{side}#{.theta0Tex}$]
 [#}
 
@@ -299,7 +297,7 @@ okH1<- pval<#{.alphaR}
 [#>]
   [{#if]#{=.frame.paramType}=="md"
   [#>]
-    [{#if]#{titrePre}[#>] [\noindent \textbf{Préliminaire}~: ] [#if}]
+    [{#if]#{titrePre}[#>] [{#b]Préliminaire[#} : ] [#if}]
   [#>]
     [{#if]#{verifRPre}[#<]{#if]:r{#{.theta0R}>=0}[#=]theta0Rtmp[#{.theta0R}][#else][#=]theta0Rtmp[(#{.theta0R})][#if}[#>]
       [puisque  $\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{(mean(#{.frame.yR})-#{.theta0R})}$ est du même signe (i.e. ]
@@ -307,18 +305,18 @@ okH1<- pval<#{.alphaR}
       |{#if]#{=.indic}=="p"[#>]
         [(car p-valeur gauche ]
         [#>]{#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if}[#>][ à $50\%$)]
-      [#if}, on a~:
+      [#if}, on a :
     [#if}]
   [#>]
-    [\begin{itemize}
-    |\item \textit{variable d'intérêt}~: $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$
-    |{#if]#{shortPre}[#>]\item \textit{futur échantillon}~: $\Vect{#{.frame.YTex}}=\Vect{Y^{#{.frame.nom1Pb}}}-\Vect{Y^{#{.frame.nom2Pb}}}$
-    |[#if}\item \textit{paramètre d'intérêt}~: $#{.frame.thetaTex}=\mbox{``moyenne de $#{.frame.YTex}$"}=\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$
-    |\end{itemize}]
+    [<ul>
+    |<li> {#i]variable d'intérêt[#} : $#{.frame.YTex}=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}}$</li>
+    |{#if]#{shortPre}[#>]<li> {#i]futur échantillon[#} : ${#Vect]#{.frame.YTex}[#}={#Vect]Y^{#{.frame.nom1Pb}}[#}-{#Vect]Y^{#{.frame.nom2Pb}}[#}$ </li>
+    |[#if}<li> {#i]paramètre d'intérêt[#} : $#{.frame.thetaTex}$=moyenne de $#{.frame.YTex}$=$\mu^{#{.frame.nom1Pb}}-\mu^{#{.frame.nom2Pb}}$</li>
+    |</ul>]
   [#if}]
 [#>]
   [{#if]#{.frame.nbEch}==2[#>]
-    [{#if]#{titrePre}[#>] [\noindent \textbf{Préliminaire} : ] [#}]
+    [{#if]#{titrePre}[#>] [<br/>{#b]Préliminaire[#} : ] [#}]
   [#>]
     [{#if]#{verifRPre}[#>]
       [{#if]#{=.frame.paramType}+#{=.frame.sampleType}=="rvg"[#>] [{#hide] A Faire: ce n'est pas si évident!!! [#hide}]
@@ -327,47 +325,40 @@ okH1<- pval<#{.alphaR}
       |{#if]#{=.indic}=="p"[#>]
         [(car p-valeur gauche ]
         [#>]{#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if}[#>][ à $50\%$)]
-      [#if}, on a~:
+      [#if}, on a :
       [#if}]
     [#if}]
   [#?]#{shortPre}[#>]
-    [ $#{.frame.thetaTex}=#{.frame.thetaExprTex}$\\]
+    [ $#{.frame.thetaTex}=#{.frame.thetaExprTex}$<br/>]
   [#?]else[#>]
-[\begin{itemize}
-\item \textit{paramètre d'intérêt}~: $#{.frame.thetaTex}=#{.frame.thetaExprTex}$
-\item \textit{sa future estimation}~: $\Est{#{.frame.thetaTex}}{#{.frame.YTex}}=\Est{#{.frame.theta1Tex}}{#{.frame.Y1Tex}}#{.frame.operation}\Est{#{.frame.theta2Tex}}{#{.frame.Y2Tex}}$
-\end{itemize}]
+[<ul>
+<li> {#i]paramètre d'intérêt[#} : $#{.frame.thetaTex}=#{.frame.thetaExprTex}$
+<li> {#i]sa future estimation[#} : ${#Est]#{.frame.thetaTex}[#,]#{.frame.YTex}[#}={#Est]#{.frame.theta1Tex}[#,]#{.frame.Y1Tex}[#}#{.frame.operation}{#Est]#{.frame.theta2Tex}[#,]#{.frame.Y2Tex}[#}$
+</ul>]
   [#?]end
   [#}]
 [#}
 
 {#meth]StatTestH0.TestParam[#,]va[true][#>]
-[${\displaystyle {#deltaEstH0Tex]self[#}= {#deltaEstH0ExprTex]self[#} {#case]#{.frame.sampleType} [#when]a[#>] [\SuitApprox] [#else] [\leadsto] [#} #{.loiStatTex}}$]
+[${\displaystyle {#deltaEstH0Tex]self[#}= {#deltaEstH0ExprTex]self[#} {#case]#{.frame.sampleType} [#when]a[#>] [{#SuitApprox#} [#else] [\leadsto] [#} #{.loiStatTex}}$]
 [#}
 
-{#meth]redTestStatH0.TestParam[#?]#{=Tex.Converter}=="MathJax"
-[#%]to correct the latex in mathjax: % --> \%
-[#=]deltaEstH0ExprTex[@{deltaEstH0Tex(self)} = @{deltaEstH0ExprTex(self)}]
-[#rb<]<deltaEstH0ExprTex:> = <deltaEstH0ExprTex:>.gsub("%","\\\\%")
+{#meth]redTestStatH0.TestParam
+[#=]deltaEstH0ExprTex[{#deltaEstH0Tex]self[#} = {#deltaEstH0ExprTex]self[#}]
+[#rb<]# <deltaEstH0ExprTex:> = <deltaEstH0ExprTex:>.gsub("%","\\\\%")
 [#>]
-[\begin{rawhtml}\(\textbf{Statistique de test sous }\mathbf{H}_0\) :
+[{#b]Statistique de test sous $\mathbf{H}_0$[#b} :
   $$
-   #{deltaEstH0ExprTex} {#case]#{.frame.sampleType} [#when]a[#>] [\SuitApprox] [#else] [\leadsto] [#} #{.loiStatTex}
+   #{deltaEstH0ExprTex} {#case]#{.frame.sampleType} [#when]a[#>] [{#SuitApprox#}] [#else] [\leadsto] [#} #{.loiStatTex}
   $$
-  \end{rawhtml}]
-[#?]else[#rb<]puts "redTest";p #{=.frame.sampleType}[#>]
-[\textbf{Statistique de test sous $\mathbf{H}_0$} :
-  $$
-  @{deltaEstH0Tex(self)}= @{deltaEstH0ExprTex(self)}
-  {#case]#{.frame.sampleType} [#when]a[#>] [\SuitApprox] [#else] [\leadsto] [#} #{.loiStatTex}
-  $$]
+]
 [#}
 
 %% Added recently for QCM goal (TODO: used it in the following one)
 {#meth]RD.TestParam[#,]indic[][#>]
 [{#case]#{indic}
   [#when]p[#>]
-    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(bilatérale)] [#} < #{.alphaTex}]
+    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(bilatérale)] [#} < $#{.alphaTex}$]
   [#when]q[#>]
     [{#case]#{.side}
     [#when]<[#>] [${#deltaEstH0Tex]self[#,]false[#} < {#deltaLimTex]self[#,]<[#}$]
@@ -379,15 +370,15 @@ okH1<- pval<#{.alphaR}
 
 %%% TODO: take advantage of above!
 {#meth]redTestRD.TestParam[#>]
-[\textbf{Règle de décision} : Accepter $\mathbf{H}_1$ si
+[{#b]Règle de décision[#} : Accepter $\mathbf{H}_1$ si
   {#case]#{.indic}
   [#when]p[#>]
-    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(biltatérale)] [#} < #{.alphaTex}]
+    [p-valeur {#case]#{.side} [#when]<[#>] [(gauche)] [#when]>[#>] [(droite)] [#when]!=,\neq[#>] [(biltatérale)] [#} < $#{.alphaTex}$]
   [#when]q[#>]
     [{#case]#{.side}
-    [#when]<[#>] [$@{deltaEstH0Tex(self|false)} < @{deltaLimTex(self|<)}$]
-    [#when]>[#>] [$@{deltaEstH0Tex(self|false)} > @{deltaLimTex(self|>)}$]
-    [#when]!=,\neq[#>][$@{deltaEstH0Tex(self|false)} < @{deltaLimTex(self|<)}$ ou $@{deltaEstH0Tex(self|false)} > @{deltaLimTex(self|>)}$
+    [#when]<[#>] [${#deltaEstH0Tex]self[#,]false[#} < {#deltaLimTex]self[#,]<[#}$]
+    [#when]>[#>] [${#deltaEstH0Tex]self[#,]false[#} > {#deltaLimTex]self[#,]>[#}$]
+    [#when]!=,\neq[#>][${#deltaEstH0Tex]self[#,]false[#} < {#deltaLimTex]self[#,]<[#}$ ou ${#deltaEstH0Tex]self[#,]false[#} > {#deltaLimTex]self[#,]>[#}$
     [#}]
   [#}]
 [#}
@@ -397,46 +388,46 @@ okH1<- pval<#{.alphaR}
   [puisqu'au vu des données,
   {#case]#{.indic}
   [#when]p[#>]
-[\[
-p-valeur{#if]#{+?Math.NotR}[#>]#{Math.NotR}[#else]\NotR[#}\mathtt{@{pvalR(self)}} \simeq #R{round(pval*100,2)}\%#R{ifelse(pval<#{.alphaR}," < ","\\nless")}#{.alphaTex},
-\]]
+[$$
+p-valeur{#if]#{+?Math.NotR}[#>]#{Math.NotR}[#else]{#NotR#}[#}\mathtt{{#pvalR]self[#}} \simeq #R{round(pval*100,2)}\%#R{ifelse(pval<#{.alphaR}," < ","\\nless")}#{.alphaTex},
+$$]
   [#when]q[#>]
-[\begin{eqnarray*}
-@{deltaEstH0Tex(self|false)} &{#if]#{+?Math.NotR}[#>]#{Math.NotR}[#else]\NotR[#}&\mathtt{#{.deltaH0R}}\simeq #r{deltaEst.H0}\\]
+[$$\begin{aligned}
+{#deltaEstH0Tex]self[#,]false[#} &{#if]#{+?Math.NotR}[#>]#{Math.NotR}[#else]{#NotR#}[#} \mathtt{#{.deltaH0R}}\simeq #r{deltaEst.H0}\\]
   [#>]
     [{#case]#{.side}
-    [#when]<[#>][&#R{ifelse(pval<#{.alphaR}," < ","\\nless")} & @{deltaLimTex(self|<)}]
-    [#when]>[#>] [&#R{ifelse(pval<#{.alphaR}," > ","\\ngtr")} & @{deltaLimTex(self|>)}]
+    [#when]<[#>][&#R{ifelse(pval<#{.alphaR}," < ","\\nless")}  {#deltaLimTex]self[#,]<[#}]
+    [#when]>[#>] [&#R{ifelse(pval<#{.alphaR}," > ","\\ngtr")}  {#deltaLimTex]self[#,]>[#}]
     [#when]!=,\neq[#>]
       [{#if]#R{leftpval<.5}[#>]
-        [&#R{ifelse(okH1," < ","\\nless")} & @{deltaLimTex(self|<)}]
+        [&#R{ifelse(okH1," < ","\\nless")}  {#deltaLimTex]self[#,]<[#}]
       [#else]
-        [&#R{ifelse(okH1," > ","\\ngtr")} & @{deltaLimTex(self|>)}]
+        [&#R{ifelse(okH1," > ","\\ngtr")}  {#deltaLimTex]self[#,]>[#}]
       [#}]
     [#}]
-[#>] {#if]#{+?Math.NotR}[#>]#{Math.NotR}[#else]\NotR[#} \mathtt{@{deltaLimR(self)}}\simeq#r{@{deltaLimR(self)}}
-\end{eqnarray*}
+[#>] {#if]#{+?Math.NotR}[#>]#{Math.NotR}[#else]{#NotR#}[#} \mathtt{{#deltaLimR]self[#}}\simeq#r{{#deltaLimR]self[#}}
+\end{aligned}$$
   [#}
-{#if]#R{okH1}[#>] [on peut] [#else] [on ne peut pas] [#} plutôt penser (avec un risque de #{.alphaTex}) que #{.assertion}.]
+{#if]#R{okH1}[#>] [on peut] [#else] [on NE peut PAS] [#} (plutôt) penser (avec un risque de $#{.alphaTex}$) que #{.assertion}.]
 [#}
 
 {#meth]redTestAbr.TestParam[#,] prelim[true][#>]
 [{#if]#{prelim}[#>] [{#redTestPre]self[#shortPre]true[#}] [#}
-\noindent \textbf{Assertion d'intérêt} :  {#H1]self[#H1}]
+{#b]Affirmation d'intérêt[#} :  {#H1]self[#H1}]
 [#>]
   [{#if]#{=.frame.paramType}=="md"
-  [#>] [ avec $#{.frame.thetaTex}=\mbox{moyenne de }#{.frame.YTex}(=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}})$]
-  [#if}{#if]#{.frame.nbEch}==2[#>] [ avec  $#{.frame.thetaTex}=#{.frame.thetaExprTex}$] [#if} \\]
+  [#>] [ avec $#{.frame.thetaTex}=moyenne de #{.frame.YTex}(=Y^{#{.frame.nom1Pb}}-Y^{#{.frame.nom2Pb}})$]
+  [#if}{#if]#{.frame.nbEch}==2[#>] [ avec  $#{.frame.thetaTex}=#{.frame.thetaExprTex}$] [#if}]
 [#\n]
-  [\textbf{Application numérique} :  {#redTestAN]self[#}]
+  [<br/>{#b]Application numérique[#} :  {#redTestAN]self[#}]
 [#}
 
 {#meth]redTestStd.TestParam[#,] prelim[true][#>]
 [{#if]#{prelim}[#>] [{#redTestPre]self[#}] [#}
-\noindent \textbf{Hypothèses de test} : {#H0]self[#} vs {\large {#H1]self[#}}\\
-{#redTestStatH0]self[#}
-{#redTestRD]self[#}\\
-\noindent \textbf{Conclusion} :
+<br/>{#b]Hypothèses de test[#} : {#H0]self[#} vs {#H1]self[#}
+<br/>{#redTestStatH0]self[#}
+<br/>{#redTestRD]self[#}
+<br/>{#b]Conclusion[#} :
 {#redTestAN]self[#}]
 [#}
 
@@ -541,7 +532,7 @@ indic=indic.uniq.join(",nl,")]
 [#}
 
 {#meth]questionType.TestParam[#>]
-  [Au vu des données peut-on montrer que #{.assertion}  avec un risque d'erreur de première espèce fixé à #{.alphaTex}~?]
+  [Au vu des données peut-on montrer que #{.assertion}  avec un risque d'erreur de première espèce fixé à $#{.alphaTex}$ ?]
 [#}
 
 {#meth]pvalRCode.TestParam[#,]lwd[7][#,]lwda[5]

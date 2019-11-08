@@ -115,6 +115,64 @@ def CqlsProba.ampTex(e,opt={:y=>"Y"})
   end
 end
 
+def CqlsProba.aepHtml(e,opt={:y=>"y",:m=>"m"})
+  case e[:type]
+  when :m
+    "{#meanEmp]#{opt[:y]}[#,]#{opt[:m]}[#}"      
+  when :v
+    " {#sdEmp]#{opt[:y]}[#,]#{opt[:m]}[#}^2"
+  when :s
+    "{#sdEmp]#{opt[:y]}[#,]#{opt[:m]}[#}"
+  when :q
+    "{#quantEmp]#{opt[:y]}[#,]#{opt[:m]}[#order]"+e[:orderPercent]+"\\%[#}"
+  when :p
+    instAEP="{#meanEmp]"
+    # égalité
+    if e[:open]+e[:sep]+e[:bsup]+e[:close]=="" and e[:binf]!=""
+      instAEP << "#{opt[:y]}="+e[:binf]
+    else
+      if "[]".include? e[:open] and e[:binf]!="" and e[:sep]+e[:bsup]+e[:close]=="" 
+        instAEP << "#{opt[:y]}"+(e[:open]=="[" ? "\\geq" : ">")+e[:binf]
+      elsif "[]".include? e[:close] and e[:binf]!="" and e[:sep]+e[:open]+e[:bsup]=="" 
+        instAEP << "#{opt[:y]}"+(e[:close]=="[" ? "<" : "\\leq")+e[:binf]
+      elsif "[]".include? e[:open] and e[:binf]!="" and e[:sep]==";" and "[]".include? e[:close] and e[:bsup]!=""
+        instAEP << "#{opt[:y]}\\in "+e[:open]+e[:binf]+","+e[:bsup]+e[:close]
+      end
+    end
+    instAEP << "[#,]#{opt[:m]}[#}"
+    instAEP
+  end
+end
+
+def CqlsProba.ampHtml(e,opt={:y=>"Y"})
+  case e[:type]
+  when :m
+    "{#EEE]#{opt[:y]}[#}"    
+  when :v
+    "{#VVV]#{opt[:y]}[#}"
+  when :s
+    "{#sd]#{opt[:y]}[#}"
+  when :q
+    "{#quant]#{opt[:y]}[#order]"+e[:orderPercent]+"\\%[#}"
+  when :p
+    instAMP="{#PPP]"
+    # égalité
+    if e[:open]+e[:sep]+e[:bsup]+e[:close]=="" and e[:binf]!=""
+      instAMP << "#{opt[:y]}="+e[:binf]
+    else
+      if "[]".include? e[:open] and e[:binf]!="" and e[:sep]+e[:bsup]+e[:close]=="" 
+        instAMP << "#{opt[:y]}"+(e[:open]=="[" ? "\\geq" : ">")+e[:binf]
+      elsif "[]".include? e[:close] and e[:binf]!="" and e[:sep]+e[:open]+e[:bsup]=="" 
+        instAMP << "#{opt[:y]}"+(e[:close]=="[" ? "<" : "\\leq")+e[:binf]
+      elsif "[]".include? e[:open] and e[:binf]!="" and e[:sep]==";" and "[]".include? e[:close] and e[:bsup]!=""
+        instAMP << "#{opt[:y]}\\in "+e[:open]+e[:binf]+","+e[:bsup]+e[:close]
+      end
+    end
+    instAMP << "[#}"
+    instAMP    
+  end
+end
+
 def CqlsProba.parseProba(e,opt={:r=>".yyAEP",:aep=>"y",:amp=>"Y",:m=>"m",:mode=>:all})
   parsed_e=CqlsProba.parseFormula(e)
   res={:type=>parsed_e[:type]}
@@ -123,6 +181,17 @@ def CqlsProba.parseProba(e,opt={:r=>".yyAEP",:aep=>"y",:amp=>"Y",:m=>"m",:mode=>
   res[:r]=CqlsProba.aepR(parsed_e,:y=>opt[:r]) if mode.include? :r
   res[:aep]=CqlsProba.aepTex(parsed_e,:y=>opt[:aep],:m=>opt[:m])
   res[:amp]=CqlsProba.ampTex(parsed_e,:y=>opt[:amp])
+  res
+end
+
+def CqlsProba.parseProbaHtml(e,opt={:r=>".yyAEP",:aep=>"y",:amp=>"Y",:m=>"m",:mode=>:all})
+  parsed_e=CqlsProba.parseFormula(e)
+  res={:type=>parsed_e[:type]}
+  mode=opt[:mode]
+  mode=[:r,:aep,:amp] if !mode or mode==:all
+  res[:r]=CqlsProba.aepR(parsed_e,:y=>opt[:r]) if mode.include? :r
+  res[:aep]=CqlsProba.aepHtml(parsed_e,:y=>opt[:aep],:m=>opt[:m])
+  res[:amp]=CqlsProba.ampHtml(parsed_e,:y=>opt[:amp])
   res
 end
 

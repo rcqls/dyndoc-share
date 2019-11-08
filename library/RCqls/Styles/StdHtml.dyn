@@ -1,0 +1,8 @@
+[#<]
+{@StdHtml:new@}
+
+{@StdHtml:b]code[][@>]<bold>#{code}</bold>[@}
+
+{@StdHtml:i]code[][@>]<i>#{code}</i>[@}
+
+{@StdHtml:u]code[][@>]<u>#{code}</u>[@}

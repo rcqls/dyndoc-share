@@ -1,17 +1,17 @@
 [#rb<]load "{#pwd#}/TabAEP.rb"
 [#<]
 [#%]make an object instead![#<]
-{#meth]new.InstrProba[#,]y[<<R[y]<<AEP[y]<<AMP[Y]][#,]what[][#,]m[m]
+
+{#meth]new.InstrProbaHtml[#,]y[<<R[y]<<AEP[y]<<AMP[Y]][#,]what[][#,]m[m]
 [#=].y[:y]
 [#<]{#init]self[#}
 [#meth}
 
-{#meth]init.InstrProba[#,]what[][#,]m[m]
+{#meth]init.InstrProbaHtml[#,]what[][#,]m[m]
 [#=].m[#{m}]
-[#>].what[#{what}]
-[#rb<]
-  what=#{=what}.split(",").map{|e| 
-    CqlsProba.parseProba(e,:r=>".yyAEP",:aep=> #{=.y.AEP}, :amp=>#{=.y.AMP},:m=>#{=.m})
+[#=].what[#{what}]
+[#rb<]what=#{=what}.split(",").map{|e| 
+    CqlsProba.parseProbaHtml(e,:r=>".yyAEP",:aep=> #{=.y.AEP}, :amp=>#{=.y.AMP},:m=>#{=.m})
   }.compact
 nb=what.length
 cpt=-1
@@ -26,78 +26,85 @@ cpt=-1
 [#loop}
 [#meth}
 
-{#meth]beginTab.InstrProba[#,]first[0][#,]last[0][#>]\begin{tabular}{|:{"c|"*(#{.nb}+#{first}+#{last})}}\hline[#meth}
+{#meth]beginTab.InstrProbaHtml[#,]first[0][#,]last[0][#,]border[3][#>]
+<table border="#{border}">[#meth}
 
-{#meth]endTab.InstrProba[#>]\end{tabular}[#meth}
+{#meth]endTab.InstrProbaHtml[#>]<table>[#meth}
 
-{#meth]headAEP.InstrProba[#,]first[][#,]last[][#,]what[]
+{#meth]headAEP.InstrProbaHtml[#,]first[][#,]last[][#,]what[]
+[#>]<tr>
 [#?]#{+?what}[#>]whatSave[#{.what}][#<]{#init]self[#}
-[#?]#{+?first}[#>][#{first} &][#?]end
+[#?]#{+?first}[#>]<td align="center"> #{first} </td>
+[#?]end
 [#%]content
 [#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
-[#>]\phantom{$\Big($}$#{.expr.:{cpt}.AEP}$[#?]cpt<#{.nb}-1[#>][&]
+[#>]<td align="center"> ${#dyn]#{.expr.:{cpt}.AEP}[#}$ </td>
 [#break]cpt==#{.nb}-1
 [#loop}
-[#?]#{+?last}[#>][ & #{last}][#?]end
-[#>][\\\hline]
+[#?]#{+?last}[#>][<td align="center"> #{last} </td>][#?]end
+[#>][</tr>]
 [#?]#{+?what}[#>]what[#{whatSave}][#<]{#init]self[#}
 [#meth}
 
-{#meth]rowAEP.InstrProba[#,]first[][#,]last[][#,]yR[][#,]what[]
+{#meth]rowAEP.InstrProbaHtml[#,]first[][#,]last[][#,]yR[][#,]what[]
+[#>]<tr>
 [#?]#{+?what}[#>]whatSave[#{.what}][#<]{#init]self[#}
-[#?]#{+?first}[#>][#{first} &][#?]end
+[#?]#{+?first}[#>]<td align="center">#{first} </td>
+[#?]end
 [#%]content
 [#?]#{0?yR}[#=]yR[#{.y.R}][#?]end
 [#r<].yyAEP<-#{yR}
 [#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
-[#>][\phantom{$\Big($}]
+[#>][<td align="center">]
 [#?]#{=.expr.:{cpt}.type}=="p"[#>][$][#>]:r{round(#{.expr.:{cpt}.R}*100,2)}[#>][\%$]
 [#?]else[#>][$:r{round(#{.expr.:{cpt}.R},4)}$]
-[#?]cpt<#{.nb}-1[#>][&]
+[#>]</td>
 [#break]cpt==#{.nb}-1
 [#loop}
-[#?]#{+?last}[#>][ & #{last}][#?]end
-[#>][\\\hline]
+[#?]#{+?last}[#>][<td align="center"> #{last} </td>][#?]end
+[#>][</tr>]
 [#?]#{+?what}[#>]what[#{whatSave}][#<]{#init]self[#}
 [#meth}
  
 
-{#meth]headAMP.InstrProba[#,]first[][#,]last[][#,]what[]
+{#meth]headAMP.InstrProbaHtml[#,]first[][#,]last[][#,]what[]
+[#>]<tr>
 [#?]#{+?what}[#>]whatSave[#{.what}][#<]{#init]self[#}
 [#?]#{+?first}[#>][#{first} &][#?]end
 [#%]content
 [#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
-[#>]\phantom{$\Big($}$#{.expr.:{cpt}.AMP}$[#?]cpt<#{.nb}-1[#>][&]
+[#>]<td align="center"> ${#dyn]#{.expr.:{cpt}.AMP}[#dyn}$ </td>
 [#break]cpt==#{.nb}-1
 [#loop}
 [#?]#{+?last}[#>][ & #{last}][#?]end
-[#>][\\\hline]
+[#>]</tr>
 [#?]#{+?what}[#>]what[#{whatSave}][#<]{#init]self[#}
 [#meth}
 
-{#meth]rowAMP.InstrProba[#,]valR[][#,]first[][#,]last[]
-[#?]#{+?first}[#>][#{first} &][#?]end
+{#meth]rowAMP.InstrProbaHtml[#,]valR[][#,]first[][#,]last[]
+[#>]<tr>
+[#?]#{+?first}[#>][<td align="center">#{first} </td>][#?]end
 [#?]#{=valR}.include? "," and #{=valR}[0,2]!="c("[#>]valR[c(#{valR})][#?]end
 [#rb<]cpt=-1[#>]{#loop][#rb<]cpt+=1
-[#>][\phantom{$\Big($}]
+[#>][<td align="center">]
 [#?]#{=.expr.:{cpt}.type}=="p"[#>][$][#>]:r{round(#{valR}[:{cpt}+1]*100,2)}[#>][\%$]
 [#?]else[#>][$:r{round((#{valR})[:{cpt}+1],4)}$]
-[#?]cpt<#{.nb}-1[#>][&]
+[#>]</td>
 [#break]cpt==#{.nb}-1
 [#loop}
 [#?]#{+?last}[#>][ & #{last}][#?]end
-[#>][\\\hline]
+[#>]</tr>
 [#meth}
 
 
-{#meth]tabAEP.InstrProba[#,]yR[]
+{#meth]tabAEP.InstrProbaHtml[#,]yR[]
 [#>]{#beginTab]self[#}
 {#headAEP]self[#}
 {#rowAEP]self[#}
 {#endTab]self[#}
 [#meth}
 
-{#meth]tabAMP.InstrProba[#,]valR[]
+{#meth]tabAMP.InstrProbaHtml[#,]valR[]
 [#>]{#beginTab]self[#}
 {#headAMP]self[#}
 {#rowAMP]self[#}

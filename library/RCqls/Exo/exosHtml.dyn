@@ -1,0 +1,70 @@
+No object! No need to provide the object name! This behaves like a macro!
+
+
+Rmk: "self." is required here because I guess that .toto is not replaced by self.toto
+
+{#rb]$cptQuestion=0[#}
+
+{#def]Question[#,]num[] [#<]
+{#if]#{0?num} and #{#self}>=0[#=]num[:{<self.cpt@>+=1}]
+[#elsif]#{0?num} and #{#self}<0[#=]num[:{$cptQuestion+=1}]
+[#elsif]#{+?num} and #{#self}>=0[#rb<] <self.cpt@>=#{num}
+[#elsif]#{+?num} and #{#self}<0[#rb<] $cptQuestion=#{num}
+[#if}
+[#rb<]$cptQuestion=<self.cpt@> if #{#self}>=0
+[#>][<br/>(#{num})]
+[#def}
+
+{#hide]
+
+{#Question]1[#} to initialize to 1 for example
+
+{#Question]12[#} to initialize to 12 for example
+
+
+then {#Question#} which increments automatically
+
+[#hide}
+
+{#def]TestQuestion[#?]#{#self}< 0[#=][#?]else[#=]exists[#>][#}
+
+Exercices numérotés: un champ .exo@ (standard) serait sympa!
+
+{@ExoCounter:new].exo@[0][@,].style[classic][@,].refs@[{}][@}
+
+{@ExoCounter:cptExo][@rb>]<.exo@>+=1[@}
+{@ExoCounter:getCptExo][@rb>]<.exo@>[@}
+
+{@ExoCounter:cptExo=]init[1][@rb<]<.exo@>=#{init}-1[@}
+
+voir test/V3/styles/test_cpt.dyn pour un exemple
+
+{@ExoCounter:style][#>]#{.style}[#}
+
+{@ExoCounter:style=]style[classic][#=].style[#{style}][#}
+
+{@ExoCounter:ref]ref[][#rb>][<.refs@>[#{=ref}]][#}
+
+{@ExoCounter:ref=]ref[][#rb<]<.refs@>[#{=ref}]=<.exo@>[#}
+
+{#hide]
+
+{@cptExo@} affiche le compteur et l'incrémente (c'est pas tout à fait techniquement comme cela mais c'est comme ci).
+
+{@cptExo]2[@} fixe le compteur à la valeur et l'affiche
+
+{@cptExo=]2[@} fixe le compteur à la valeur sans l'afficher
+
+[#}
+
+{#def]Exo[#,]ref[][#,]style[][#,]titre[][#,]tag[h2][#?]#{0?style}[#=]style[{@exoCounter:style@}]
+[#?]#{=style}=="classic"[#>]<#{tag}> Exercice {@exoCounter:cptExo@} #{titre}</#{tag}>
+[#?]#{=style}=="underline"[#>]<#{tag} style="underline;">Exercice {@exoCounter:cptExo@} #{titre}</#{tag}>
+[#?]#{=style}=="fbox"[#>]<#{tag} style="background: "red";">Exercice {@exoCounter:cptExo@} #{titre}</#{tag}>
+[#?]#{+?ref}[#<]{@exoCounter:ref=]#{ref}[@}
+[#}
+
+{#def]refExo[#,]label[][#>]{@exoCounter:ref]#{label}[@}[#}
+
+{#def]numQuestionExo[#>]:{$cptQuestion}[#def}
+{#def]numExo[#>]{@exoCounter:getCptExo@}[#def}

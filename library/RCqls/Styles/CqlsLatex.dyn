@@ -1,0 +1,111 @@
+[#<] # Same file used for Html in RodaSrv/system but here for Latex 
+{#hide]
+#fix a problem of ttm (no \vdots)
+{#def]vdots[#>]\vdots[#}
+{#def]bb[#,]letter[][#>]\begin{html}<mi mathvariant="double-struck">#{letter}</mi>\end{html}[#}
+{#def]overleftrightarrow[#,]content[][#>]\begin{html}<mover accent="true"><mrow>\end{html}#{content}\begin{html}</mrow><mo stretchy="true">&#x20E1;</mo></mover>\end{html}[#def}
+[#hide}
+
+{#def]vdots[#>]\vdots[#}
+{#def]bb[#,]letter[][#>]\mathbb{#{letter}}[#}
+{#def]overleftrightarrow[#,]content[][#>]\overleftrightarrow{#{content}}[#def}
+
+
+{#def]cqlsbm[#,]txt[][#>]{\bold{ #{txt} }}[#}
+{#def]cqlshat[#,]txt[][#>]\widehat{ #{txt}}[#}
+ 
+{#def]dataEmp[#,]y[y][#,]size[n][#>]{\left({ #{y}}\right)}_{ #{size}}[#def}
+
+{#def]meanEmp[#,]y[y][#,]size[n][#>]\overline{\left({ #{y}}\right)}_{ #{size}}[#def}
+
+{#def]sdEmp[#,]y[y][#,]size[n][#>]{\overleftrightarrow{\left({ #{y}}\right)}_{ #{size}}}[#def}
+
+{#def]quantEmp[#,]y[y][#,]size[n][#,]order[95\%][#>]q_{ #{order}}\left( \left( #{y} \right)_{ #{size}} \right)[#def}
+
+{#def]quant[#,]y[y][#,]order[95\%][#>]q_{ #{order}}\left( { #{y}} \right)[#def}
+
+{#def]sd[#,]y[y][#>]\sigma({#{y}})[#def}
+
+{#def]Var[#>]\mathbf{V}ar[#def}
+
+{#def]Cov[#>]\mathbf{C}ov[#def}
+
+{#def]Mat[#,]txt[][#>]\underline{{#cqlsbm] #{txt} [#}}[#def}
+
+{#def]Head[#,]txt[][#>]\centerline{\fbox{ #{txt}}}[#def}
+
+{#def]tr[#,]txt[][#>]{ #{txt}}^{\!  T}[#def}
+
+{#def]Vect[#,]txt[][#>]{#cqlsbm] #{txt} [#}[#def}
+
+{#def]Esp[#>]{#cqlsbm]E[#}[#def}
+
+{#def]FBox[#,]txt[][#>]\[ \mbox{ \fbox{$#{txt}$}} \][#def}
+
+{#def]EqBox[#,]size[][#,]txt[#>]
+\centerline{\fbox{\begin{minipage}{ #{size}}\vspace*{-.4cm}
+#{txt}
+\end{minipage}}}
+[#def}
+
+{#def]Proj[#>]\underline{{#cqlsbm]\mathcal{P}}[#}[#def}
+
+{#def]EV[#>]\mathcal{L}[#def}
+
+
+{#def]Def[#>]\stackrel{\tiny \mbox{D{\'e}f.}}{=}[#def}
+
+{#def]Prob[#,]txt[][#>]\mathbf{P}\left( #{txt} \right)[#def}
+
+{#def]ProbH[#,]hypo[][#,]txt[][#>]\mathbf{P}_{ #{hypo}} \left( #{txt} \right)[#def}
+
+{#def]NotR[#>]\overset{\mathtt{R}}{=}[#def}
+
+{#def]Not[#>]\overset{\mathtt{Not.}}{=}[#def}
+
+{#def]From[#,]vec[][#>]\left({#Vect]#{vec}[#}  \right)[#def}
+
+{#def]Dep[#,]vec[][#,]dep[][#>]!  \left({#Vect]#{vec}[#} | {#Mat]#{dep}[#}\right)[#def}
+
+{#def]Del[#,]par[][#,]ref[][#>]{#cqlshat]\delta[#}_{\scriptscriptstyle #{par},#{ref}}\![#def}
+
+{#def]DelLim[#,]pb[][#,]alpha[5\%][#>]\delta^{ #{pb}}_{lim,\scriptscriptstyle #{alpha}}\![#def}
+
+{#def]Ex[#,]txt[][#,]num[1][#>]
+  \noindent \underline{\textbf{Exemple #{num}~:}}
+   #{txt}
+   \relax
+[#def}
+
+
+
+{#def]Com[#,]txt[][#>]\noindent \underline{Commentaires de l'{\'e}tudiant~:} \textit{ #{txt}} \\[#def}
+
+{#def]Rem[#,]txt[][#>]\noindent \underline{\textbf{Remarque~:}}#{txt} \\[#def}
+
+{#def]Cas[#,]txt[][#>]\noindent \underline{\textbf{Cas particulier d'un seul r{\'e}gresseur ($p=1$)~:}}#{txt} \\[#def}
+
+
+{#def]Est[#,]par[][#,]y[y][#>]{#cqlshat] #{par} [#}\left({#cqlsbm]{ #{y} }[#}\right)[#def}
+
+{#def]Int[#,]par[][#,]type[\inf][#,]y[y][#>]\widetilde{{ #{par}}}_{ #{type}}\left({#cqlsbm] #{y}[#}\right)[#def}
+
+{#def]IC[#,]par[][#,]y[y][#>]IC_{{ #{par}}}\left({#cqlsbm] #{y}[#}\right)[#def}
+
+{#def]ICexpr[#,]par[][#,]y[y][#>][\left[{#Int]#{par}[#,]\inf[#,]#{y}[#},{#Int]#{par}[#,]\sup[#,]#{y}[#}\right]][#def}
+
+{#def]ICineq[#,]par[][#,]y[y][#>]{#Int]#{par}[#,]\inf[#,]#{y}[#} < #{par} < {#Int]#{par}[#,]\sup[#,]#{y}[#}[#def}
+
+{#def]PPP[#,]txt[][#>]{#bb]P[#}\left( #{txt} \right)[#def}
+
+
+{#def]EEE[#,]txt[][#>]{#bb]E[#}\left( #{txt} \right)[#def}
+
+{#def]VVV[#,]txt[][#>]{#bb]V[#}ar\left( #{txt} \right)[#def}
+
+
+{#def]POP[#,]pb[\bullet][#>]\pmb{\mathcal{Y}}^{ #{pb}}[#def}
+
+{#def]PR[#,]pb[\bullet][#>]Produit $#{pb}$[#def}
+
+{#def]SuitApprox[#>]\underset{Approx.}{\leadsto}[#}

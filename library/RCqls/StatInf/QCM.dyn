@@ -93,7 +93,8 @@ end
 [#?]mode==:direct[#%]h1 is represented as Hash when it is a Dyndoc pointer or object
 [#=]qcmSrv[::{h1["ObjectName"]}]
 [#?]mode==:h1 and par.length==1
-[#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
+[#<]
+{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
 [#,]:{par}[#,]#{cadre}[#,]nomPb[:{pb}]
 [#,]side[:{side}][#,]theta0R[:{refR}]
 [#R<]
@@ -208,6 +209,9 @@ end
 [#qcmFramed}
 [#def}
 
+{#def]qcmRandRedStd[#,]title[][#,]PP[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
+[#>][{#qcmRedStd]#{title}[#PP]{#Rand]#{PP}[#}[#H0]{#Rand]#{H0}[#}[#H1]{#Rand]#{H1}[#}[#StatTest]{#Rand]#{StatTest}[#}[#RD]{#Rand]#{RD}[#}[#Conclusion]{#Rand]#{Conclusion}[#}[#}]
+[#def}
 
 #######################################################
 ### This part is devoted to the document with answers!
@@ -297,3 +301,4 @@ end
   [#}]
 [#}
 ## Bad Conclusion
+
