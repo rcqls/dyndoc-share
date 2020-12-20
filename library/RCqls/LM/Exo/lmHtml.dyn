@@ -1,0 +1,321 @@
+[#require]
+RCqls/Exo/lm
+CqlsLatexEcono
+RCqls/Styles/StdHtml
+[#main][#<]
+
+{#meth]model.ExoLM
+  [#>]
+  [On envisage un modèle #Rb{#{.log} ? "log-" : ""}linéaire multiple expliquant la variable  {@tt]#{.y}[@} en fonction de tous les régresseurs du jeu de
+  {#case]#R{length(#{.objR}$data.vars.ext)}
+  [#when]0[#>][données.][#>].df[#{.data.objR}]
+  [#when]1[#>]
+  [données (exceptée la variable  {@tt]#R{#{.objR}$data.vars.ext}[@}).]
+  [#>].df[#{.data.objR}[-#R{which(names(#{.data.objR})%in% #{.objR}$data.vars.ext)}]]
+  [#else]
+  [données (exceptées les variables  {@tt]#R{#{.objR}$data.vars.ext}[@}).]
+  [#>].df[#{.data.objR}[-#R{which(names(#{.data.objR})%in% #{.objR}$data.vars.ext)}]]
+  [#}<br/><br/>]
+  [#?]#{.log}[#>] .df[log(#{.df})]
+[#meth}
+
+{#meth]corr.ExoLM[#,] seuil[0.3][#,]yIndex[1]
+[#%]saved for QCM[#=].qcm.corr.seuil[#{seuil}][#=].qcm.corr.yIndex[#{yIndex}]
+[#>]
+  [{#Question#} A la vue de la matrice de corrélation ci-après, quels sont les régresseurs qui vous semblent être les plus explicatifs ?
+
+  {#rverb]cor(#{.df})[#rverb}<br/>]
+  [#tag]reponse[#>]\begin{Correction}
+  [#rb<] tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{seuil}])])".to_R.map{|nm| ' {@tt]'+nm+'[@}'}
+  tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+  [#>] A la vue de la matrice de corrélation, les régresseurs les plus explicatifs de la variabilité de la variable  {@tt]#{.y}[@} semblent être dans l'ordre
+  :{tmp} (en ne tenant compte que des régresseurs ayant un coefficient de corrélation avec  {@tt]#{.y}[@} en valeur absolue supérieur à #R{#{seuil}*100}\%).
+  \end{Correction}
+[#meth}
+
+
+
+{#meth]summary.ExoLM[#,] seuilR[0.05]
+[#%]saved for QCM[#=].qcm.summary.seuil[#{seuilR}]
+[#>]
+[{#Question#} Interprétez la sortie ci-dessous, en particulier les p\(-\)valeurs des tests de significativité locale, le \(R^2\).
+
+{#rverb]summary(lm(#{.formula}))[#}
+]
+[#tag]reponse[#r<]
+[tmpCoeff<-#{.objR}$summary$coeff[,4][-1]]
+[#rb<]
+tmp="names(sort(tmpCoeff[tmpCoeff<#{seuilR}]))".to_R.map{|nm| ' {@tt]'+nm+'[@}'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[#>][\begin{Correction}
+  |Les régresseurs  :{tmp} sont significatifs au seuil de #r{#{seuilR}*100}\%.  Enfin, le pouvoir explicatif de ce modèle, mesuré par la part de variance \(R^2\) expliquée par celui-ci, est particulièrement bon puisqu'il est de l'ordre de #r{#{.objR}$summary$r.sq*100}\%.
+  |\end{Correction}]
+[#}
+
+
+{#meth]colin.ExoLM[#,]formule[false][#>]
+[{#Question#} {#if]#{formule}[#>]Exprimez la statistique de test de significativité locale du \(j^{\grave eme}\) régresseur en faisant apparaître  son VIF. Rappelez alors les effets indésirables de la colinéarité entre les régresseurs sur le test de significativité locale.[#else]
+[Rappelez les effets indésirables sur les tests de significativité locale s'il y a colinéarité entre les régresseurs.][#if}<br/><br/>]
+[#tag]reponse[#>]\begin{Correction}
+{#if]#{formule}[#>]
+$$
+\widehat{\delta}_{\beta_j,0}(\mathbf{Y}|\underline{\mathbf{x}})=\frac{\widehat{\beta_j}(\mathbf{Y}|\underline{\mathbf{x}})-0}{\sqrt{\frac{\widehat{\sigma^2}(\mathbf{Y}|\underline{\mathbf{x}})}{n\times s^2_j}\times VIF_j}}
+$$
+[#}
+La colinéarité entre régresseurs peut entraîner artificiellement une augmentation de l'erreur standard des paramètres des régresseurs et par voie de fait une diminution en valeur absolue de la statistique de test de significativité locale et donc une augmentation de la p\(-\)valeur de ce même test.
+\end{Correction}
+[#}
+
+{#meth]colinCorr.ExoLM[#>]
+[{#Question#} A la lumière de la matrice de corrélation associée au jeu de données, peut-on suspecter de la colinéarité entre les régresseurs ?<br/><br/>]
+[#tag]reponse[#>] \begin{Correction} \end{Correction}
+[#}
+
+
+{#meth]vif.ExoLM[#,] seuilR[5]
+[#%]saved for QCM[#=].qcm.vif.seuil[#{seuilR}]
+[#>]
+[{#Question#} Rappelez la définition du VIF, et son interprétation générale. Ensuite, interprétez-les quant au jeu de données étudié.
+
+{#rverb]vif(lm(#{.formula}))[#}<\n><\n>]
+[#tag]exam[#>]reponse?[6cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#rb<]
+tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{seuilR}]))".to_R
+tmp=[tmp] unless tmp.is_a? Array
+tmp.map!{|nm| ' {@tt]'+nm+'}'[@} if tmp
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
+[#>][\begin{Correction}
+Par définition, \(VIF_j = \frac{1}{1-R_j^2}\) où \(R_j^2\) est le coefficient de détermination multiple au carré lorsque l'on régresse le \(j-\)ème régresseur sur tous les autres. Par ailleurs, on sait d'après le cours que l'erreur standard de l'estimateur de \(\beta_j\) est proportionnelle au \(VIF_j\). Par conséquent, plus le \(j-\)ème régresseur est corrélé avec les autres, plus \(R^2_j\) est proche de 1, plus l'erreur standard de l'estimateur de \(\beta_j\) sera grande et plus il sera difficile de montrer que ce régresseur apporte de l'information. ]
+[#?]tmp and tmp.length>1[#>]Les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{seuilR}.
+[#?]tmp and tmp.length==1[#>]Le VIF de :{tmp} est relativement important, ici supérieur à #{seuilR}.
+[#?]!tmp[#>]Aucun VIF est relativement important, ici supérieur à #{seuilR}.[#?]end
+[#>] Quand il existe un VIF relativement important, cela traduit une forte colinéarité entre régresseurs.
+\end{Correction}
+[#}
+
+
+{#meth]vifCorr.ExoLM[#,] df[] [#,] formula[] [#r<]
+[maxvif<-#{.objR}$data.vars[match(names(rev(sort(vif(lm(#{.formula}))))),#{.objR}$vars,0)]]
+[#%]for qcm[#=].qcm.vifCorr.v1[#R{maxvif[1]}][#=].qcm.vifCorr.v2[#R{maxvif[2]}]
+[#>]
+[{#Question#} ({@b]Relation avec la matrice de corrélation[@}) Justifier l'ordre de grandeur des VIFs des covariables
+{#case]#{.log}
+[#when]true[#>] [ {@tt]log(#{.qcm.vifCorr.v1})[@} et  {@tt]log(#{.qcm.vifCorr.v2})[@}]
+[#else] [ {@tt]#{.qcm.vifCorr.v1}[@} et  {@tt]#{.qcm.vifCorr.v2}[@}]
+[#}
+en utilisant  l'instruction suivante.
+
+{#rverb]1/(1-(#R{round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9)})^2)[#}<\n><\n>]
+[#tag]exam[#>]reponse?[ 3cm][#>]\Reponse{#{reponse}}
+[#tag]reponse[#r<]round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9) -> tmp
+[#>]\begin{Correction}
+Il est connu que lorsque l'on ajoute des régresseurs le coefficient \(R^2\) augmente nécessairement. Ainsi par exemple, le \(R^2\) obtenu en régressant  {@tt]#{v1}[@} sur tous les autres ou  {@tt]#{v2}[@} sur tous les autres est nécessairement supérieurs au \(R^2\) obtenu en régressant simplement  {@tt]#{v1}[@} sur  {@tt]#{v2}[@} (de l'ordre de \(#R{tmp}^2\)). Par conséquent les VIF associées à ces deux régresseurs sont nécessairement supérieurs à \(#r{1/(1-tmp^2)}\).
+\end{Correction}
+[#}
+
+{#meth]desc.ExoLM[#,] formula[] [#,] alpha[.05] [#,]equation[true] [#>]
+[{#Question#} Quelle est la stratégie qui a été adoptée dans la série d'instructions ci-dessous ? A la dernière étape, {#if]#{equation}[#>]précisez l'équation du modèle sélectionné et[#if} analysez brièvement les sorties.]
+[#r<]
+i<-0
+form<-#{.formula}
+xvars<-xvarsTmp<-attributes(terms(form))$term.labels
+[#>]
+  [ 
+  |{#loop][#r<]
+  tmp<-names(which.max(summary(lm(form))$coeff[-1,4]))[1]
+  pvalmax<-summary(lm(form))$coeff[tmp,4]
+  if(pvalmax>#{alpha}) {#ne modifier le modèle que si nécessaire
+  xvarsTmp<-setdiff(xvarsTmp,tmp)
+  form<-as.formula(formch<-paste(#{=.y},paste(xvarsTmp,collapse="+"),sep="~"))
+  } else {
+  xvars<-xvarsTmp
+  }
+  [#break] #R{pvalmax<#{alpha} || length(xvars)<=2}
+  [#<]{#add].model[#formula]#R{formch}[#}
+  [#>]
+    [{#rverb]
+    [## Etape #R{as.integer(i<-i+1)}
+    |summary(lm(#R{formch}))
+    |vif(lm(#R{formch}))]
+    [#mode]default
+    [#}<br/>]
+  [#}
+  | <br/><br/>]
+[#tag]exam[#>]reponse?[8cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]\begin{Correction}
+
+\end{Correction}
+[#}
+
+{#meth]oneStep.ExoLM [#,]formula[][#,] blanc[NULL] [#,] highlight[NULL] [#,] indVIF[NULL] [#>]
+[{#Question#} Quelle est la stratégie à adopter pour soigner la colinéarité ? En particulier, rappelez son effet sur les erreurs standard. Après une seule étape voici les résultats du  {@tt]summary(lm(...))[@} présentés sous une forme spécialement adaptée aux notations du cours. Complétez les ]
+[#?]#R{!is.null(#{blanc})}[#>] [#R{nrow(#{blanc})}]
+[#>] \textbf{cases manquantes}
+[#?]#R{!is.null(#{indVIF})}[#>] [en vous aidant des indications (à la suite du tableau).] [#?]end
+[#>]Justifiez qu'il n'est pas nécessaire d'effectuer d'étape supplémentaire et précisez l'équation du modèle sélectionné.<br/>
+
+[#tag]reponse[#>]highlight[#{blanc}] [#>]blanc[NULL][#tag]end
+[#<]{#add].model[#formula]#{formula}[#}
+[#>]
+[{#summary].model[#prelim]false[#,]
+  rcodeAp[if(!is.null(#{blanc})) sumlm[#{blanc}]<-NA;if(!is.null(#{highlight})) sumlm[#{highlight}]<-paste('{\\bf ',sumlm[#{highlight}],'}',sep='')]
+[#}]
+[#?]#R{!is.null(#{indVIF})} [#>][
+\noindent \textbf{Indications} :
+]
+[#r<]#TODO: form can exist before!! Strange that each exercise does not have its own environment!!!
+#if(!exists("form"))
+form <- #{.formula}
+tmpsumlm<-summary(tmplm<-lm(form))
+[#>]\(R^2=#R{round(tmpsumlm$r.sq,4)*100}\)\%,
+ \(\widehat{\sigma}_{\Bruit}(\mathbf{y}|\underline{\mathbf{x}})\simeq #R{round(tmpsumlm$sigma,4)}\) et \(VIF_{#R{#{.objR}$data.vars[#{indVIF}]}}\simeq #R{round(vif(tmplm),4)[#{indVIF}]}\).[#?]end
+[#>]\\
+[#tag]exam[#>]reponse?[10cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>][\begin{Correction}
+\end{Correction}]
+[#tag]reponse2[#>][\begin{Correction}
+Une stratégie possible consiste à supprimer un à un les régresseurs dont on ne parvient pas à prouver leur significativité locale. On a supprimé donc du précédent modèle le régresseur  {@tt]Interet[@}. Ainsi, le régresseur \(\mathbf{x^{(3)}}\) correspond à  {@tt]Obligations[@}. Pour calculer l'erreur standard estimée \(\widehat{\sigma}_{\widehat{\beta}_1}(\mathbf{y}|\Mat{x})\), il suffit de se rappeler que
+$$
+\widehat{\sigma}_{\widehat{\beta}_1}(\mathbf{y}|\Mat{x}) = \frac{\widehat{\sigma}_{\Bruit}(\mathbf{y}|\Mat{x})}{s_{Revenu}\times \sqrt{n}} \times \sqrt{VIF_{Revenu}},
+$$
+où \(s_{Revenu}\) correspond à l'écart-type du régresseur  {@tt]Revenu[@} qui d'après la première partie vaut \(s_{Revenu} \stackrel{R}{=} \mathtt{ sqrt( mean(Revenu^2)-mean(Revenu)^2 )} \simeq #R{vRev<-round(sqrt(mean(Revenu^2)-mean(Revenu)^2),5)}\). Ainsi,
+\(\widehat{\sigma}_{\widehat{\beta}_1}(\mathbf{y}|\Mat{x})\simeq 1.0528/(1700.97*\sqrt{30})\times\sqrt{7.7484} \simeq {\bf #R{round(tmpsumlm$sigma/(vRev*sqrt(30))*sqrt(7.7484),5)}}\). Par la suite, il vient
+$$
+\Est{\delta_{\beta_1,0}}{\mathbf{y}|\Mat{x}} = \frac{\Est{\beta_1}{\mathbf{y}|\Mat{x}} }{\widehat{\sigma}_{\widehat{\beta}_1}(\mathbf{y}|\Mat{x})} \simeq -0.00245/0.00031 \simeq {\bf  #R{round(tmpsumlm[['coeff']][2,1]/tmpsumlm[['coeff']][2,2],5)}}.
+$$
+On notera d'une part qu'il n'est plus nécessaire d'effectuer d'étape supplémentaire car tous les régresseurs sont significatifs au seuil de 5\% et d'autre part que le modèle final dont l'équation est
+$$
+(Epargne)_i= \beta_0 + \beta_1 (Revenu)_i + \beta_2 (Inflation)_i + \beta_3 ( Obligations)_i +\Bruit_i
+$$
+a un pouvoir explicatif assez fort (\(R^2= 87.45\%\)). Remarquons également que le \(R^2\) n'a diminué que de 1\%!!
+\end{Correction}]
+[#}
+
+{#meth]increment.ExoLM[#,]x[][#,]value[10][#>]
+[{#Question#} Etant donnée la modélisation adoptée, complétez la phrase ci-dessous : lorsque  {@tt]#{x}[@} \_\_\_\_\_\_\_\_\_\_\_\_\_ de #{value}\%\, on peut s'attendre à ce que  {@tt]#{.y}[@} \_\_\_\_\_\_\_\_\_\_\_ de \_\_\_\_.
+\bigskip\\]
+[#}
+
+
+{#meth]deltaH0Asymp.ExoLM[#,] indVar[1] [#,] betaRef[1] [#,]   side[<] [#,] alphaR[.05] [#,] alphaTex[5\%] [#,] round[5] [#,]indicR[true]
+[#%]saved for QCM
+[#=].qcm.deltaH0Asymp.indVar[#{indVar}]
+[#=].qcm.deltaH0Asymp.betaRef[#{betaRef}]
+[#=].qcm.deltaH0Asymp.side[#{side}]
+[#=].qcm.deltaH0Asymp.alphaR[#{alphaR}][#=].qcm.deltaH0Asymp.alphaTex[#{alphaTex}]
+[#=].qcm.deltaH0Asymp.round[#{round}]
+[#>]
+[{#Question#} A partir de cette question, nous ne considèrerons que le modèle final. Peut-on montrer au vu des données que le paramètre \(\beta_#{indVar}#{side}#{betaRef}\) au seuil de #{alphaTex} ?
+]
+[#?]#{indicR}[#>]{#rverb]
+(#R{round(#{.objR}$summary$coeff[#{indVar}+1,1],#{round})}-(#{betaRef}))/#R{round(#{.objR}$summary$coef[#{indVar}+1,2],#{round})}
+[#}
+[#?]end[#>]
+
+[#tag]reponse[#r<](#R{round(#{.objR}$summary$coef[#{indVar}+1,1],#{round})}-(#{betaRef}))/#R{round(#{.objR}$summary$coef[#{indVar}+1,2],#{round})}->tmp
+tmpLim<-qnorm(#{alphaR})
+[#>]\begin{Correction}
+D'après ce qui précède, la statistique du test \(\mathbf{H_1}: \beta_#{indVar}< #{betaRef}\) évaluée sur les données correspond justement au calcul fourni et vaut donc approximativement \(#r{tmp}\). Sous \(\mathbf{H_0}\) on sait également que la statistique de test sur les futures données suit approximativement une loi \(\mathcal{N}(0,1)\). Par conséquent, puisque \(\Est{\delta_{\beta_#{indVar},#{betaRef}}}{\mathbf{y}|\Mat{x}}\simeq #r{tmp} #R{ifelse(tmp<tmpLim,"<",">")} \delta_{lim,#{alphaTex}}^- \stackrel{R}{=}\mathtt{qnorm(#{alphaR})}\simeq #r{qnorm(#{alphaR})}\), on
+[#r<]pnorm(tmp)->tmpPVal;tmpPVal<-ifelse("#{side}"=="<",tmpPVal,ifelse("#{side}"==">",1-tmpPVal,2*min(tmpPVal,1-tmpPVal)))
+[#?]#R{tmpPVal}<#R{#{alphaR}}[#>] peut [#?]else[#>] ne peut pas [#?]end
+[#>][plutôt penser avec un risque de #{alphaTex} que l'assertion d'intérêt  \(\mathbf{H_1}: \beta_#{indVar}< #{betaRef}\) est vraie.
+\end{Correction}]
+[#}
+
+{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5\%]
+[#%]saved for QCM
+[#=].qcm.pvalAsymp.indVar[#{indVar}][#=].qcm.pvalAsymp.indVarBad[:r{setdiff(1:(nrow(#{.objR}$summary$coef)-1),#{indVar})[1]}]
+[#=].qcm.pvalAsymp.betaRef[#{betaRef}][#=].qcm.pvalAsymp.betaRefMinusBad[#R{-#{betaRef}}]
+[#=].qcm.pvalAsymp.alphaR[#{alphaR}][#=].qcm.pvalAsymp.alphaTex[#{alphaTex}]
+[#r<](#R{#{.objR}$summary$coef[#{indVar}+1,1]}-(#{betaRef}))/#R{#{.objR}$summary$coef[#{indVar}+1,2]}->tmp
+pnorm(tmp)->tmp.PValG
+[#>]
+[{#Question#} A partir de l'instruction  {@tt]R[@} suivante, que peut-on avancer au vu des données comme affirmation(s) d'intérêt au seuil #{alphaTex} ?
+
+{#rverb]
+pnorm((#R{round(#{.objR}$summary$coef[#{indVar}+1,1],5)}-(#{betaRef}))/#R{round(#{.objR}$summary$coef[#{indVar}+1,2],5)})
+[#}
+]
+[#tag]exam[#>]reponse?[3cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse
+[#>] \begin{Correction}
+L'instruction fournie correspond à la p\(-\)valeur (gauche) du test \(\mathbf{H_1}: \beta_#{indVar}< #{betaRef}\).
+[#?]#r{tmp.PValG<#{alphaR} | 1-tmp.PValG<#{alphaR}} [#>]Par conséquent puisque la p\(-\)valeur
+[#?]#r{tmp.PValG<#{alphaR}}[#>]
+[gauche associée au test \(\mathbf{H_1}: \beta_#{indVar} < #{betaRef}\) qui vaut approximativement \(#r{tmp.PValG*100}\%\)]
+[#?]#r{1-tmp.PValG<#{alphaR}}[#>]
+[droite associée au test \(\mathbf{H_1}: \beta_#{indVar} > #{betaRef}\) qui vaut approximativement \(#r{(1-tmp.PValG)*100}\%\)][#?]end
+[#>] est inférieure à #{alphaTex} , on peut plutôt penser que cette assertion est vraie.
+[#?]#r{tmp.PValG<#{alphaR} | 1-tmp.PValG<#{alphaR}}[#>] Notons, qu'il [#?]#r{2*min(tmp.PValG,1-tmp.PValG)<#{alphaR}}[#>]est[#?]else[#>]n'est pas[#?]end[#>] possible de penser que \(\mathbf{H_1}: \beta_#{indVar}\neq  #{betaRef}\) est vraie car la p\(-\)valeur de ce test vaut approximativement \(2\times #r{min(tmp.PValG,1-tmp.PValG)*100}\%=#r{2*min(tmp.PValG,1-tmp.PValG)*100}\%\).
+\end{Correction}
+[#}
+
+{#meth]icAsymp.ExoLM[#,] indVar[2] [#,] alphaP[5] [#,] round[5] [#,] indicR[true]
+[#%]saved for QCM
+[#=].qcm.icAsymp.indVar[#{indVar}]
+[#=].qcm.icAsymp.round[#{round}]
+[#=].qcm.icAsymp.alphaP[#{alphaP}]
+[#>]
+[{#Question#} En vous aidant de l'instruction  {@tt]R[@} ci-dessous, proposez un intervalle de confiance à \(#R{as.integer(100-#{alphaP})}\%\) pour le paramètre \(\beta_#{indVar}\) et interprétez-le (via l'approche expérimentale).  Quelle relation y-a-t-il entre cet intervalle et le test de significativité locale du paramètre \(\beta_#{indVar}\) ?
+{#rverb]
+{#if]#{indicR}[#>]#R{round(#{.objR}$summary$coef[#{indVar}+1,1],#{round})}+c(-1,1)*qnorm(#R{1-#{alphaP}/200})*#R{round(#{.objR}$summary$coef[#{indVar}+1,2],#{round})}[#else]qnorm(#R{1-#{alphaP}/200})[#if}
+[#}
+]
+[#tag]exam[#>]reponse?[7cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]\begin{Correction}
+\end{Correction}
+[#}
+
+{#meth]ipAsymp.ExoLM[#,]  indVar[an] [#,] indiv[34] [#,] alphaP[5] [#,]  temps[true] [#>]
+[{#Question#} Supposons que l'on ne connaisse pas la valeur de  {@tt]#{.y}[@} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{.data.objR}[#{indiv},"#{indVar}"])}.
+Pourriez-vous prévoir sa valeur, calculer un intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\% ? Quelle était la valeur observée de   {@tt]#{.y}[@} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{.data.objR}[#{indiv},"#{indVar}"])} et est-ce surprenant ?
+
+{#rverb]
+xTau <- data.frame(#R{paste(paste(#{.objR}$vars,#{.data.objR}[#{indiv},#{.objR}$vars],sep="="),collapse=",")})
+predict(lm(#R{formch}),xTau,interval="prediction")
+[#}
+]
+[#tag]exam[#>]reponse?[4cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]\begin{Correction}
+
+\end{Correction}
+[#}
+
+
+{#meth]ipAsymp2.ExoLM[#,] newData[] [#,] model[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,]log[false]
+[#?]#{0?indNew}[#r>indNew]#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1[#?]end
+[#%]saved for QCM
+[#=].qcm.ipAsymp2.newData[#{newData}]
+[#=].qcm.ipAsymp2.indVar[#{indVar}]
+[#=].qcm.ipAsymp2.model[#{model}]
+[#=].qcm.ipAsymp2.alphaP[#{alphaP}]
+
+[#r<]
+modelsTmp<-list(#{model})
+predictTmp<-paste(sapply( modelsTmp,function(l) paste('predict(lm(',deparse(l),'),xTau,interval="prediction")')),collapse="\n")
+[#>]
+[{#Question#} #Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
+mais pas encore la valeur de  {@tt]{#if]#{log}[#>]:r{#{.objR}$data.vars[1]}[#else]#{.y}[#}[@}. ]
+[#?]#R{length(modelsTmp)>1}[#>]Pour chacun des modèles traités[#?]else[#>]Pour le modèle traité[#?]end[#>] pourriez-vous prévoir sa valeur (\textit{Indication:} calcul à effectuer à partir de sa formule d'obtention à fournir). A partir de la sortie  {@tt]R[@} ci-dessous, proposer ensuite son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\% ?
+
+{#rverb]
+xTau <- #{newData}
+#R{predictTmp}
+[#}
+[#r<]rm(modelsTmp,predictTmp)
+[#tag]exam[#>]reponse?[4cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]
+\begin{Correction}
+Pour chacun des modèles, la prévision est donnée par la variable notée  {@tt]fit[@}, la borne inférieure de l'intervalle de prévision au niveau 95\% par la variable  {@tt]lwr[@} et la borne supérieure par  {@tt]upr[@}.
+\end{Correction}
+[#}
+{#hide]
+[#hide}
+
+{#meth]data.ExoLM[#,]data[#{.data.objR}][#,] out[##out | short=10,...,10] [#>]
+[{@b]Jeu de données[@} :
+{#rverb]
+#{out}
+#{data}
+[#}]
+[#}

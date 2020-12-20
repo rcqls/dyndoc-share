@@ -1,0 +1,361 @@
+[#require]Quizz
+[#main][#<]
+
+{#def]Question
+[#>][<b>Question {@quizz]+[@}</b>:]
+[#def}
+
+## mode can be: "quizz", "moodle" or "quizz,moodle"
+{#meth]qcm.Quiz[#,]title[][#,]cols[][#,]mode[quizz][#,]what[]
+[#=]items[]
+[#rb<]
+items_lines=#{=what}.split("\n").map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
+items=items_lines.map{|line| line.split("|").map{|e| e.strip}}.flatten
+
+items.each_with_index do |item,i| #
+  add=(i==items.length-1 ? "<br/>" : "<\n>" )
+  if item[0,1] == "!"
+    {#<]{#qcmSrv]self[#what]:{item[1..-1].strip}[#}[#<}
+  else
+    {#<][#=]code[{#qcmSrv]self[#what]:{item}[#}]
+    [#rb<]
+      code=#{=code}.strip
+      good=(code[-1,1]=="*")
+      code=code[1...(-1 - (good ? 1 : 0))]
+    [#+]items[c:{i}{#if]good[#>]*[#}: :{code} :{add}]
+    [#<}
+  end
+end
+[#rb<]#TO DEBUG: Dyndoc.warn :debug, [#{=items}]
+[#>]<pre><code>#{items}</code></pre>
+[#>]{#case]#{mode}
+[#when]quizz[#>]
+  <hr/>
+  {#quizz]#{title}.q{@quizz@}[#cols]#{cols}[#code]#{items}[#}
+  <hr/>
+[#case}
+[#meth}
+
+### server 
+
+{#meth]qcmPrelim.ExoLM1[#,]what[]
+[#<]
+{#case]#{what}
+[#when]graph[#R<]
+beta0Est<-(coef(lm(%{.y} ~ %{.x}))->tmp)[1]
+beta1Est<-tmp[2]
+[#case}
+[#meth}
+
+{#meth]qcmSrv.ExoLM1[#,]what[][#,]round[3][#,]ptx1[0][#,]ptx2[4][#,]ptx2bad[5][#,]breaks[]
+[#>]
+[{#case]#{what}
+  [#%]calculable
+  [#when]calculable-infGood[#>] [{il faudrait ``en théorie'' une infinité de données}*]
+  [#when]calculable-estimGood[#>] [{ces paramètres ne sont qu'estimables à partir d'un jeu de données}*]
+  [#when]calculable-dataBad[#>] [{nous ne disposons pas encore de données}]
+  [#when]calculable-data2Bad[#>] [{il faudrait ``en théorie'' un nombre fini de données}]
+  [#when]
+
+  [#%]estim
+  [#when]estim-beta0Good[#>] [{\({#Est]\beta_0[#,]y[#x1]x^{(1)}[#}\simeq #r{round(beta0Est,#{round})}\)}*]
+  [#when]estim-beta0BadBeta1[#>] [{\({#Est]\beta_0[#,]y[#x1]x^{(1)}[#}\simeq #r{round(beta1Est,#{round})}\)}]
+  [#when]estim-beta0BadMinus[#>] [{\({#Est]\beta_0[#,]y[#x1]x^{(1)}[#}\simeq #r{round(-beta0Est,#{round})}\)}]
+  [#when]estim-beta1Good[#>] [{\({#Est]\beta_1[#,]y[#x1]x^{(1)}[#}\simeq #r{round(beta1Est,#{round})}\)}*]
+  [#when]estim-beta1BadBeta0[#>] [{\({#Est]\beta_1[#x1] y[#,]x^{(1)}[#}\simeq #r{round(beta0Est,#{round})}\)}]
+  [#when]estim-beta1BadMinus[#>] [{\({#Est]\beta_1[#,]y[#x1]x^{(1)}[#}\simeq #r{round(-beta1Est,#{round})}\)}]
+
+  [#%]corr
+  [#when]corr-formuleGood[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}}) = \frac{cov(\mathbf{y},\mathbf{x^{(1)}})}{\sqrt{var(\mathbf{y}) \times var(\mathbf{x^{(1)}})} }\)}*]
+  [#when]corr-calculGood[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}}) = \frac{#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}})}{\sqrt{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}}\)}*]
+  [#when]corr-calculBadSquare[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}})=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}\)}]
+
+
+  [#when]corr-valeurGood[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}}) \simeq #r{round(#{.indicR.cxy},#{round})}\)}*]
+  [#when]corr-valeurBadMinus[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}}) \simeq #r{round((-1)*(#{.indicR.cxy}),#{round})}\)}]
+  [#when]corr-valeurBadSquare[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}}) \simeq #r{round((#{.indicR.cxy})^2,#{round})}\)}]
+
+  [#when]corr-interpGood[#>][{plus \(|corr(\mathbf{y},\mathbf{x^{(1)}})|\) est proche de 1 plus les points sont alignés}*]
+  [#when]corr-interpBad[#>][{plus \(|corr(\mathbf{y},\mathbf{x^{(1)}})|\) est proche de 0 plus les points sont alignés}]
+
+  [#when]corr-signeGood[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}})\) et \({#Est]\beta_1[#,]\mathbf{y}[#,]\mathbf{x^{(1)}}[#}\) ont le même signe}*]
+  [#when]corr-signeBad[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}})\) et \({#Est]\beta_1[#,]\mathbf{y}[#,]\mathbf{x^{(1)}}[#}\) sont de signes opposés}]
+
+  [#when]corr-R2_formuleGood[#>][{\(R^2 = \frac{cov(\mathbf{y},\mathbf{x^{(1)}})^2}{var(\mathbf{y}) \times var(\mathbf{x^{(1)}}) }\)}*]
+  [#when]corr-R2_carreGood[#>][{\(R^2=corr(\mathbf{y},\mathbf{x^{(1)}})^2\)}*]
+  [#when]corr-R2_calculGood[#>][{\(R^2=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}\)}*]
+  [#when]corr-R2_valeurGood[#>][{\(R^2\simeq #r{(tmp<-#{.indicR.cxy})^2}\)}*]
+  [#when]corr-R2_corrGood[#>][{\(corr(\mathbf{y},\mathbf{x^{(1)}})=#R{ifelse((tmp<-#{.indicR.cxy})<0, "-", "+")}\sqrt{#r{tmp^2}}\simeq #r{tmp}\)}*]
+  [#when]corr-R2_interpGood[#>][{plus \(R^2\) proche de 1 plus les points sont alignés}*]
+
+  [#%]summary
+  [#when]summary-pvalGood[#=]neg.deb[][#=]neg.fin[][#?]:r{#{.objR}$summary$coeff[2,4]>.05}[#+]neg.deb[ ne ][#+]neg.fin[ pas ][#?]end
+  [#>][{La dernière colonne #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable {@em]#{.x}[@}   semble apporter de l'information dans l'explication de la variable {@em]#{.y}[@}}*]
+  [#when]summary-R2Good[#>][{\(R^2=:r{round(#{.objR}$summary$r.sq*100,2)}\%\)}*]
+
+  [#when]summary-pvalBad[#>][{on ne peut pas dire que {@em]#{.x}[@} semble apporter de l'information dans l'explication de la variable {@em]#{.y}[@}}]
+  [#when]summary-R2Bad[#>][{La part de variance expliquée par le modèle est de \(56.68\%\)}]
+
+  [#%]graph
+  [#when]graph-interGood[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((#{ptx1},#r{round(beta0Est+beta1Est*#{ptx1},2)})\)}*]
+  [#when]graph-interBad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((#{ptx1},#r{round(beta1Est+beta0Est*#{ptx1},2)})\)}]
+  [#when]graph-pt1Good[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((#{ptx1},#r{round(beta0Est+beta1Est*#{ptx1},2)})\)}*]
+  [#when]graph-pt1Bad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((#{ptx1},#r{round(beta1Est+beta0Est*#{ptx1},2)})\)}]
+  [#when]graph-interOrigBad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((0,#r{round(beta0Est,2)})\)}]
+  [#when]graph-pt2Good[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((#{ptx2},#r{round(beta0Est+beta1Est*#{ptx2},2)})\)}*]
+  [#when]graph-pt2Bad[#<]{#qcmPrelim]self[#what]graph[#}
+  [#>][{Pour tracer la droite ajustée, on utilise le point \((#{ptx2},#r{round(beta0Est+beta1Est*#{ptx2bad},2)})\)}]
+
+  [#when]graph-fitGood[#>][{pour un point donné \((x_i^{(1)},y_i)\), la valeur ajustée est l'ordonnée du point sur la droite ajustée ayant pour abscisse \(x_i^{(1)}\)}*]
+  [#when]graph-fitBad[#>][{pour un point donné \((x_i^{(1)},y_i)\), le résidu est l'ordonnée du point sur la droite ajustée ayant pour abscisse \(x_i^{(1)}\)}]
+
+  [#when]graph-residGood[#>][{pour un point donné \((x_i^{(1)},y_i)\), le résidu est la différence entre les ordonnées des points observé et de la droite ajustée  ayant pour abscisse \(x_i^{(1)}\)}*]
+  [#when]graph-residBad[#>][{pour un point donné \((x_i^{(1)},y_i)\), le valeur ajustée est la différence entre les ordonnées des points observé et de la droite ajustée ayant pour abscisse \(x_i^{(1)}\)}]
+
+  [#%]signif Pour pouvoir accepter \(\mathbf{H_1}: \beta_1\neq 0\), i.e. le régresseur {@em]#{.x}[@} apporte de l'information pour expliquer la variable {@em]#{.y}[@}, le risque à encourir est de l'ordre de \(#r{#{.objR}$summary$coeff[2,4]}\).
+  [#when]signif-pvalGood[#>][{La p-valeur du test de significativité locale vaut {@em]2*pnorm(#R{round(#{.objR}$summary$coef[2,3],2)})[@}}*]
+  [#when]signif-pvalBadSide[#>][{La p-valeur du test de significativité locale vaut {@em]2*(1-pnorm(#R{round(#{.objR}$summary$coef[2,3],2)}))[@}}]
+  [#when]signif-pvalExprGood[#>][{La p-valeur du test de significativité locale vaut {@em]2*pnorm(#R{round(#{.objR}$summary$coef[2,1],#{round})}/#R{round(#{.objR}$summary$coef[2,2],#{round})})[@}}*]
+  [#when]signif-pvalExprBadSide[#>][{La p-valeur du test de significativité locale vaut {@em]2*(1-pnorm(#R{round(#{.objR}$summary$coef[2,1],#{round})}/#R{round(#{.objR}$summary$coef[2,2],#{round})}))[@}}]
+  [#when]signif-pvalBadBeta0[#>][{La p-valeur du test de significativité locale vaut {@em]2*pnorm(#R{round(#{.objR}$summary$coef[1,3],2)})[@}}]
+  [#when]signif-pvalBadEstim[#>][{La p-valeur du test de significativité locale vaut {@em]2*pnorm(#R{round(#{.objR}$summary$coef[2,2],2)})[@}}]
+
+  [#when]quali2-mod1Good[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x1})),z=rep(%{breaks.z1},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z1}} de \(z\)}*]
+  [#when]quali2-mod2Good[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x2})),z=rep(%{breaks.z2},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z2}} de \(z\)}*]
+  [#when]quali2-mod3Good[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x3})),z=rep(%{breaks.z3},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z3}} de \(z\)}*]
+  [#when]quali2-mod1Bad2[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x1})),z=rep(%{breaks.z1},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z2}} de \(z\)}]
+  [#when]quali2-mod1Bad3[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x1})),z=rep(%{breaks.z1},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z3}} de \(z\)}]
+  [#when]quali2-mod2Bad1[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x2})),z=rep(%{breaks.z2},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z1}} de \(z\)}]
+  [#when]quali2-mod2Bad3[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x2})),z=rep(%{breaks.z2},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z3}} de \(z\)}]
+  [#when]quali2-mod3Bad1[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x3})),z=rep(%{breaks.z3},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z1}} de \(z\)}]
+  [#when]quali2-mod3Bad2[#R<]tmpy<-predict(lm(%{.y}~z*%{.x}),data.frame(%{.x}=(tmpx<-c(%{breaks.x3})),z=rep(%{breaks.z3},2)),interval="prediction")[#>][{Les points \((:r{round(tmpx[1],%{breaks.xround})},:r{round(tmpy[1,1],%{breaks.yround})})\) et \((:r{round(tmpx[2],%{breaks.xround})},:r{round(tmpy[2,1],%{breaks.yround})})\) sont utilisés pour la modalité :{%{breaks.z2}} de \(z\)}]
+  
+  [#when]ipQuali-predictGood[#>][{:r{round(tmpTau[1,1],#{breaks.yround})} est la valeur prédite}*]
+  [#when]ipQuali-predictBad1[#>][{:r{round(tmpTau[1,2],#{breaks.yround})} est la valeur prédite}]
+  [#when]ipQuali-predictBad2[#>][{:r{round(tmpTau[1,3],#{breaks.yround})} est la valeur prédite}]
+  [#when]ipQuali-interGood[#>][{\([:r{round(tmpTau[1,c(2,3)],#{breaks.yround})}]\) est l'intervalle de prévision}*]
+  [#when]ipQuali-interBad1[#>][{\([:r{round(tmpTau[1,c(1,2)],#{breaks.yround})}]\) est l'intervalle de prévision}]
+  [#when]ipQuali-interBad2[#>][{\([:r{round(tmpTau[1,c(1,3)],#{breaks.yround})}]\) est l'intervalle de prévision}]
+  [#else][#>][#{what}]
+[#case}]
+[#}
+
+{#meth]qcmPrelim.ExoLM[#,]what[]
+[#<]
+{%case]%{what}
+[%when]corr
+[#R<][
+  tmp <-abs(cor(%{.df})[%{.qcm.corr.yIndex},-%{.qcm.corr.yIndex}])
+  tmp <- tmp[tmp > %{.qcm.corr.seuil}]
+  vars.tmp <- names(tmp)[order(tmp,decreasing=TRUE)]
+  {#if]%{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
+]
+[%rb<]
+tmp=:R{=vars.tmp}.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%when]corr-positive-bad
+[%R<][
+  tmp <-cor(%{.df})[%{.qcm.corr.yIndex},-%{.qcm.corr.yIndex}]
+  tmp <- tmp[tmp > %{.qcm.corr.seuil}]
+  vars.tmp <- names(tmp)[order(tmp,decreasing=TRUE)]
+  {%if]%{.log}[%>] vars.tmp <- paste0("log(",vars.tmp,")")[%if}
+]
+[%rb<]
+tmp=:R{=vars.tmp}.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%when]corr-increasing-bad
+[%R<][
+  tmp <-abs(cor(%{.df})[%{.qcm.corr.yIndex},-%{.qcm.corr.yIndex}])
+  tmp <- tmp[tmp > %{.qcm.corr.seuil}]
+  vars.tmp <- names(tmp)[order(tmp)]
+  {%if]%{.log}[%>] vars.tmp <- paste0("log(",vars.tmp,")")[%if}
+]
+[%rb<]
+tmp=:R{=vars.tmp}.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%when]summary
+[%R<][tmpCoeff<- %{.objR}$summary$coeff[,4][-1]]
+[%rb<]
+tmp="names(sort(tmpCoeff[tmpCoeff < #{.qcm.summary.seuil}]))".to_R
+tmp=[tmp] unless tmp.is_a? Array
+tmp.map!{|nm| '<em>'+nm+'</em>'} if tmp
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
+[%=].qcm.summary.goodVars[:{tmp}]
+[%when]summary-bad-vars
+[%rb<]
+tmp="names(sort(tmpCoeff[tmpCoeff>#{.qcm.summary.seuil}]))".to_R.to_a.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%=].qcm.summary.badVars[:{tmp}]
+[%when]vif[%rb<]
+tmp="rev(names(sort(#{.objR}$vif[#{.objR}$vif>#{.qcm.vif.seuil}])))".to_R
+tmp=[tmp] unless tmp.is_a? Array
+tmp.map!{|nm| '<em>'+nm+'</em>'} if tmp
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
+[%when]vifCorr[%r<]round(cor(%{.df})["%{.qcm.vifCorr.v1}","%{.qcm.vifCorr.v2}"],9) -> tmpVifCorr
+[%?]%{.log}[%=].qcm.vifCorr.transf[<<v1[log(%{.qcm.vifCorr.v1})]<<v2[log(%{.qcm.vifCorr.v2})]][%?]else[%=].qcm.vifCorr.transf[<<v1[%{.qcm.vifCorr.v1}]<<v2[%{.qcm.vifCorr.v2}]]
+[%when]deltaH0Asymp[%r<]
+(:R{round(%{.objR}$summary$coef[%{.qcm.deltaH0Asymp.indVar}+1,1],%{.qcm.deltaH0Asymp.round})}-(%{.qcm.deltaH0Asymp.betaRef}))/:R{round(%{.objR}$summary$coef[%{.qcm.deltaH0Asymp.indVar}+1,2],%{.qcm.deltaH0Asymp.round})}->tmp.deltaH0Asymp
+tmpLim.deltaH0Asymp<-qnorm(#{.qcm.deltaH0Asymp.alphaR})
+[%when]pvalAsymp[%r<](:R{%{.objR}$summary$coef[%{.qcm.pvalAsymp.indVar}+1,1]}-(%{.qcm.pvalAsymp.betaRef}))/:R{%{.objR}$summary$coef[%{.qcm.pvalAsymp.indVar}+1,2]}->tmp
+pnorm(tmp)->tmpPValG
+[%when]colinCorr[%R<]
+  tmp <-abs(cor(%{.df})[-%{.qcm.corr.yIndex},-%{.qcm.corr.yIndex}])
+  index.tmp<-order(tmp,decreasing=TRUE)
+  vars.tmp <- names(%{.df})[-%{.qcm.corr.yIndex}]
+  vars.tmpGood1 <- vars.tmp[c(((index.tmp[[1+nrow(tmp)]]-1) %% nrow(tmp))+1,((index.tmp[[1+nrow(tmp)]]-1) %/% nrow(tmp))+1)]
+  vars.tmpGood2 <- vars.tmp[((index.tmp[[1+nrow(tmp)]]-1) %/% nrow(tmp))+1]
+  vars.tmpBad <- vars.tmp[c(((index.tmp[[length(index.tmp)]]-1) %% nrow(tmp))+1,((index.tmp[[length(index.tmp)]]-1) %/% nrow(tmp))+1)]
+  {%if]%{.log}[%R<] 
+  vars.tmpGood1 <- paste0("log(",vars.tmpGood1,")")
+  vars.tmpGood2 <- paste0("log(",vars.tmpGood2,")")
+  vars.tmpBad <- paste0("log(",vars.tmpBad,")")
+  [%if}
+[%when]colinCorr-good1[%rb<]
+tmp=:R{=vars.tmpGood1}.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%=].qcm.colinCorr[:{tmp}]
+[%when]colinCorr-good2[%rb<]
+tmp=:R{=vars.tmpGood2}.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%=].qcm.colinCorr[:{tmp}]
+[%when]colinCorr-bad[%rb<]
+tmp=:R{=vars.tmpBad}.map{|nm| '<em>'+nm+'</em>'}
+tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
+[%=].qcm.colinCorr[:{tmp}]
+[%case}
+[#meth}
+
+
+{#meth]qcmSrv.ExoLM[#,]what[][#,]seuil[]
+[#rb<]##p #{=what}
+[#=]result
+[{#case]#{what}
+  [#%]corr
+  [#when]corr-varsGood[#<]{#qcmPrelim]self[#what]corr[#} [#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}*]
+  [#when]corr-varsPositiveBad[#<]{#qcmPrelim]self[#what]corr-positive-bad[#}[#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}]
+  [#when]corr-varsIncreasingBad{#qcmPrelim]self[#what]corr-increasing-bad[#}[#>] [{les variables les plus explicatives semblent être dans l'ordre :{tmp}}]
+
+  [#%]summary
+  [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
+  [#when]summary-pvalGood[#>][{{#if]#{=.qcm.summary.goodVars}.include? ","[#>]seuls les tests de signficativité locale pour #{.qcm.summary.goodVars} sont significatifs[#else]seul le test de signficativité locale pour #{.qcm.summary.goodVars} est significatif[#if}  au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
+  [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
+  [#when]summary-defR2Good[#>][{\(R^2\) représente la part de variance expliquée par le modèle}*]
+  [#when]summary-R2BadSigma[#>][{\(R^2\) représente la part d'écart-type expliquée par le modèle}]
+
+  [#when]summary-pvalBad[#<]{#qcmPrelim]self[#what]summary-bad-vars[#}[#>][{seuls les tests de signficativité locale #{.qcm.summary.badVars} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
+
+  [#%]colinCorr
+  [#when]colinCorr-prelim[#<]{#qcmPrelim]self[#what]colinCorr[#}
+  [#when]colinCorr-Good1[#<]{#qcmPrelim]self[#what]colinCorr-good1[#}[#>][{La corrélation entre #{.qcm.colinCorr} présage du plus fort phénomène de colinéarité}*]
+  [#when]colinCorr-Good2[#<]{#qcmPrelim]self[#what]colinCorr-good2[#}[#>][{#{.qcm.colinCorr} est affecté par le phénomène de colinéarité}*]
+  [#when]colinCorr-Bad1[#<]{#qcmPrelim]self[#what]colinCorr-bad[#}[#>][{La corrélation entre #{.qcm.colinCorr} présage du plus fort phénomène de colinéarité}]
+
+  [#%]colin
+  [#when]colin-stderrGood[#>][{la colinéarité entre variables explicatives entraîne une augmentation des erreurs standard des paramètres associés}*]
+  [#when]colin-stattestGood[#>][{la colinéarité entre variables explicatives entraîne une diminution en valeur absolue des statistiques de test de significativité locale associées}*]
+  [#when]colin-pvalGood[#>][{la colinéarité entre variables explicatives entraîne une augmentation de la p\(-\)valeur des tests de significativité locale associés}*]
+  [#when]colin-stderrBad[#>][{la colinéarité entre variables explicatives entraîne une diminution des erreurs standard des paramètres associés}]
+  [#when]colin-stattestBad[#>][{la colinéarité entre variables explicatives entraîne une augmentation en valeur absolue des statistiques de test de significativité locale associées}]
+  [#when]colin-pvalBad[#>][{la colinéarité entre variables explicatives entraîne une diminution de la p\(-\)valeur des tests de significativité locale associés}]
+
+  [#%]vif
+  [#when]vif-R2jGood[#>] [{\(R_j^2\) est le \(R^2\) associé au modèle expliquant \(\mathbf{x}^{(j)}\) en fonction des \(\mathbf{x}^{(k)}\) avec \(k\neq j\)}*]
+  [#when]vif-defGood[#>] [{\(VIF_j = \frac{1}{1-R_j^2}\)}*]
+  [#when]vif-R2jVIFGood[#>] [{\(R_j^2 = 1-\frac{1}{VIF_j}\)}*]
+  [#when]vif-interpGood[#<]{#qcmPrelim]self[#what]vif[#}
+  [#>][{]
+  [#?]tmp and tmp.length>1[#>][les VIFs de :{tmp} sont relativement importants, ici supérieurs à #{.qcm.vif.seuil}]
+  [#?]tmp and tmp.length==1[#>][le VIF de :{tmp} est relativement important, ici supérieur à #{.qcm.vif.seuil}]
+  [#?]!tmp[#>][aucun VIF n'est relativement important, ici supérieur à #{.qcm.vif.seuil}][#?]end
+  [#>][}*]
+  [#when]vif-colinGood[#>] [{un \(VIF_j\) relativement important traduit que \(\mathbf{x}^{(j)}\) est atteint par un phénomène de colinéarité}*]
+  [#when]vif-phraseGood[#>][{un VIF est un facteur multiplicatif supérieur au égal à 1}*]
+
+  [#when]vif-R2jBad[#>] [{\(R_j^2\) est le \(R^2\) associé au modèle expliquant \(\mathbf{y}\) en fonction de tous les régresseurs sauf le \(j^{\grave eme}\)}]
+  [#when]vif-defBad[#>] [{\(VIF_j = 1-\frac{1}{R^2_j}\)}]
+  [#when]vif-R2jVIFBad[#>] [{\(R^2_j = \frac{1}{1-VIF_j}\)}]
+  [#when]vif-phraseBad[#>][{un VIF est un facteur multiplicatif positif et pouvant s'annuler}]
+  [#when]vif-interpBad[#>][{un VIF est d'autant mauvais qu'il est proche de 1}]
+
+  [#%]vifCorr
+  [#when]vifCorr-prelim[#<]{#qcmPrelim]self[#what]vifCorr[#}
+  [#when]vifCorr-R2AugmenteGood[#>][{le \(R^2\) augmente par ajout d'une variable explicative dans le modèle}*]
+  [#when]vifCorr-R2jGood[#>][{le \(R^2\) obtenu en régressant {@tt]#{.qcm.vifCorr.transf.v1}[@} sur tous les autres variables explicatives  est supérieur au \(R^2\) du modèle expliquant {@tt]#{.qcm.vifCorr.transf.v1}[@} sur {@tt]#{.qcm.vifCorr.transf.v2}[@}  (de l'ordre de \(#R{tmpVifCorr}^2\))}*]
+  [#when]vifCorr-VIFjGood[#>][{\(VIF_{#{.qcm.vifCorr.transf.v1}}\) et \(VIF_{#{.qcm.vifCorr.transf.v2}}\)  sont supérieurs à \(#r{1/(1-tmpVifCorr^2)}\)}*]
+
+  [#when]vifCorr-R2jBad[#>][{le \(R^2\) obtenu en régressant {@tt]#{.qcm.vifCorr.transf.v1}[@} sur tous les autres variables explicatives  est inférieur au \(R^2\) du modèle expliquant {@tt]#{.qcm.vifCorr.transf.v1}[@} sur {@tt]#{.qcm.vifCorr.transf.v2}[@}  (de l'ordre de \(#R{tmpVifCorr}^2\))}]
+  [#when]vifCorr-R2jBadLog[#>][{le \(R^2\) obtenu en régressant {@tt]#{.qcm.vifCorr.transf.v1}[@} sur tous les autres variables explicatives  est supérieur au \(R^2\) du modèle expliquant {@tt]#{.qcm.vifCorr.transf.v1}[@} sur {@tt]#{.qcm.vifCorr.transf.v2}[@}  (de l'ordre de \(#R{tmpVifCorr}^2\))}]
+  [#when]vifCorr-VIFjBad[#>][{\(VIF_{#{.qcm.vifCorr.transf.v1}}\) est nécessairement plus petit que  \(VIF_{#{.qcm.vifCorr.transf.v2}}\)}]
+
+  [#%]desc
+  [#when]desc-methGood[#>][{La stratégie adoptée est d'appliquer la règle d'or consistant à retirer à chaque étape une unique variable explicative.}*]
+  [#when]desc-pvalGrandeGood[#>][{A chaque étape, on retire la variable ayant la plus grande p-valeur du test de significativité locale}*]
+  [#when]desc-R2Good[#>][{à la dernière étape, le \(R^2\) est correct (à savoir du même ordre de grandeur que celui de la première étape)}*]
+  [#when]desc-pvalGood[#>][{à la dernière étape,  toutes les p-valeurs des tests de significativité locale sont petites}*]
+
+  [#when]desc-VIFGrandBad[#>][[{A chaque étape, on retire la variable ayant le plus grand VIF}*]]
+  [#when]desc-methBad[#>][{La stratégie adoptée est d'appliquer la règle d'or consistant à retirer à chaque étape toutes les variables explicatives avec grande p-valeur du test de significativité locale}]
+  [#when]desc-pvalPetiteBad[#>][{A chaque étape, on retire la variable ayant la plus petite p-valeur du test de significativité locale}]
+  [#when]desc-VIFPetitBad[#>][{A chaque étape, on retire la variable ayant le plus petit VIF}]
+  [#when]desc-R2Bad[#>][{à la dernière étape, le \(R^2\) est maximal}]
+  [#when]desc-pvalBad[#>][{à la dernière étape,  toutes les p-valeurs des tests de significativité locale sont grandes}]
+
+
+  [#%]increment
+  [#when]increment-Good[#>][{}*]
+
+  [#%]deltaH0Asymp
+  [#when]deltaH0Asymp-prelim[#<]{#qcmPrelim]self[#what]deltaH0Asymp[#}
+  [#when]deltaH0Asymp-valeurGood[#>][{la statistique de test vaut (approximativement) \(#R{round(tmp.deltaH0Asymp,3)}\)}*]
+  [#when]deltaH0Asymp-quantileGood[#>][{la statistique de test est (approximativement) {#if]#{=.qcm.deltaH0Asymp.side} == "<" [#>]inférieure[#else]supérieure[#if} à \(#R{round(tmpLim.deltaH0Asymp,3)}\)}*]
+  [#when]deltaH0Asymp-conclGood[#>][{on peut plutôt penser que \(\beta_#{.qcm.deltaH0Asymp.indVar}#{.qcm.deltaH0Asymp.side}#{.qcm.deltaH0Asymp.betaRef}\)}*]
+  [#when]deltaH0Asymp-valeurBadMinus[#>][{la statistique de test vaut (approximativement) \(#R{round(-tmp.deltaH0Asymp,3)}\)}]
+  [#when]deltaH0Asymp-quantileBad[#>][{la statistique de test est (approximativement) {#if]#{=.qcm.deltaH0Asymp.side} == ">" [#>]inférieure[#else]supérieure[#if} à \(#R{round(tmpLim.deltaH0Asymp,3)}\)}]
+  [#when]deltaH0Asymp-conclBadSigne[#>][{on peut plutôt penser que \(\beta_#{.qcm.deltaH0Asymp.indVar}>#{.qcm.deltaH0Asymp.betaRef}\)}]
+
+
+  [#%]pvalAsymp
+  [#when]pvalAsymp-gaucheGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}\)}{#if]#r{tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-droiteGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}\)}{#if]#r{1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-biGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}\)}{#if]#r{(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-gaucheBadBeta2[#>][{\(\beta_#{.qcm.pvalAsymp.indVarBad}<#{.qcm.pvalAsymp.betaRef}\)}]
+  [#when]pvalAsymp-droiteBadBeta2[#>][{\(\beta_#{.qcm.pvalAsymp.indVarBad}>#{.qcm.pvalAsymp.betaRef}\)}]
+  [#when]pvalAsymp-biBadBeta2[#>][{\(\beta_#{.qcm.pvalAsymp.indVarBad} \neq #{.qcm.pvalAsymp.betaRef}\)}]
+  [#when]pvalAsymp-gaucheBadRef[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}< #{.qcm.pvalAsymp.betaRefMinusBad}\)}]
+  [#when]pvalAsymp-droiteBadRef[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}> #{.qcm.pvalAsymp.betaRefMinusBad}\)}]
+  [#when]pvalAsymp-biBadRef[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRefMinusBad}\)}]
+
+  [#%]icAsymp
+  [#when]icAsymp-formuleRGood[#>][{la formule {@tt]R[@} d'obtention est {@pre]:R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(:R{1-#{.qcm.icAsymp.alphaP}/200})*:R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})}[@}}*]
+  [#when]icAsymp-valeurGood[#>][{l'intervalle de confiance à \(#R{100-#{.qcm.icAsymp.alphaP}}\%\) est {@tt][[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})},3)}]][@}}*]
+  [#when]icAsymp-aepGood[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont \(#R{(1-#{.qcm.icAsymp.alphaP}/100)*100}\%\) approximativement contiendraient \(\beta_#{.qcm.icAsymp.indVar}\)}*]
+  [#when]icAsymp-testGood[#>][{le test de significativité locale a une p-valeur inférieure à \(#{.qcm.icAsymp.alphaP}\%\) si \(0\) n'appartient pas à l'intervalle de confiance}*]
+  [#when]icAsymp-formuleRBad[#>][{la formule {@tt]R[@} d'obtention est {@tt]#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})}[@}}]
+  [#when]icAsymp-valeurBad[#>][{l'intervalle de confiance à  \(#R{(1-#{.qcm.icAsymp.alphaP}/100)*100}\%\) est {@tt][[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})},3)}]][@}}]
+  [#when]icAsymp-aepBad[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont \(#{.qcm.icAsymp.alphaP}\%\) approximativement contiendraient \(\beta_#{.qcm.icAsymp.indVar}\)}]
+  [#when]icAsymp-aepBad2[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont \(#R{(1-#{.qcm.icAsymp.alphaP}/200)*100}\%\) approximativement contiendraient \(\beta_#{.qcm.icAsymp.indVar}\)}]
+  [#when]icAsymp-testBad[#>][{le test de significativité locale a une p-valeur inférieure à \(#{.qcm.icAsymp.alphaP}\%\) si \(\beta_#{.qcm.icAsymp.indVar}\) n'appartient pas à l'intervalle de confiance}]
+
+
+  [#%]ipAsymp
+  [#when]ipAsymp2-prelim[#R<]
+  round(#{.objR}$summary$coef[,1],2)->tmp
+  modelsTmp<-list(#{.qcm.ipAsymp2.model})
+  predictTmp<-paste(sapply( modelsTmp,function(l) paste('predict(lm(',deparse(l),'),xTau,interval="prediction")')),collapse="\n")
+  [#R<]xTau <- #{.qcm.ipAsymp2.newData}
+  #R{predictTmp}->ip
+  [#=].qcm.ipAsymp2.formR[#R{tmp[1]}{#if]#R{tmp[2]>=0}[#>]+[#if}#R{tmp[2]}*log(123456789){#if]#R{tmp[3]>=0}[#>]+[#if}#R{tmp[3]}*log(51){#if]#R{tmp[4]>=0}[#>]+[#if}#R{tmp[4]}*log(800000){#if]#R{tmp[5]>=0}[#>]+[#if}#R{tmp[5]}*log(10)]
+  [#when]ipAsymp2-formuleRGood[#>][{la formule {@tt]R[@} d'obtention de la prévision ponctuelle est \\ {@tt]exp(#{.qcm.ipAsymp2.formR})[@}}*]
+  [#when]ipAsymp2-valeurGood[#>][{la prévision ponctuelle vaut  approximativement par le calcul #R{round(exp(#{.qcm.ipAsymp2.formR}),3)}}*]
+  [#when]ipAsymp2-formuleRBadLog[#>][{la formule {@tt]R[@} d'obtention de la prévision ponctuelle est \\ {@tt]#{.qcm.ipAsymp2.formR}[@}}]
+  [#when]ipAsymp2-valeurBadLog[#>][{la prévision ponctuelle vaut approximativement par le calcul #R{round(#{.qcm.ipAsymp2.formR},3)}}]
+  [#when]ipAsymp2-ipGood[#>][{l'intervalle de prévision à \(#R{100-#{.qcm.ipAsymp2.alphaP}}\%\) est {@tt][[#R{round(exp(ip[-1]),3)}]][@}}*]
+[#case}]
+[#>][#{result}]
+[#}

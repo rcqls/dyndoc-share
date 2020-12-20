@@ -6,3 +6,9 @@
 {@StdHtml:i]code[][@>]<i>#{code}</i>[@}
 
 {@StdHtml:u]code[][@>]<u>#{code}</u>[@}
+
+{@StdHtml:em]code[][@>]<em>#{code}</em>[@}
+
+{@StdHtml:tt]code[][@>]<em>#{code}</em>[@}
+
+{@StdHtml:pre]code[][@>]<pre style="display: inline;">#{code}</pre>[@}

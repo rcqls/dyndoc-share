@@ -38,7 +38,7 @@ RCqls/Exo/exos
 [#>]
   [{#Question#}{A la vue de la matrice de corrélation ci-après, quels sont les régresseurs qui vous semblent être les plus explicatifs~?}
 
-  {#rverb]cor(#{.df})[#}<\n>]
+  {#rverb]cor(%{.df})[#}<\n>]
   [#tag]exam[#>]reponse?[5cm][#>][\Reponse{#{reponse}}]
   [#tag]reponse[#>]\begin{Correction}
   [#rb<] tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{seuil}])])".to_R.map{|nm| '\texttt{'+nm+'}'}
@@ -48,12 +48,12 @@ RCqls/Exo/exos
   \end{Correction}
 [#}
 
-{#meth]summary.ExoLM[#,] seuilR[.05]
+{#meth]summary.ExoLM[#,] seuilR[0.05]
 [#%]saved for QCM[#=].qcm.summary.seuil[#{seuilR}]
 [#>]
 [{#Question#}{Interprétez la sortie ci-dessous, en particulier les p$-$valeurs des tests de significativité locale, le $R^2$.}
 
-{#rverb]summary(lm(#{.formula}))[#}
+{#rverb]summary(lm(%{.formula}))[#}
 ]
 [#tag]exam[#>]reponse?[5cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#r<]
@@ -92,7 +92,7 @@ La colinéarité entre régresseurs peut entraîner artificiellement une augment
 [#>]
 [{#Question#}{Rappelez la définition du VIF, et son interprétation générale. Ensuite, interprétez-les quant au jeu de données étudié.}
 
-{#rverb]vif(lm(#{.formula}))[#}<\n><\n>]
+{#rverb]vif(lm(%{.formula}))[#}<\n><\n>]
 [#tag]exam[#>]reponse?[6cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#rb<]
 tmp="names(sort(#{.objR}$vif[#{.objR}$vif>#{seuilR}]))".to_R
@@ -120,7 +120,7 @@ Par définition, $VIF_j = \frac{1}{1-R_j^2}$ où $R_j^2$ est le coefficient de d
 [#}
 en utilisant  l'instruction suivante.}
 
-{#rverb]1/(1-(#R{round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9)})^2)[#}<\n><\n>]
+{#rverb]1/(1-(:R{round(cor(%{.df})["%{.qcm.vifCorr.v1}","%{.qcm.vifCorr.v2}"],9)})^2)[#}<\n><\n>]
 [#tag]exam[#>]reponse?[ 3cm][#>]\Reponse{#{reponse}}
 [#tag]reponse[#r<]round(cor(#{.df})["#{.qcm.vifCorr.v1}","#{.qcm.vifCorr.v2}"],9) -> tmp
 [#>]\begin{Correction}

@@ -107,6 +107,7 @@ opts_knit$set(width=75)
 ][#>]{#blck][#yield]default[#blck}[#Rmd}
 [#def}
 
+## placé dans document.dyn
 {#def]maketoc[#,]html[#rb<]
 
 toc,subtoc=[],[]

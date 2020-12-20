@@ -1,0 +1,343 @@
+[#require]RCqls/Exo/lm1
+CqlsLatexEcono
+RCqls/Styles/StdHtml
+[#main][#<]
+
+
+## Questions ExoLM1
+	
+{#meth]model.ExoLM1[#>]
+  [On envisage un modèle linéaire expliquant la variable <em>#{.y}</em> en fonction de la seule variable  <em>#{.x}</em>. On tente une modélisation #Rb{#{.log} ? "log-" : ""}linéaire du type :
+  |$$ (#{.y})_i = \beta_0+\beta_1 (#{.x})_i+U_i, \qquad i=1,\ldots,#R{NROW(#{.data.objR})}$$]
+[#}
+
+{#meth]calculable.ExoLM1[#>]
+  [{#Question#} Pourquoi les paramètres \(\beta_0\) et \(\beta_1\) ne sont pas calculables?<br/><br/>]
+  [#tag]reponse[#>]
+    [\begin{Correction}
+    |Pour pouvoir évaluer les paramètres \(\beta_0\) et \(\beta_1\) il faudrait ``en théorie'' une infinité de données. Ces paramètres ne sont donc pas évaluables mais simplement estimables à partir d'un nombre fini de données.
+    |\end{Correction}]
+[#}
+
+{#meth]estim.ExoLM1[#>]
+  {#Question#} On s'intéresse tout naturellement à l'estimation des paramètres \(\beta_0\)  et \(\beta_1\). Déterminez les estimations obtenues par la méthode des moindres carrés.
+  |<br/>
+  |On rappelle à titre indicatif que
+  |<ul>
+  |<li> \(var(\mathbf{x})= \overline{x^2}- \overline{x}^2\)</li>
+  |<li> \(cov(\mathbf{x},\mathbf{y})=\overline{x \times y} - \overline{x} \times \overline{y}.\)</li>
+  |</ul>
+
+  [#>]
+    {#rverb]
+    |#{.indicR.mx}
+    |#{.indicR.mx2}
+    |#{.indicR.my}
+    |#{.indicR.my2}
+    |#{.indicR.mxy}
+    |[#}
+  [#tag]reponse[#>]
+  [\begin{Correction}
+  |En notant \(<b>y</b>=<b>#{.y}</b>\) et \(\Mat{x}=(<b>1</b>,<b>x^{(1)}</b>:=<b>#{.x}</b>)\),
+  |
+  |\begin{eqnarray*}
+  |{#Est]\beta_1[#}&=& \frac{cov({#cqlsbm]y[#},{#cqlsbm]x^{(1)}[#})}{var({#cqlsbm]x^{(1)}[#})}
+  |=\frac{#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}})}{#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2}
+  |\simeq#r{#{.indicR.beta1R}}\\
+  |{#Est]\beta_0[#}&=& \overline{y}-{#Est]\beta_1[#} \overline{\mathbf{x^{(1)}}}
+  |=#r{#{.indicR.my}} - #r{beta1Est}\times #r{#{.indicR.mx}}
+  |\simeq #r{ #{.indicR.beta0R}}.
+  |\end{eqnarray*}
+  |Vérification en <em>R</em>:
+  |{#rverb]
+  |#{.indicR.beta1R}
+  |beta1Est
+  |#{.indicR.beta0R}
+  |[#}
+  |\end{Correction}]
+[#}
+
+{#meth]corr.ExoLM1[#,]corrOnly[false]
+[#?]#{corrOnly}[#>]
+[{#Question#} Déterminez le coefficient de corrélation linéaire
+entre <em>#{.x}</em> et <em>#{.y}</em> et donnez-en une interprétation.<br/><br/>]
+[#?]else[#>]
+[{#Question#} Déterminez le coefficient de détermination linéaire (\(R^2\)) (puis le coefficient de corrélation linéaire (\(R\)))
+entre <em>#{.x}</em> et <em>#{.y}</em>, et donnez-en une interprétation.<br/><br/>]
+[#?]end
+[#tag]reponse
+[#?]#{corrOnly}[#>]
+  [\begin{Correction}
+  |Le coefficient de corrélation linéaire vaut
+  |\[
+  |corr(<b>y</b>,<b>x</b>) = \frac{cov(<b>y</b>,\mathbf{x^{(1)}})}{\sqrt{var(<b>y</b>) \times var(\mathbf{x^{(1)}})} } =\frac{#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}})}{\sqrt{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}}
+  |\simeq #r{#{.indicR.cxy}},
+  |\]
+  |et  plus il est proche de 1 en valeur absolue plus la dispersion des points autour de la droite ajustée est faible.
+  |\end{Correction}]
+[#?]else[#>]
+  [\begin{Correction}
+  |Dans le cadre de la régression simple, \(R^2\) vaut le carré du coefficient de corrélation linéaire:
+  |\[
+  |R^2 = \frac{cov(<b>y</b>,\mathbf{x^{(1)}})^2}{var(<b>y</b>) \times var(\mathbf{x^{(1)}}) }
+  |=\frac{(#r{#{.indicR.mxy}}-(#r{#{.indicR.mx}})*(#r{#{.indicR.my}}))^2}{(#r{#{.indicR.mx2}} - #r{#{.indicR.mx}}^2) (#r{#{.indicR.my2}} - #r{#{.indicR.my}}^2)}
+  |\simeq #r{(tmp<-#{.indicR.cxy})^2}.
+  |\]
+  |D'où \(corr(<b>x</b>,<b>y</b>)=#R{ifelse(tmp<0, "-", "+")}\sqrt{#r{tmp^2}}\simeq #r{tmp}\) qui a en particulier le même signe que \({#Est]\beta_1[#}\). Plus \(|corr({#cqlsbm]x[#},{#cqlsbm]y[#})|\) est proche de 1 et plus la dispersion des points autour de la droite ajustée est faible.
+  |\end{Correction}]
+[#}
+
+{#meth]signif2.ExoLM1
+[#r<]beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
+beta1Est<-tmp[2]
+[#>][{#Question#} En utilisant le fait que \(\displaystyle\sigma_{\widehat{\beta}_1}^2=\frac{\sigma^2} {n\times var(\mathbf{x^{(1)}})}\) (dans le cas de la régression simple) et l'instruction <em>R</em> ci-dessous (notation mathématique de la quantité calculée à préciser, avec <em>beta0Est</em> et <em>beta1Est</em> les résultats des estimations en <em>R</em> de \(\beta_0\) et \(\beta_1\) obtenues précedemment)
+pouvez-vous dire si la variable <em>#{.x}</em> est significative dans l'explication de la variable <em>#{.y}</em> (Rédaction standard) ?
+{#rverb][sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)]
+[#rverb}]
+[#tag]reponse[#>]
+  [\begin{Correction}
+  |{#rverb]
+  |summary(lm(#{.y}~#{.x}))
+  |sqrt(#r{#{.objR}$summary$r.sq})
+  |sqrt(sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)) -> sigmaEst;sigmaEst
+  |sigmaEst/sqrt(#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2)) -> sigmaBeta1Est;sigmaBeta1Est
+  |beta1Est/sigmaBeta1Est
+[#}
+  \end{Correction}]
+[#meth}
+
+{#meth]summary.ExoLM1[#,]short[false]
+[#>][{#Question#}]
+[#?]!#{short}[#>][Rappelez brièvement à quoi correspondent chacune des quatre colonnes de la matrice ``Coefficients'' de la sortie ci-dessous.<br/>]
+[#?]true[#>] [Retrouvez les résultats des deux questions précédentes.]
+[#?]#{short}[#>][ Analysez brièvement les résultats obtenus.]
+[#?]true[#>][<br/>]
+[#>]{#rverb]
+summary(lm(#{.y}~#{.x}))
+sqrt(#r{#{.objR}$summary$r.sq})
+[#}
+[#tag]reponse
+[#>]neg.deb[][#>]neg.fin[]
+[#?]:r{#{.objR}$summary$coeff[2,4]>.05}
+[#>]neg.deb[ ne ][#>]neg.fin[ pas ]
+[#?]true[#>][\begin{Correction}
+On retrouve les résultats des deux questions précédentes. En particulier, la colonne <em>Estimate</em> fournit les estimations des paramètres \(\beta_0\) et \(\beta_1\) et <em>Multiple R-squared</em> le \(R^2\). Notons que la dernière colonne du tableau <em>Coefficients</em> fournit les p\(-\)valeurs des tests de significativité locales des paramètres \(\beta_0\) et \(\beta_1\). La dernière #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable <em>#{.x}</em> semble apporter de l'information dans l'explication de la variable <em>#{.y}</em>.
+\end{Correction}]
+[#}
+
+{#meth]signif3.ExoLM1
+[#r<]beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
+beta1Est<-tmp[2]
+[#>][{#Question#} 
+Dans ce qui suit, <em>beta0Est</em> et <em>beta1Est</em> désignent les résultats des estimations en <em>R</em> de \(\beta_0\) et \(\beta_1\) obtenues précedemment.
+De plus, nous soulignons que \(\displaystyle{#Est]\sigma^2_{\widehat{\beta}_1}[#}=\frac{{#Est]\sigma^2[#} {n\times var(\mathbf{x^{(1)}})}\) dans le cas particulier de la régression simple.\\
+\noindent a) Quelles quantités apparaissant dans le <em>summary(lm(...))</em> de la question précédente sont reliées aux 2 expressions <em>e1</em> et <em>e2</em> suivantes:
+{#rverb]
+e1 <- sum((#{.y}-(beta0Est+beta1Est*#{.x}))^2)/(length(#{.y})-2)
+e1
+e2 <- e1/(#r{length(#{.y})}*(mean(#{.x}^2)-mean(#{.x})^2))
+e2
+[#rverb}
+Proposer les notations mathématiques utilisées dans ce cours pour les identifier.\\
+\noindent b) En vous aidant de la sortie <em>summary(lm(...))</em> de la question précédente, fournir la valeur de <em>e3</em> exprimée ci-dessous:
+{#rverb]
+e3 <- beta1Est/sqrt(e2)
+[#rverb}
+]
+[#tag]reponse[#>]
+  [\begin{Correction}
+  | \noindent a) <em>e1</em> correspond à \({#Est]\sigma^2[#}\) mesurant
+  |l'estimation du niveau de bruit et correspond au carré de <em>Residual
+  | standard error</em> fourni dans <em>summary(lm(...))</em>. <em>e2</em> est le résultat de la formule fournie  \({#Est]\sigma^2_{\widehat{\beta}_1}[#}\) correspondant au carré de l'erreur standard fournie dans la colonne <em>std error</em>.\\
+  | \noindent b) <em>e3</em> correspond à la statistique de test de significativité locale de \(\beta_1\) et vaut donc #r{e3} (voir colonne <em>t value</em>).
+  \end{Correction}]
+[#meth}
+
+
+{#meth]make_graph.ExoLM1[#,] .graph.append[]
+[#rb<]unless File.directory? File.dirname("#{.graph.file}")
+  require 'fileutils'
+  FileUtils.mkdir_p File.dirname("#{.graph.file}")
+end
+[#r<]
+grfile<-paste0(tempfile(),".jpg")
+jpeg(grfile)
+plot(#{.y}~#{.x},xlab='#{.x}',ylab='#{.y}')
+[#tag]reponse[#r<]abline(lm(#{.y}~#{.x}),lwd=2)
+[#tag]end
+[#r<]
+#{.graph.append}
+graphics.off()
+[#}
+
+
+{#meth]graph.ExoLM1[#,] .graph.file[img/FigLM1#{.ObjectName}.jpg] [#,] scale[.6]
+[#<]{#make_graph]self[#}
+[#>]
+{#Question#} Sur le graphique ci-dessous reportez la droite ajustée (même approximativement) et illustrez la notion de valeur ajustée et de résidu.<br/>
+[#R<]
+ resgr <- base64::img(grfile)
+ unlink(grfile)
+ [#>]:r{resgr}
+[#tag]reponse[#>][Les notions de résidu et de valeur ajustée sont illustrés dans le polycopié p.23.\\
+
+]
+[#}
+
+
+{#meth]signif.ExoLM1[#>]
+[{#Question#} Peut-on penser au vu des données que la variable <em>#{.x}</em> apporte de l'information pour expliquer
+la variable <em>#{.y}</em> (indication: fournir la p\(-\)valeur associée puis conclure.) <br/><br/>]
+[#tag]reponse[#>]
+  [\begin{Correction}
+  |Pour pouvoir accepter \(\mathbf{H_1}: \beta_1\neq 0\), i.e. le régresseur <em>#{.x}</em> apporte de l'information pour expliquer la variable <em>#{.y}</em>, le risque à encourir est de l'ordre de \(#r{#{.objR}$summary$coeff[2,4]}\).
+  |\end{Correction}]
+[#}
+
+
+{#meth]quali.ExoLM1[#,] qualiTex[] [#,] qualiR[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]modal[] [#,]short[false][#>]
+[{#Question#}{Quelle variable nommée <em>z</em> ][#?]#{+?modal}[#>](ayant pour modalités #{modal})[#?]end[#>] dans la sortie suivante a été introduite? Comparez brièvement les résultats obtenus avec ceux du précédent modèle. Représentez sur le graphique précédent ce nouveau modèle[#?]!#{short}[#>] dont on précisera l'équation[#?]end[#>]. Peut-on alors penser que <em>#{.x}</em> a un pouvoir explicatif sur <em>#{.y}</em> ?}
+[#r<]z<-#{qualiR}
+[#>]{#rverb]
+summary(lm(#{.y}~#{.x}*z))
+[#}
+[#tag]exam[#>]reponse?[10cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]%Dessin à refaire!
+[#r<]
+summary(lm(#{.y}~#{.x}*z)->tmpLmQ)->tmpSumLmQ
+coeffEst<-tmpLmQ$coefficients
+
+[#>]ablines[abline(a=#r{coeffEst[1]},b=#r{coeffEst[2]},lwd=4,lty=3)
+{#R>]
+
+for( i in 1:(ltmp <- length(levels(z))-1) ) {
+#print(i)
+{#>]abline(a=(#r{coeffEst[1]+coeffEst[2+i]}),b=(#r{coeffEst[2]+coeffEst[2+ltmp+i]}),lwd=4,lty=3) # where 2 ( bEst_0 and bEst_1 ) + ltmp (bEst_0,z=P2 and ... and b_0,z=Pk)
+[#>}
+
+}
+
+[#R>}]
+[#?]false[#rb<]puts #{=ablines}[#?]end
+[#>]{#make_graph]self[#,]#{ablines}[#}
+
+\begin{Correction}
+La variable nommée \(z\) correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
+$$
+(#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \Bruit_i.
+$$
+%Le modèle estimé correspond à deux droites d'équation \(y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x\) lorsque \(z=1\) et \(y=\widehat{\beta_0}+\widehat{\beta_1}x\) lorsque \(X=0\) (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le \(R^2\) est de l'ordre de {#hide]#R{round(tmpSumLmQ$r.squared*100,2)} soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\%[#hide} par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice <em>z</em>, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable <em>#{.y}</em>.
+\end{Correction}
+[#}
+
+{#meth]quali1.ExoLM1[#,] qualiTex[] [#,] qualiR[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]modal[] [#,]short[false][#>]
+[{#Question#}{Quelle variable nommée <em>z</em> ][#?]#{+?modal}[#>](ayant pour modalités #{modal})[#?]end[#>] dans la sortie suivante a été introduite? Comparez brièvement les résultats obtenus avec ceux du précédent modèle.}
+[#r<]z<-#{qualiR}
+[#>]{#rverb]
+summary(lm(#{.y}~z*#{.x}))
+[#}
+[#}
+
+{#meth]quali2.ExoLM1[#>]
+{#Question#} Représentation graphique de ce nouveau modèle: quels sont les points qui permettent de tracer le(s) droite(s) du modèle ?
+[#}
+
+{#meth]ipQuali.ExoLM1[#,] newData[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,] short[false]
+[#?]#{0?indNew}[#=]indNew[#R{as.integer(#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1)}][#?]end
+[#>]
+[{#Question#}{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
+mais pas encore la valeur de <em>#{.y}</em>.
+Dans la sortie <em>R</em> ci-dessous, pourriez-vous prévoir sa valeur puis fournir son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%?}<br/>]
+[#?]#{short}[#>]{#rverb]predict(lm(#{.y}~z*#{.x}),#{newData},interval="prediction")[#}
+[#?]else[#>]{#rverb]
+xTau <- #{newData}
+predict(lm(#{.y}~z*#{.x}),xTau,interval="prediction")
+[#}[#?]end
+[#R<]tmpTau<-predict(lm(#{.y}~z*#{.x}),#{newData},interval="prediction")
+[#tag]exam[#>]reponse?[4cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]
+\begin{Correction}
+Pour chacun des modèles, la prévision est donnée par la variable notée <em>fit</em>, la borne inférieure de l'intervalle de prévision au niveau 95\% par la variable <em>lwr</em> et la borne supérieure par <em>upr</em>.
+\end{Correction}
+[#}
+
+
+{#meth]qualiBin.ExoLM1 [#,] z[c(rep(0,round(length(#{.x})/2)),rep(1,length(#{.x})-round(length(#{.x})/2)))] [#,]zDescr[] [#,]indDescr[]
+[#,]ordre[<<analyse[2,1,3]<<graph[3,2,1]]
+[#,]predire[<<ind[]<<x[]]
+[#=] modelR$[c("#{.y}~#{.x}","#{.y}~z+#{.x}","#{.y}~z+#{.x}+z:#{.x}")]
+[#>]
+[On envisage plusieurs modèles linéaires expliquant la variable <em>#{.y}</em> en fonction de la variable  <em>#{.x}</em> et (parfois) de la variable binaire <em>z</em> #{zDescr}.\\
+
+\noindent \underline{\textbf{Présentation des modèles:}} On tente alors les trois modèlisations linéaires suivantes
+
+\noindent \textit{Modèle A}: \( (#{.y})_i = \beta^{A}_0+\beta^{A}_1 (#{.x})_i+\Bruit^{A}_i\)\\
+\noindent \textit{Modèle B}: \( (#{.y})_i = \beta^{B}_0+\beta^{B}_1 z_i+ \beta^{B}_2 (#{.x})_i+\Bruit^{B}_i\)\\
+\noindent \textit{Modèle C}: \( (#{.y})_i = \beta^{C}_0+\beta^{C}_1 z_i+\beta^{C}_2 (#{.x})_i+ \beta^{C}_3 \big(z_i\times (#{.x})_i\big)+\Bruit^{C}_i\)\\
+pour \(i=1,\ldots,#R{NROW(#{.data.objR})}\)#{indDescr}.\\
+]
+[#r<]z<-as.integer(#{z})
+[#>]
+\noindent \underline{\textbf{Analyses résumées des modèles:}} Les sorties <em>R</em> suivantes proposent les analyses de base des modèles  via l'instruction classique <em>summary(lm(...))</em>.\\ \noindent\textit{Attention}: elles ne sont pas nécessairement fournies dans le même ordre que la présentation des modèles ci-dessus.\\
+\noindent \textit{Indication}: sachez qu'en <em>R</em>, la notation <em>z:x</em> dans une formule désigne la variable notée mathématiquement \(z\times x\) (i.e. la multiplication des deux variables).
+{#rverb]
+{#R>]for(i in 1:3) {
+tmp <- <modelR$>[c(#{ordre.analyse})[i]]
+{#>]########################[ Modèle :r{i} ]#################################
+summary(lm(:r{tmp}))
+[#>}
+}
+[#R>}
+[#}
+\noindent \underline{\textbf{Représentations graphiques des modèles:}} Les trois graphiques suivants fournissent le nuage de points complétées des droites ajustées pour les trois modèles considérés.\\ \noindent \textit{Attention}: ils ne sont pas nécessairement fournis dans le même ordre que la présentation des modèles ci-dessus.
+
+{#make_plot]self[#,]img/FigLM1-1-#{.ObjectName}.jpg[#,]abline(lm(#{modelR$[[1]]}),lwd=5)[#}
+
+{#make_plot]self[#,]img/FigLM1-2-#{.ObjectName}.jpg[#,]
+[tmp<-lm(#{modelR$[[2]]})$coeff
+abline(a=tmp[1],b=tmp[3],lwd=5)
+abline(a=tmp[1]+tmp[2],b=tmp[3],lwd=5)]
+[#}
+
+{#make_plot]self[#,]img/FigLM1-3-#{.ObjectName}.jpg[#,]
+[tmp<-lm(#{modelR$[[3]]})$coeff
+abline(a=tmp[1],b=tmp[3],lwd=5)
+abline(a=tmp[1]+tmp[2],b=tmp[3]+tmp[4],lwd=5)][#}
+
+\hspace{-1.5cm}\begin{tabular}{ccc}
+\textit{Modèle I} & \textit{Modèle II} & \textit{Modèle III} \\
+\includegraphics[scale=.3]{img/FigLM1-:r{c(#{ordre.graph})[1]}-#{.ObjectName}.jpg} &
+\includegraphics[scale=.3]{img/FigLM1-:r{c(#{ordre.graph})[2]}-#{.ObjectName}.jpg} &
+\includegraphics[scale=.3]{img/FigLM1-:r{c(#{ordre.graph})[3]}-#{.ObjectName}.jpg}
+\end{tabular}
+
+
+{#Question#} Compléter le tableau suivant de sorte à faire correspondre les analyses résumées (Modèles 1, 2 et 3) et les représentations graphiques (Modèles I, II et III) obtenus ci-dessus avec les modèles considérés (Modèles A, B et C) (justifier brièvement vos réponses).
+
+\begin{center}\begin{tabular}{|c|c|c|c|}\hline
+\textbf{Modèles} & Modèle A & Modèle B & Modèle C \\\hline\hline
+\textbf{Analyses résumées} & & &\\\hline
+\textbf{Représentations graphiques} & & &\\\hline
+\end{tabular}\end{center}
+[#tag]exam[#>]reponse?[3.5cm][#>][\Reponse{#{reponse}}][#>]
+{#Question#} Pour les trois modèles (A, B et C), proposer la valeur prédite de <em>#{.y}</em> pour #{predire.ind} sachant que la variable #{.x} #{predire.x} (formules d'obtention à fournir). A laquelle de ces trois prédictions feriez-vous le plus confiance?\\
+[#tag]exam[#>]reponse?[5cm][#>][\Reponse{#{reponse}}]
+[#tag]reponse[#>]%Dessin à refaire!
+
+\begin{Correction}
+La variable nommée \(z\) correspond très certainement avec la variable indicatrice #{qualiTex}. L'équation de ce modèle s'écrit
+$$
+(#{.y})_i = \beta_0 + \beta_1 (#{.x})_i + \beta_2 (z)_i + \beta_3 (#{.x}*z)_i + \Bruit_i.
+$$
+Le modèle estimé correspond à deux droites d'équation \(y=(\widehat{\beta_0}+ \widehat{\beta_2}) + (\widehat{\beta_1}+ \widehat{\beta_3}) x\) lorsque \(z=1\) et \(y=\widehat{\beta_0}+\widehat{\beta_1}x\) lorsque \(X=0\) (ces deux droites sont représentées en pointillé sur le graphique précédent). On notera que pour ce nouveau modèle, le pouvoir explicatif exprimé par le \(R^2\) est de l'ordre de {#hide] #R{round(tmpSumLmQ$r.squared*100,2)}  soit une augmentation de près de #R{round(100*(tmpSumLmQ$r.squared-#{.objR}$summary$r.squared),2)}\% [#hide} par rapport au précédent modèle. Ainsi, par le simple ajout de la variable indicatrice <em>z</em>, on s'aperçoit que la variable possède un fort pouvoir explicatif de la variable <em>#{.y}</em>.
+\end{Correction}
+[#}
+
+{#meth]make_plot.ExoLM1[#,]graph.file[img/FigLM1#{.ObjectName}.jpg][#,]graph.append[]
+[#r<]
+jpeg('#{graph.file}')
+plot(#{.y}~#{.x},xlab='#{.x}',ylab='#{.y}')
+#{graph.append}
+graphics.off()
+[#}
+ 
