@@ -1,7 +1,7 @@
 [#<]
 {@StdHtml:new@}
 
-{@StdHtml:b]code[][@>]<bold>#{code}</bold>[@}
+{@StdHtml:b]code[][@>]<b>#{code}</b>[@}
 
 {@StdHtml:i]code[][@>]<i>#{code}</i>[@}
 

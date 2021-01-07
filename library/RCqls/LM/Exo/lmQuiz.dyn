@@ -1,17 +1,21 @@
 [#require]Quizz
-[#main][#<]
+RCqls/LM/Exo/lm1Html
+RCqls/LM/Exo/lmHtml
+[#main]
+[#R<]require(CqlsEAP)
+[#<]
 
 {#def]Question
 [#>][<b>Question {@quizz]+[@}</b>:]
 [#def}
 
 ## mode can be: "quizz", "moodle" or "quizz,moodle"
-{#meth]qcm.Quiz[#,]title[][#,]cols[][#,]mode[quizz][#,]what[]
+{#meth]qcm.Quiz[#,]title[][#,]cols[][#,]mode[quizz,moodle][#,]note[1][#,]text[][#,]what[]
 [#=]items[]
 [#rb<]
+moodle=[]
 items_lines=#{=what}.split("\n").map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
 items=items_lines.map{|line| line.split("|").map{|e| e.strip}}.flatten
-
 items.each_with_index do |item,i| #
   add=(i==items.length-1 ? "<br/>" : "<\n>" )
   if item[0,1] == "!"
@@ -22,17 +26,32 @@ items.each_with_index do |item,i| #
       code=#{=code}.strip
       good=(code[-1,1]=="*")
       code=code[1...(-1 - (good ? 1 : 0))]
+      moodle << {code: code, good: good}
     [#+]items[c:{i}{#if]good[#>]*[#}: :{code} :{add}]
     [#<}
   end
 end
 [#rb<]#TO DEBUG: Dyndoc.warn :debug, [#{=items}]
-[#>]<pre><code>#{items}</code></pre>
+[#%]<pre><code>#{items}</code></pre>
 [#>]{#case]#{mode}
 [#when]quizz[#>]
+  #{text}
   <hr/>
-  {#quizz]#{title}.q{@quizz@}[#cols]#{cols}[#code]#{items}[#}
+  {#quizz]:{#{=title}.strip}.q{@quizz@}[#cols]#{cols}[#md]false[#code]#{items}[#}
   <hr/>
+[#when]moodle[#=]reponses[]
+[#rb<]
+good=(100.0 / moodle.select{|e| e[:good]}.length).round(5)
+moodle.each do |elt| #
+  fraction=(elt[:good] ? good : -good).to_s 
+  {#<][#+]reponses[{#moodle_multichoice_answer]:{elt[:code]}[#fraction]:{fraction}[#}][#<}
+end
+[#>]
+{#moodle_multichoice][]
+[#text][#{text}]
+[#answers][#{reponses}]
+[#grade][#{note}]
+[#}
 [#case}
 [#meth}
 
@@ -51,10 +70,10 @@ beta1Est<-tmp[2]
 [#>]
 [{#case]#{what}
   [#%]calculable
-  [#when]calculable-infGood[#>] [{il faudrait ``en théorie'' une infinité de données}*]
+  [#when]calculable-infGood[#>] [{il faudrait "en théorie" une infinité de données}*]
   [#when]calculable-estimGood[#>] [{ces paramètres ne sont qu'estimables à partir d'un jeu de données}*]
   [#when]calculable-dataBad[#>] [{nous ne disposons pas encore de données}]
-  [#when]calculable-data2Bad[#>] [{il faudrait ``en théorie'' un nombre fini de données}]
+  [#when]calculable-data2Bad[#>] [{il faudrait "en théorie" un nombre fini de données}]
   [#when]
 
   [#%]estim
@@ -157,6 +176,7 @@ beta1Est<-tmp[2]
   {#if]%{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
 ]
 [%rb<]
+p vars.tmp
 tmp=:R{=vars.tmp}.map{|nm| '<em>'+nm+'</em>'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [%when]corr-positive-bad
@@ -244,7 +264,7 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#%]summary
   [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
   [#when]summary-pvalGood[#>][{{#if]#{=.qcm.summary.goodVars}.include? ","[#>]seuls les tests de signficativité locale pour #{.qcm.summary.goodVars} sont significatifs[#else]seul le test de signficativité locale pour #{.qcm.summary.goodVars} est significatif[#if}  au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
-  [#when]summary-R2Good[#>][{$R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%$}*]
+  [#when]summary-R2Good[#>][{\(R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%\)}*]
   [#when]summary-defR2Good[#>][{\(R^2\) représente la part de variance expliquée par le modèle}*]
   [#when]summary-R2BadSigma[#>][{\(R^2\) représente la part d'écart-type expliquée par le modèle}]
 

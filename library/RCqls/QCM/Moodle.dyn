@@ -1,0 +1,243 @@
+[#require]
+RCqls/Styles/StdHtml
+CqlsLatexEcono
+RCqls/LM/Exo/lmQuiz
+[#main][#rb<]$moodle={root: File.join(ENV["HOME"],"moodle")}
+[#<]
+{#def]moodle_root[#,]root[]
+[#?]#{0?root}[#rb>][$moodle[:root]]
+[#?]else[#rb<]$moodle[:root]=#{=root}
+[#def}
+
+{#def]moodle_xml[#,]xml[][#,]type[cache]
+[#rb<]$moodle[:cache] << #{=xml}
+[#def}
+
+{#def]moodle_begin
+[#rb<]$moodle[:cache]=""
+[#def}
+
+{#def]moodle_save[#,]test[][#,]code[]
+[#rb<]require 'fileutils'
+moodle_test=File.join($moodle[:root],#{=test}+".xml")
+FileUtils.mkdir_p File.dirname(moodle_test)
+File.open(moodle_test,"w") do |f| #
+	f << #{=code}
+end
+[#>]moodle_tesr((:{moodle_test})) <br/>
+[#def}
+
+{#def]moodle_end[#,]test[]
+[#=]code[
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+:{$moodle[:category]}
+:{$moodle[:cache]}
+</quiz>
+]
+[#%]moodle_testtt((#{test})) <br/>
+[#<]{#moodle_save]#{test}[#code]#{code}[#}
+[#def}
+
+{#def]moodle_category[#,]title[]
+[#=]category[
+<question type="category">
+<category>
+<text>$course$/#{title}</text>
+</category>
+</question>
+]
+[#rb<]$moodle[:category]=#{=category}
+[#def}
+
+{#def]moodle_multichoice
+[#,]name[]
+[#,]text[]
+[#,]answers[]
+[#,]generalfeedback[]
+[#,]grade[1][#,]shuffle[true]
+[#,]single[false][#,]numbering[none]
+[#<]{#moodle_xml][
+<question type="multichoice">
+<name>
+<text> #{name} </text>
+</name>
+<questiontext format="html">
+<text><![CDATA[
+#{text}
+]]></text>
+</questiontext>
+<generalfeedback format="html">
+<text><![CDATA[
+#{generalfeedback}
+]]></text>
+</generalfeedback>
+<penalty>0</penalty>
+<defaultgrade>#{grade}</defaultgrade>
+<shuffleanswers>#{shuffle}</shuffleanswers>
+<single>#{single}</single>
+<answernumbering>#{numbering}</answernumbering>
+#{answers}
+</question>
+][#moodle_xml}
+[#def}
+
+
+{#def]moodle_multichoice_answer
+[#,]text[]
+[#,]fraction[]
+[#,]feedback[]
+[#>]
+[<answer fraction="#{fraction}" format="html">
+<text><![CDATA[#{text}]]></text>
+<feedback format="html">
+<text><![CDATA[#{feedback}]]></text>
+</feedback>
+</answer>
+]
+[#def}
+
+{#newBlck]moodle
+[#blck]:pre[#rb<]cache(nom: "", path: "", code: "") # cache initialized as {codes: []}
+[#<]{#quizz_init#} {#moodle_begin#}
+[#blck]qcm[#do_code]cache[:nom] = blckMngr.parse.strip
+[#blck]path[#do_code]cache[:path] = blckMngr.parse.strip
+[#blck]questions[#do_code]cache[:code] = blckMngr.parse.strip
+[#blck]:post
+[#%]qcm(((:{cache[:path]}/:{cache[:nom]}))
+[#<]{#moodle_category]:{cache[:path]}/:{cache[:nom]}[#}
+[#>]{#quizz_exo]:{cache[:nom]}[#mode]btn[#}<br/>
+:{cache[:code]}
+{#moodle_end]:{cache[:path]}/:{cache[:nom]}[#}
+[#newBlck}
+
+{#def]moodleTest[#,]code[]
+[#=]questions[][#=]txt[]
+[#rb<]code=#{=code}.strip
+codes=code.split(/\-{3,}/).map{|e| e.strip}
+reponses,qcm_texte="",""
+# header
+*path,name=codes[0].split("/")
+path=path.join("/")
+{#<]
+{#quizz_init#}
+{#moodle_begin#}
+{#moodle_category]:{path}/:{name}[#}
+[#<}
+# textes/questions
+codes[1..-1].each do |code| #
+  lignes=code.split("\n")
+  # première ligne est la méthode à lancer
+  if lignes[0][0,1] == "q"
+	qcm_args,enonce=lignes[0].split("=>").map{|e| e.strip}
+	reponses=lignes[1..-1].join("\n")
+	# enoncé
+	meth,*args=enonce.split(/\ +\#/)
+	args.each do |arg| #
+		arg =~ /([^\[]+)\[(.*)\]/
+		k,v=$1,$2
+		@vars[k.to_sym]=v
+	end
+	{#<][#=]txt[{#call]:{meth}[#,]:{name}[#}][#<}
+	args.each do |arg| #
+		arg =~ /([^\[]+)\[(.*)\]/
+		k,v=$1,$2
+		@vars.remove(k.to_sym)
+	end
+	# qcm args
+	type,*args=qcm_args.split(/\ +\#/)
+	args.each do |arg| #
+		arg =~ /([^\[]+)\[(.*)\]/
+		k,v=$1,$2
+		@vars[k.to_sym]=v
+	end
+	{#<][#+]questions[{#qcm]:{name}[#title]:{name}[#text]#{txt}[#what]:{reponses}[#}][#<}
+	args.each do |arg| #
+		arg =~ /([^\[]+)\[(.*)\]/
+		k,v=$1,$2
+		@vars.remove(k.to_sym)
+	end
+  elsif lignes[0][0,1] == "t"
+	res=lignes[1..-1].map{|ligne| #
+		if ligne[0,2]=="=>"
+			meth,*args=ligne[2..-1].strip.split(/\ +\#/)
+			args.each do |arg| #
+				arg =~ /([^\[]+)\[(.*)\]/
+				k,v=$1,$2
+				@vars[k.to_sym]=v
+			end
+			{#<][#=]txt[{#call]:{meth}[#,]:{name}[#}][#rb<]qcm_texte=#{=txt}[#<}
+			args.each do |arg| #
+				arg =~ /([^\[]+)\[(.*)\]/
+				k,v=$1,$2
+				@vars.remove(k.to_sym)
+			end
+			qcm_texte
+		else
+			ligne
+		end
+	}.join("\n")
+	{#<][#+]questions[:{res}][#<}
+  end
+end
+[#>]:{path}/:{name} </br>
+:{codes[1..-1].inspect} </br>
+:{reponses.inspect}
+
+[#>]{#quizz_exo]:{name}[#mode]btn[#}<br/>
+#{questions}
+{#moodle_end]:{path}/:{name}[#}
+[#def}
+
+
+{#def]moodleTest[#,]code[]
+[#=]questions[][#=]txt[]
+[#rb<]code=#{=code}.strip
+codes=code.split(/\n\-{3,}/).map{|e| e.strip}
+reponses,qcm_texte="",""
+# header
+*path,name=codes[0].split("/")
+path=path.join("/")
+{#<]
+{#quizz_init#}
+{#moodle_begin#}
+{#moodle_category]:{path}/:{name}[#}
+[#<}
+# questions
+codes[1..-1].each do |code| #
+  parts=code.split(/\n\w*\:\n/m).map{|e| e.strip}
+  # première ligne pour la nature de la question
+  lignes=parts[0].split("\n")
+  cmd,*qcm_args=lignes[0].split(" ")
+  qcm_args=qcm_args.join(" ")
+  case cmd.downcase
+  when "qcm"
+	
+	reponses=parts[1].strip
+
+	enonce=lignes[1..-1].map{|ligne| #
+		if ligne[0,2]=="=>"
+			meth,*args=ligne[2..-1].strip.split(" ")
+			args=args.join(" ")
+			{#<][#=]txt[{#doMeth][ :{meth} :{name} :{args}][#}][#rb<]qcm_texte=#{=txt}[#<}
+			qcm_texte
+		else
+			ligne
+		end
+	}.join("\n")
+
+	{#<]
+		{#within][:{qcm_args}]
+		[#+]questions[{#qcm]:{name}[#title]:{name}[#text]:{enonce}[#what]:{reponses}[#}]
+		[#within}
+	[#<}
+  end
+end
+[#%]:{path}/:{name} </br>
+:{codes[1..-1].inspect} </br>
+:{reponses.inspect}
+
+[#>]{#quizz_exo]:{name}[#mode]btn[#}<br/>
+#{questions}
+{#moodle_end]:{path}/:{name}[#}
+[#def}

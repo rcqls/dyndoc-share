@@ -1,4 +1,4 @@
-[#require]RCqls/Exo/lm1
+[#require]RCqls/LM/Exo/lm1
 CqlsLatexEcono
 RCqls/Styles/StdHtml
 [#main][#<]
@@ -339,5 +339,13 @@ jpeg('#{graph.file}')
 plot(#{.y}~#{.x},xlab='#{.x}',ylab='#{.y}')
 #{graph.append}
 graphics.off()
+[#}
+
+{#meth]data.ExoLM1[#,]data[#{.data.objR}][#,] out[##out | short=10,...,10] [#>]
+[{@b]Jeu de données[@} :
+{#rverb]
+#{out}
+#{data}
+[#}]
 [#}
  

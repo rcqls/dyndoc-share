@@ -1,0 +1,53 @@
+[#<]
+{#def]within[#,]vars[]
+[#rb<]varlist="call " + #{=vars}
+meth,*args=varlist.split(/\ +\#/)
+keys=[]
+args.each do |arg| #
+	arg =~ /([^\[]+)\[(.*)\]/
+	k,v=$1,$2
+	keys << k.to_sym
+	@vars[k.to_sym]=v
+end	
+[#yield]default
+[#rb<]
+keys.each do |key| #
+	@vars.remove(key)
+end
+[#def}
+
+{#def]doMeth[#,]call[]
+[#rb<]
+meth,*args=#{=call}.strip.split(/\ +\#/)
+meth,obj=meth.split(/\ +/)
+keys=[]
+args.each do |arg| #
+	arg =~ /([^\[]+)\[(.*)\]/
+	k,v=$1,$2
+	keys << k.to_sym
+	@vars[k.to_sym]=v
+end	
+[#>]{#call]:{meth}[#,]:{obj}[#}
+[#rb<]
+keys.each do |key| #
+	@vars.remove(key)
+end
+[#def}
+
+
+{#def]doCall[#,]call[]
+[#rb<]
+call,*args=#{=call}.strip.split(/\ +\#/)
+keys=[]
+args.each do |arg| #
+	arg =~ /([^\[]+)\[(.*)\]/
+	k,v=$1,$2
+	keys << k.to_sym
+	@vars[k.to_sym]=v
+end	
+[#>]{#call]:{call}[#}
+[#rb<]
+keys.each do |key| #
+	@vars.remove(key)
+end
+[#def}
