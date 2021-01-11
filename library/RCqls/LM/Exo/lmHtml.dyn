@@ -29,7 +29,7 @@ RCqls/Styles/StdHtml
   [#rb<] tmp="rev(names(#{.df})[-1][order((tmp<-abs(cor(#{.df})[1,][-1]))[tmp>#{seuil}])])".to_R.map{|nm| ' {@tt]'+nm+'[@}'}
   tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#>] A la vue de la matrice de corrélation, les régresseurs les plus explicatifs de la variabilité de la variable  {@tt]#{.y}[@} semblent être dans l'ordre
-  :{tmp} (en ne tenant compte que des régresseurs ayant un coefficient de corrélation avec  {@tt]#{.y}[@} en valeur absolue supérieur à #R{#{seuil}*100}\%).
+  :{tmp} (en ne tenant compte que des régresseurs ayant un coefficient de corrélation avec  {@tt]#{.y}[@} en valeur absolue supérieur à #R{#{seuil}*100}%).
   \end{Correction}
 [#meth}
 
@@ -48,7 +48,7 @@ RCqls/Styles/StdHtml
 tmp="names(sort(tmpCoeff[tmpCoeff<#{seuilR}]))".to_R.map{|nm| ' {@tt]'+nm+'[@}'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [#>][\begin{Correction}
-  |Les régresseurs  :{tmp} sont significatifs au seuil de #r{#{seuilR}*100}\%.  Enfin, le pouvoir explicatif de ce modèle, mesuré par la part de variance \(R^2\) expliquée par celui-ci, est particulièrement bon puisqu'il est de l'ordre de #r{#{.objR}$summary$r.sq*100}\%.
+  |Les régresseurs  :{tmp} sont significatifs au seuil de #r{#{seuilR}*100}%.  Enfin, le pouvoir explicatif de ce modèle, mesuré par la part de variance \(R^2\) expliquée par celui-ci, est particulièrement bon puisqu'il est de l'ordre de #r{#{.objR}$summary$r.sq*100}%.
   |\end{Correction}]
 [#}
 
@@ -167,7 +167,7 @@ xvars<-xvarsTmp<-attributes(terms(form))$term.labels
 #if(!exists("form"))
 form <- #{.formula}
 tmpsumlm<-summary(tmplm<-lm(form))
-[#>]\(R^2=#R{round(tmpsumlm$r.sq,4)*100}\)\%,
+[#>]\(R^2=#R{round(tmpsumlm$r.sq,4)*100}\)%,
  \(\widehat{\sigma}_{\Bruit}(\mathbf{y}|\underline{\mathbf{x}})\simeq #R{round(tmpsumlm$sigma,4)}\) et \(VIF_{#R{#{.objR}$data.vars[#{indVIF}]}}\simeq #R{round(vif(tmplm),4)[#{indVIF}]}\).[#?]end
 [#>]\\
 [#tag]exam[#>]reponse?[10cm][#>][\Reponse{#{reponse}}]
@@ -183,11 +183,11 @@ où \(s_{Revenu}\) correspond à l'écart-type du régresseur  {@tt]Revenu[@} qu
 $$
 \Est{\delta_{\beta_1,0}}{\mathbf{y}|\Mat{x}} = \frac{\Est{\beta_1}{\mathbf{y}|\Mat{x}} }{\widehat{\sigma}_{\widehat{\beta}_1}(\mathbf{y}|\Mat{x})} \simeq -0.00245/0.00031 \simeq {\bf  #R{round(tmpsumlm[['coeff']][2,1]/tmpsumlm[['coeff']][2,2],5)}}.
 $$
-On notera d'une part qu'il n'est plus nécessaire d'effectuer d'étape supplémentaire car tous les régresseurs sont significatifs au seuil de 5\% et d'autre part que le modèle final dont l'équation est
+On notera d'une part qu'il n'est plus nécessaire d'effectuer d'étape supplémentaire car tous les régresseurs sont significatifs au seuil de 5% et d'autre part que le modèle final dont l'équation est
 $$
 (Epargne)_i= \beta_0 + \beta_1 (Revenu)_i + \beta_2 (Inflation)_i + \beta_3 ( Obligations)_i +\Bruit_i
 $$
-a un pouvoir explicatif assez fort (\(R^2= 87.45\%\)). Remarquons également que le \(R^2\) n'a diminué que de 1\%!!
+a un pouvoir explicatif assez fort (\(R^2= 87.45\%\)). Remarquons également que le \(R^2\) n'a diminué que de 1%!!
 \end{Correction}]
 [#}
 
@@ -197,7 +197,7 @@ a un pouvoir explicatif assez fort (\(R^2= 87.45\%\)). Remarquons également que
 [#}
 
 
-{#meth]deltaH0Asymp.ExoLM[#,] indVar[1] [#,] betaRef[1] [#,]   side[<] [#,] alphaR[.05] [#,] alphaTex[5\%] [#,] round[5] [#,]indicR[true]
+{#meth]deltaH0Asymp.ExoLM[#,] indVar[1] [#,] betaRef[1] [#,]   side[<] [#,] alphaR[.05] [#,] alphaTex[5%] [#,] round[5] [#,]indicR[true]
 [#%]saved for QCM
 [#=].qcm.deltaH0Asymp.indVar[#{indVar}]
 [#=].qcm.deltaH0Asymp.betaRef[#{betaRef}]
@@ -222,7 +222,7 @@ D'après ce qui précède, la statistique du test \(\mathbf{H_1}: \beta_#{indVar
 \end{Correction}]
 [#}
 
-{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5\%]
+{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5%]
 [#%]saved for QCM
 [#=].qcm.pvalAsymp.indVar[#{indVar}][#=].qcm.pvalAsymp.indVarBad[:r{setdiff(1:(nrow(#{.objR}$summary$coef)-1),#{indVar})[1]}]
 [#=].qcm.pvalAsymp.betaRef[#{betaRef}][#=].qcm.pvalAsymp.betaRefMinusBad[#R{-#{betaRef}}]
@@ -268,7 +268,7 @@ L'instruction fournie correspond à la p\(-\)valeur (gauche) du test \(\mathbf{H
 
 {#meth]ipAsymp.ExoLM[#,]  indVar[an] [#,] indiv[34] [#,] alphaP[5] [#,]  temps[true] [#>]
 [{#Question#} Supposons que l'on ne connaisse pas la valeur de  {@tt]#{.y}[@} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{.data.objR}[#{indiv},"#{indVar}"])}.
-Pourriez-vous prévoir sa valeur, calculer un intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\% ? Quelle était la valeur observée de   {@tt]#{.y}[@} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{.data.objR}[#{indiv},"#{indVar}"])} et est-ce surprenant ?
+Pourriez-vous prévoir sa valeur, calculer un intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}% ? Quelle était la valeur observée de   {@tt]#{.y}[@} #Rb{#{temps} ? "en" :  "pour l'observation"} #R{as.character(#{.data.objR}[#{indiv},"#{indVar}"])} et est-ce surprenant ?
 
 {#rverb]
 xTau <- data.frame(#R{paste(paste(#{.objR}$vars,#{.data.objR}[#{indiv},#{.objR}$vars],sep="="),collapse=",")})
@@ -296,7 +296,7 @@ predictTmp<-paste(sapply( modelsTmp,function(l) paste('predict(lm(',deparse(l),'
 [#>]
 [{#Question#} #Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
 mais pas encore la valeur de  {@tt]{#if]#{log}[#>]:r{#{.objR}$data.vars[1]}[#else]#{.y}[#}[@}. ]
-[#?]#R{length(modelsTmp)>1}[#>]Pour chacun des modèles traités[#?]else[#>]Pour le modèle traité[#?]end[#>] pourriez-vous prévoir sa valeur (\textit{Indication:} calcul à effectuer à partir de sa formule d'obtention à fournir). A partir de la sortie  {@tt]R[@} ci-dessous, proposer ensuite son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\% ?
+[#?]#R{length(modelsTmp)>1}[#>]Pour chacun des modèles traités[#?]else[#>]Pour le modèle traité[#?]end[#>] pourriez-vous prévoir sa valeur (\textit{Indication:} calcul à effectuer à partir de sa formule d'obtention à fournir). A partir de la sortie  {@tt]R[@} ci-dessous, proposer ensuite son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}% ?
 
 {#rverb]
 xTau <- #{newData}
@@ -306,7 +306,7 @@ xTau <- #{newData}
 [#tag]exam[#>]reponse?[4cm][#>][\Reponse{#{reponse}}]
 [#tag]reponse[#>]
 \begin{Correction}
-Pour chacun des modèles, la prévision est donnée par la variable notée  {@tt]fit[@}, la borne inférieure de l'intervalle de prévision au niveau 95\% par la variable  {@tt]lwr[@} et la borne supérieure par  {@tt]upr[@}.
+Pour chacun des modèles, la prévision est donnée par la variable notée  {@tt]fit[@}, la borne inférieure de l'intervalle de prévision au niveau 95% par la variable  {@tt]lwr[@} et la borne supérieure par  {@tt]upr[@}.
 \end{Correction}
 [#}
 {#hide]

@@ -169,14 +169,13 @@ beta1Est<-tmp[2]
 [#<]
 {%case]%{what}
 [%when]corr
-[#R<][
+[%R<][
   tmp <-abs(cor(%{.df})[%{.qcm.corr.yIndex},-%{.qcm.corr.yIndex}])
   tmp <- tmp[tmp > %{.qcm.corr.seuil}]
   vars.tmp <- names(tmp)[order(tmp,decreasing=TRUE)]
   {#if]%{.log}[#>] vars.tmp <- paste0("log(",vars.tmp,")")[#if}
 ]
 [%rb<]
-p vars.tmp
 tmp=:R{=vars.tmp}.map{|nm| '<em>'+nm+'</em>'}
 tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 [%when]corr-positive-bad
@@ -263,12 +262,12 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
   [#%]summary
   [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
-  [#when]summary-pvalGood[#>][{{#if]#{=.qcm.summary.goodVars}.include? ","[#>]seuls les tests de signficativité locale pour #{.qcm.summary.goodVars} sont significatifs[#else]seul le test de signficativité locale pour #{.qcm.summary.goodVars} est significatif[#if}  au seuil de #r{#{.qcm.summary.seuil}*100}\%}*]
+  [#when]summary-pvalGood[#>][{{#if]#{=.qcm.summary.goodVars}.include? ","[#>]seuls les tests de signficativité locale pour #{.qcm.summary.goodVars} sont significatifs[#else]seul le test de signficativité locale pour #{.qcm.summary.goodVars} est significatif[#if}  au seuil de #r{#{.qcm.summary.seuil}*100}%}*]
   [#when]summary-R2Good[#>][{\(R^2 \simeq #r{#{.objR}$summary$r.sq*100}\%\)}*]
   [#when]summary-defR2Good[#>][{\(R^2\) représente la part de variance expliquée par le modèle}*]
   [#when]summary-R2BadSigma[#>][{\(R^2\) représente la part d'écart-type expliquée par le modèle}]
 
-  [#when]summary-pvalBad[#<]{#qcmPrelim]self[#what]summary-bad-vars[#}[#>][{seuls les tests de signficativité locale #{.qcm.summary.badVars} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}\%}]
+  [#when]summary-pvalBad[#<]{#qcmPrelim]self[#what]summary-bad-vars[#}[#>][{seuls les tests de signficativité locale #{.qcm.summary.badVars} sont significatifs au seuil de #r{#{.qcm.summary.seuil}*100}%}]
 
   [#%]colinCorr
   [#when]colinCorr-prelim[#<]{#qcmPrelim]self[#what]colinCorr[#}
@@ -376,6 +375,7 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#when]ipAsymp2-formuleRBadLog[#>][{la formule {@tt]R[@} d'obtention de la prévision ponctuelle est \\ {@tt]#{.qcm.ipAsymp2.formR}[@}}]
   [#when]ipAsymp2-valeurBadLog[#>][{la prévision ponctuelle vaut approximativement par le calcul #R{round(#{.qcm.ipAsymp2.formR},3)}}]
   [#when]ipAsymp2-ipGood[#>][{l'intervalle de prévision à \(#R{100-#{.qcm.ipAsymp2.alphaP}}\%\) est {@tt][[#R{round(exp(ip[-1]),3)}]][@}}*]
+  [#else][#{what}]
 [#case}]
 [#>][#{result}]
 [#}
