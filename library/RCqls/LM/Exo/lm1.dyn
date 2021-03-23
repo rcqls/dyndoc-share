@@ -34,7 +34,7 @@ RCqls/Exo/exos
 [#}
 
 {#meth]model.ExoLM1 [#>]
-  [On envisage un modèle linéaire expliquant la variable \texttt{#{.y}} en fonction de la seule variable  \texttt{#{.x}}. On tente une modélisation #Rb{#{.log} ? "log-" : ""}linéaire du type~:
+  [On envisage un modèle linéaire expliquant la variable \texttt{#{.y}} en fonction de la seule variable  \texttt{#{.x}}. On tente une modélisation :{#{.log} ? "log-" : ""}linéaire du type~:
   |$$ (#{.y})_i = \beta_0+\beta_1 (#{.x})_i+\Bruit_i, \qquad i=1,\ldots,#R{NROW(#{.data.objR})}$$]
 [#}
 

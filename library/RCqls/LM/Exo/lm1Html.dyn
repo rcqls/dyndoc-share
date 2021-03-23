@@ -7,7 +7,7 @@ RCqls/Styles/StdHtml
 ## Questions ExoLM1
 	
 {#meth]model.ExoLM1[#>]
-  [On envisage un modèle linéaire expliquant la variable <em>#{.y}</em> en fonction de la seule variable  <em>#{.x}</em>. On tente une modélisation #Rb{#{.log} ? "log-" : ""}linéaire du type :
+  [On envisage un modèle linéaire expliquant la variable <em>#{.y}</em> en fonction de la seule variable  <em>#{.x}</em>. On tente une modélisation toto  :{#{=.log} ? "log-" : ""}linéaire du type :
   |$$ (#{.y})_i = \beta_0+\beta_1 (#{.x})_i+U_i, \qquad i=1,\ldots,#R{NROW(#{.data.objR})}$$]
 [#}
 
@@ -245,7 +245,7 @@ summary(lm(#{.y}~z*#{.x}))
 {#meth]ipQuali.ExoLM1[#,] newData[] [#,] indVar[an] [#,] indNew[] [#,] alphaP[5] [#,] temps[true] [#,] short[false]
 [#?]#{0?indNew}[#=]indNew[#R{as.integer(#{.data.objR}[NROW(#{.data.objR}),"#{indVar}"]+1)}][#?]end
 [#>]
-[{#Question#}{#Rb{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
+[{#Question#}{:{#{temps} ? "En" :  "Pour l'observation"} #{indNew}, nous connaissons les valeurs des regresseurs
 mais pas encore la valeur de <em>#{.y}</em>.
 Dans la sortie <em>R</em> ci-dessous, pourriez-vous prévoir sa valeur puis fournir son intervalle de prévision au niveau #R{as.integer(100-#{alphaP})}\%?}<br/>]
 [#?]#{short}[#>]{#rverb]predict(lm(#{.y}~z*#{.x}),#{newData},interval="prediction")[#}

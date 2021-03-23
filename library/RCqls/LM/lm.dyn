@@ -36,7 +36,7 @@
     if(!exists("#{.objsR}")) #{.objsR}<-list()
 cat("New FORMULA:\n");print(#{.formula})
     #{.objsR}$key<-as.character(expression(#{.formula}))
-  [#?]:r{is.null(#{.objR})}[#<]{#init]self[#}
+  [#?]#R{is.null(#{.objR})}[#<]{#init]self[#}
 [#}
 
 {#meth]summary.LM[#,] rcodeAv[] [#,] rcodeAp[] [#,] prelim[true] [#,] round[5] [#,] filter[function(e) ifelse(e=="0","$\\simeq 0$",e)] 

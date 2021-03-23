@@ -1,0 +1,5 @@
+[#require]
+RCqls/Styles/StdHtml
+CqlsLatex
+RCqls/StatInf/statinfQuiz
+RCqls/QCM/Moodle

@@ -1,60 +1,9 @@
-[#require]Quizz
+[#require]
 RCqls/LM/Exo/lm1Html
 RCqls/LM/Exo/lmHtml
 [#main]
 [#R<]require(CqlsEAP)
 [#<]
-
-{#def]Question
-[#>][<b>Question {@quizz]+[@}</b>:]
-[#def}
-
-## mode can be: "quizz", "moodle" or "quizz,moodle"
-{#meth]qcm.Quiz[#,]title[][#,]cols[][#,]mode[quizz,moodle][#,]note[1][#,]text[][#,]what[]
-[#=]items[]
-[#rb<]
-moodle=[]
-items_lines=#{=what}.split("\n").map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
-items=items_lines.map{|line| line.split("|").map{|e| e.strip}}.flatten
-items.each_with_index do |item,i| #
-  add=(i==items.length-1 ? "<br/>" : "<\n>" )
-  if item[0,1] == "!"
-    {#<]{#qcmSrv]self[#what]:{item[1..-1].strip}[#}[#<}
-  else
-    {#<][#=]code[{#qcmSrv]self[#what]:{item}[#}]
-    [#rb<]
-      code=#{=code}.strip
-      good=(code[-1,1]=="*")
-      code=code[1...(-1 - (good ? 1 : 0))]
-      moodle << {code: code, good: good}
-    [#+]items[c:{i}{#if]good[#>]*[#}: :{code} :{add}]
-    [#<}
-  end
-end
-[#rb<]#TO DEBUG: Dyndoc.warn :debug, [#{=items}]
-[#%]<pre><code>#{items}</code></pre>
-[#>]{#case]#{mode}
-[#when]quizz[#>]
-  #{text}
-  <hr/>
-  {#quizz]:{#{=title}.strip}.q{@quizz@}[#cols]#{cols}[#md]false[#code]#{items}[#}
-  <hr/>
-[#when]moodle[#=]reponses[]
-[#rb<]
-good=(100.0 / moodle.select{|e| e[:good]}.length).round(5)
-moodle.each do |elt| #
-  fraction=(elt[:good] ? good : -good).to_s 
-  {#<][#+]reponses[{#moodle_multichoice_answer]:{elt[:code]}[#fraction]:{fraction}[#}][#<}
-end
-[#>]
-{#moodle_multichoice][]
-[#text][#{text}]
-[#answers][#{reponses}]
-[#grade][#{note}]
-[#}
-[#case}
-[#meth}
-
 ### server 
 
 {#meth]qcmPrelim.ExoLM1[#,]what[]
@@ -108,7 +57,7 @@ beta1Est<-tmp[2]
   [#when]corr-R2_interpGood[#>][{plus \(R^2\) proche de 1 plus les points sont alignés}*]
 
   [#%]summary
-  [#when]summary-pvalGood[#=]neg.deb[][#=]neg.fin[][#?]:r{#{.objR}$summary$coeff[2,4]>.05}[#+]neg.deb[ ne ][#+]neg.fin[ pas ][#?]end
+  [#when]summary-pvalGood[#=]neg.deb[][#=]neg.fin[][#?][#R{#{.objR}$summary$coeff[2,4]>.05}][#+]neg.deb[ ne ][#+]neg.fin[ pas ][#?]end
   [#>][{La dernière colonne #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable {@em]#{.x}[@}   semble apporter de l'information dans l'explication de la variable {@em]#{.y}[@}}*]
   [#when]summary-R2Good[#>][{\(R^2=:r{round(#{.objR}$summary$r.sq*100,2)}\%\)}*]
 
@@ -340,9 +289,9 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
 
   [#%]pvalAsymp
-  [#when]pvalAsymp-gaucheGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}\)}{#if]#r{tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
-  [#when]pvalAsymp-droiteGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}\)}{#if]#r{1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
-  [#when]pvalAsymp-biGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}\)}{#if]#r{(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-gaucheGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}\)}{#if]#r{=tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-droiteGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}\)}{#if]#r{=1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-biGood[#>][{\(\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}\)}{#if]#r{=(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
   [#when]pvalAsymp-gaucheBadBeta2[#>][{\(\beta_#{.qcm.pvalAsymp.indVarBad}<#{.qcm.pvalAsymp.betaRef}\)}]
   [#when]pvalAsymp-droiteBadBeta2[#>][{\(\beta_#{.qcm.pvalAsymp.indVarBad}>#{.qcm.pvalAsymp.betaRef}\)}]
   [#when]pvalAsymp-biBadBeta2[#>][{\(\beta_#{.qcm.pvalAsymp.indVarBad} \neq #{.qcm.pvalAsymp.betaRef}\)}]
@@ -355,7 +304,7 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
   [#when]icAsymp-valeurGood[#>][{l'intervalle de confiance à \(#R{100-#{.qcm.icAsymp.alphaP}}\%\) est {@tt][[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/200})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar}+1,2],#{.qcm.icAsymp.round})},3)}]][@}}*]
   [#when]icAsymp-aepGood[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont \(#R{(1-#{.qcm.icAsymp.alphaP}/100)*100}\%\) approximativement contiendraient \(\beta_#{.qcm.icAsymp.indVar}\)}*]
   [#when]icAsymp-testGood[#>][{le test de significativité locale a une p-valeur inférieure à \(#{.qcm.icAsymp.alphaP}\%\) si \(0\) n'appartient pas à l'intervalle de confiance}*]
-  [#when]icAsymp-formuleRBad[#>][{la formule {@tt]R[@} d'obtention est {@tt]#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})}[@}}]
+  [#when]icAsymp-formuleRBad[#>][{la formule {@tt]R[@} d'obtention est {@pre]:R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})}[@}}]
   [#when]icAsymp-valeurBad[#>][{l'intervalle de confiance à  \(#R{(1-#{.qcm.icAsymp.alphaP}/100)*100}\%\) est {@tt][[#R{round(#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},1],#{.qcm.icAsymp.round})}+c(-1,1)*qnorm(#R{1-#{.qcm.icAsymp.alphaP}/100})*#R{round(#{.objR}$summary$coef[#{.qcm.icAsymp.indVar},2],#{.qcm.icAsymp.round})},3)}]][@}}]
   [#when]icAsymp-aepBad[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont \(#{.qcm.icAsymp.alphaP}\%\) approximativement contiendraient \(\beta_#{.qcm.icAsymp.indVar}\)}]
   [#when]icAsymp-aepBad2[#>][{l'intervalle de confiance obtenu est l'un parmi une infinité dont \(#R{(1-#{.qcm.icAsymp.alphaP}/200)*100}\%\) approximativement contiendraient \(\beta_#{.qcm.icAsymp.indVar}\)}]

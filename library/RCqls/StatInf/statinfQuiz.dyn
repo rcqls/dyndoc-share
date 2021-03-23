@@ -1,0 +1,150 @@
+[#require]RCqls/StatInf/HypoTestHtml
+[#main]
+[#R<]require(CqlsEAP)
+[#<]
+
+### qcmSrv.HypoTestExo provides any info related to .test object extracted from srv of class HypoTestExo (gathering .param and .test objects)
+
+{#meth]qcmSrv.ExoHypoTest[#,]what[]
+[#=]res[|
+{#case]#{what}
+[#%]H0 | H0@< | H0@> | H0@!= | H0@Y
+[#when]H0[#>][{#H0].test[#}][#when]h0[#>][{#H0Theta].test[#}]
+[#when]H0@<[#>][{#qcmBadH0].test[#side]<[#}][#when]h0@<[#>][{#qcmBadH0Theta].test[#side]<[#}]
+[#when]H0@>[#>][{#qcmBadH0].test[#side]>[#}][#when]h0@>[#>][{#qcmBadH0Theta].test[#side]>[#}]
+[#when]H0@!=[#>][{#qcmBadH0].test[#side]\neq[#}][#when]h0@!=[#>][{#qcmBadH0Theta].test[#side]\neq[#}]
+[#when]H0@Y[#>][{#qcmBadH0Y].test[#}]
+
+[#%]H1 | H1@<= | H1@>= | H1@=
+[#when]H1[#>][{#H1].test[#}][#when]h1[#>][{#H1Theta].test[#}]
+[#when]H1@<=[#>][{#qcmBadH1].test[#side]\leq[#}][#when]h1@<=[#>][{#qcmBadH1Theta].test[#side]\leq[#}]
+[#when]H1@>=[#>][{#qcmBadH1].test[#side]\geq[#}][#when]h1@>=[#>][{#qcmBadH1Theta].test[#side]\geq[#}]
+[#when]H1@=[#>][{#qcmBadH1].test[#side]=[#}][#when]h1@=[#>][{#qcmBadH1Theta].test[#side]=[#}]
+
+[#%]stH0 | lstH0 | lstH0@y
+[#when]stH0,StatTestH0[#>][\({#deltaEstH0ExprTex].test[#,]va[true][#}\)]
+[#when]lstH0,loiStatTestH0[#>][{#StatTestH0].test[#}]
+[#when]lstH0@y,loiStatTestH0@y[#>][{#StatTestH0].test[#,]va[false][#}]
+
+[#%]rdq | rdp@alpha | rdp@Y | rdp | rdp@> | rdp@qlim
+[#when]rdq,RDQ[#>][{#RD].test[#indic]q[#}]
+[#when]rdq@alpha[#>][{#qcmBadRD].test[#indic]q@alpha[#}]
+[#when]rdq@Y[#>][{#qcmBadRD].test[#indic]q@Y[#}]
+[#when]rdp,RDP[#>][{#RD].test[#indic]p[#}]
+[#when]rdp@>[#>][{#qcmBadRD].test[#indic]p@>[#}]
+[#when]rdp@qlim[#>][{#qcmBadRD].test[#indic]p@qlim[#}]
+
+[#%]pvalR | pvalNum
+[#when]pvalR[#>][p-valeur\({#NotR#}\texttt{{#pvalR].test[#}}\)]
+[#when]pvalNum[#>][p-valeur\(={#pvalNum].test[#}\)]
+[#when]pvalR@q[#>][TODO]
+
+[#%]deltaH0R | deltaH0Num | deltaLimLeftR | deltaLimRightR | deltaLimLeftNum | deltaLimRightNum
+[#when]deltaH0R[#>][\({#deltaEstH0Tex].test[#va]false[#}{#NotR#}\texttt{{#deltaH0R].test[#}}\)]
+[#when]deltaH0Num[#>][\({#deltaEstH0Tex].test[#va]false[#}={#deltaH0Num].test[#}\)]
+[#when]deltaLimLeftR[#>][\({#deltaLimTex].test[#side]<[#}{#NotR#} {#deltaLimR].test[#}\)]
+[#when]deltaLimRightR[#>][\({#deltaLimTex].test[#side]>[#}{#NotR#} {#deltaLimR].test[#}\)]
+[#when]deltaLimLeftNum[#>][\({#deltaLimTex].test[#side]<[#}={#deltaLimNum].test[#}\)]
+[#when]deltaLimRightNum[#>][\({#deltaLimTex].test[#side]>[#}={#deltaLimNum].test[#}\)]
+
+[#%]ppsn | ppsd | ppsp | ppp
+[#when]ppsn,PreSignNum[#>][{#PP].test[#,]sign-num[#}]
+[#when]ppsd,PreSignDelta[#>][{#PP].test[#,]sign-deltaH0[#}]
+[#when]ppsp,PreSignPValG[#>][{#PP].test[#,]sign-pvalg[#}]
+[#when]ppp,PreParam[#>][{#PP].test[#,]param[#}]
+
+[#%]AsIs
+[#when]AsIs[#>][:{h1}]
+[#else][#{what}]
+[#case}]
+[#>][{#{res}}][#?]! #{=what}.include?("@")[#>][*]
+[#meth}
+
+##### Contexte pour ExoHypoTest qui englobe 
+   1) cadre principal pour bonne réponse
+   2) cadres dérivés pour mauvaises réponses
+
+## Fait pour proposer des cadres complémentaires
+
+{#meth]addBad.ExoHypoTest[#,]h1[]
+[#rb<]h1=#{=h1}
+[#meth}
+
+##################################
+### facility methods
+{#meth]thetaEstTex.TestParam[#,]va[false][#>]{#Est]#{.frame.thetaTex}[#,]{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#if}[#}[#meth}
+##########################################
+#### QCM BAD Answers
+##########################################
+## Bad answer for H0 et H1
+{#meth]qcmBadH0.TestParam [#,]side[<][#>] [\(\mathbf{H}_0:\) \(#{.frame.thetaTex}#{side}#{self.theta0Tex}\)] [#}
+{#meth]qcmBadH1.TestParam [#,]side[=][#>] [\(\mathbf{H}_1:\) \(#{.frame.thetaTex}#{side}#{.theta0Tex}\)] [#}
+{#meth]qcmBadH0Theta.TestParam[#,]side[<][#>][\(#{.frame.thetaTex}#{side}#{.theta0Tex}\)] [#}
+{#meth]qcmBadH1Theta.TestParam[#,]side[=][#,] expr[false]
+[#>] [\(#{.frame.thetaTex}{#if]#{expr} and #{.frame.nbEch}==2[#>] [:=#{.frame.thetaExprTex}] [#}#{side}#{.theta0Tex}\)]
+[#}
+{#meth]qcmBadH0Y.TestParam[#>][\(\mathbf{H}_0:\) \({#thetaEstTex]self[#}=#{.theta0Tex}\)][#}
+## Bad RD
+{#meth]qcmBadRD.TestParam[#,]indic[][#>]
+[{#case]#{indic}
+  [#when]p@>[#>][p-valeur > \(#{.alphaTex}\)]
+  [#when]p@qlim[#>]
+    [p-valeur {#case]#{.side} [#when]<[#>] [ < \({#deltaLimTex]self[#side]<[#}\)] [#when]>[#>] [ >  \({#deltaLimTex]self[#side]>[#}\)] [#when]!=,\neq[#>] [ < \({#deltaLimTex]self[#,]>[#}\)] [#case}]
+  [#when]q@alpha[#>]
+    [{#case]#{.side}
+    [#when]<[#>] [\({#deltaEstH0Tex]self[#,]false[#} < #{.alphaTex}\)]
+    [#when]>[#>] [\({#deltaEstH0Tex]self[#,]false[#} > #{.alphaTex}\)]
+    [#when]!=,\neq[#>][\({#deltaEstH0Tex]self[#,]false[#} < \frac{#{.alphaTex}}2\) ou \({#deltaEstH0Tex]self[#,]false[#} > \frac{#{.alphaTex}}2\)]
+    [#}]
+  [#when]q@Y[#>]
+    [{#case]#{.side}
+    [#when]<[#>] [\({#deltaEstH0Tex]self[#,]true[#} < {#deltaLimTex]self[#side]<[#}\)]
+    [#when]>[#>] [\({#deltaEstH0Tex]self[#,]true[#} > {#deltaLimTex]self[#side]>[#}\)]
+    [#when]!=,\neq[#>][\({#deltaEstH0Tex]self[#,]true[#} < {#deltaLimTex]self[#side]<[#}\) ou \({#deltaEstH0Tex]self[#,]true[#} > {#deltaLimTex]self[#side]>[#}\)]
+    [#}]
+  [#}]
+[#meth}
+
+
+##  convertir en qcmSrv comme ci-dessus 
+{#meth]qcmSrvRedStd.ExoHypoTest[#,]title[][#,]PP[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
+[#=]title[:{#{=title}.strip}]
+[#=]test.pp[]
+[#rb>]content={pp: '#{PP}'.strip.split("\n"), h0: '#{H0}'.strip.split("\n"), h1: '#{H1}'.strip.split("\n"), st: '#{StatTest}'.strip.split("\n"), rd: '#{RD}'.strip.split("\n"), an: '#{Conclusion}'.strip.split("\n")}
+#Dyndoc.warn :content, content
+content.keys.each do |k| #
+  txt=content[k]
+  #Dyndoc.warn :txt, [k,txt]
+  if !(txt.empty?)
+  #Dyndoc.warn :txt2,[k,txt]
+    opts={}
+    first=txt[0].strip
+    if first[0,1]=='(' and first[-1,1]==')'
+      ## read the options
+      first[1...-1].split('),(').each{|e| opts[$1.to_sym] = $2 if e.strip =~ /^(space|size)\=(.*)$/}
+      ## update txt
+      txt=txt[1..-1]
+    end
+    txt=txt.join("\n")
+#p :txt,txt.inspect
+    {#>][#=]test.:{k.to_s}[{#qcmSrv]#{title}/:{k.to_s}[#,]space[:{opts[:space] || '\quad'}][#,]size[:{opts[:size] || ''}][#choices]:{txt}[#qcmHypoTest}][#>]#{test.:{k.to_s}}[#>}
+  end
+end
+[#>]
+[{#if]#{+?test.pp}[#>]{Partie Préliminaire~:}\\ #{test.pp}\\[#}|
+{#if]#{+?test.h0}[#>]\noindent \underline{Hypothèses de test}~:\\
+\noindent \(\mathbf{H_0}\):\quad
+#{test.h0}
+[#if}
+{#if]#{+?test.h1}[#>]\noindent \(\mathbf{H_1}\):\quad
+#{test.h1}
+[#if}
+{#if]#{+?test.st}[#>]\noindent\underline{Statistique de test sous \(\mathbf{H_0}\)}~:\\
+#{test.st}
+[#if}
+{#if]#{+?test.rd}[#>]\noindent\underline{Règle de Décision}~: Accepter \(\mathbf{H_1}\) si~:\\
+#{test.rd}
+[#if}
+{#if]#{+?test.an}[#>]\noindent\underline{Conclusion}~: Au vu des données, \\
+#{test.an}[#if}]
+[#def}

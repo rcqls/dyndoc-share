@@ -1,0 +1,89 @@
+[#require]Quizz
+[#main][#<]
+{#def]Question
+[#>][<b>Question {@quizz]+[@}</b>:]
+[#def}
+
+### Quelques explications pour maintenance plus tard:
+(I) Quiz.dyn (notamment `#qcm.Quiz`) est le noyau, il génère toutes les sorties terminales pour 
+	- quizz (voir Quizz.dyn développé dans RodaSrv)
+	- moodle (voir RCqls/LM/Moodle.dyn, RCqls/StatInf/Moodle.dyn)
+(II) un objet de classe `Exo<Type>` (et `Quiz`) est attendu 
+en entrée qui répondra à la méthode `#qcmSrv` 
+pour servir les différentes réponses fourni dans
+le champs d'entrée `#what` de la méthode `#qcm` (ci-dessous)
+seront décodées 
+	 - un identifiant qui sera décodé par la méthode `#qcmSrv`
+	 - un texte directement dans le format de sortie (voir ci-dessosu)
+	-  si`!` précède l'identifiant il n'est qu'exécuté.
+(III) Le format de sortie est de la forme:
+	`{...}`  suivi de `*` pour une bonne réponse
+(IV) Exemples: 
+	- ExoLM1, ExoLM (voir RCqls/LM/Exo/lmQuiz.dyn)
+	- ExoHypoTest (voir RCqls/StatInf/statinfQuiz.dyn) 
+	- RMQ: peut-être Exo<Param>Test: plus spécifique par catégorie 
+		pour meilleure gestion des mauvaises réponses en fournissant 
+		plusieurs cadres complémentaires de mauvaises réponses.
+###################################
+
+## mode can be: "quizz", "moodle" or "quizz,moodle"
+{#meth]qcm.Quiz[#,]title[][#,]cols[][#,]mode[quizz,moodle][#,]note[1][#,]text[][#,]what[]
+[#=]items[]
+[#rb<]
+moodle=[]
+items_lines=#{=what}.split("\n") # .map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
+## p [:items, items_lines]
+items=items_lines.map{|line| line.split(" | ").map{|e| e.strip}}.flatten
+items.each_with_index do |item,i| #
+## p [:item, i, item]
+  add=(i==items.length-1 ? "<br/>" : "<\n>" )
+  if item[0,1] == "!"
+    {#<]{#qcmSrv]self[#what]:{item[1..-1].strip}[#}[#<}
+  else
+    {#<][#=]code[{#qcmSrv]self[#what]:{item}[#}]
+    [#rb<]
+      code=#{=code}.strip
+      good=(code[-1,1]=="*")
+      code=code[1...(-1 - (good ? 1 : 0))]
+      moodle << {code: code, good: good}
+    [#+]items[c:{i}{#if]good[#>]*[#}: :{code} :{add}]
+    [#<}
+  end
+end
+[#rb<]#TO DEBUG: Dyndoc.warn :debug, [#{=items}]
+[#%]<pre><code>#{items}</code></pre>
+[#>]{#case]#{mode}
+[#when]quizz[#>]
+  #{text}
+  <hr/>
+  {#quizz]:{#{=title}.strip}.q{@quizz@}[#cols]#{cols}[#md]false[#code]#{items}[#}
+  <hr/>
+[#when]moodle[#=]reponses[]
+[#rb<]
+good=(100.0 / moodle.select{|e| e[:good]}.length).round(5)
+moodle.each do |elt| #
+  fraction=(elt[:good] ? good : -good).to_s 
+  {#<][#+]reponses[{#moodle_multichoice_answer]:{elt[:code]}[#fraction]:{fraction}[#}][#<}
+end
+[#>]
+{#moodle_multichoice][]
+[#text][#{text}]
+[#answers][#{reponses}]
+[#grade][#{note}]
+[#}
+[#case}
+[#meth}
+
+## Simple Quizz to reuse Quizz example as is.
+
+{#meth]new.Quizz[#meth}
+
+{#meth]qcmSrv.Quizz[#,]what[]
+[#rb<]res=""
+what = #{=what}.strip
+##p ["what?????", what]
+if what =~ /([^\:]*)\:(.*)/
+	res ="{" + $2.strip + "}" + (($1.strip[-1,1] == "*") ? "*" : "")
+end
+[#>][:{res}]
+[#meth}

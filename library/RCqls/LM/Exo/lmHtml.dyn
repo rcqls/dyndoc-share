@@ -5,16 +5,19 @@ RCqls/Styles/StdHtml
 [#main][#<]
 
 {#meth]model.ExoLM
+  [#R<]
+  print(#{.objR})
+  [#rb<] p ["#{.data.objR}", '#{.log}']
   [#>]
-  [On envisage un modèle #Rb{#{.log} ? "log-" : ""}linéaire multiple expliquant la variable  {@tt]#{.y}[@} en fonction de tous les régresseurs du jeu de
+  [On envisage un modèle :{#{=.log} ? "log-" : ""}linéaire multiple expliquant la variable  {@tt]#{.y}[@} en fonction de tous les régresseurs du jeu de
   {#case]#R{length(#{.objR}$data.vars.ext)}
   [#when]0[#>][données.][#>].df[#{.data.objR}]
   [#when]1[#>]
   [données (exceptée la variable  {@tt]#R{#{.objR}$data.vars.ext}[@}).]
-  [#>].df[#{.data.objR}[-#R{which(names(#{.data.objR})%in% #{.objR}$data.vars.ext)}]]
+  [#>].df[#{.data.objR}[-#R{which(names(#{.data.objR}) %in% #{.objR}$data.vars.ext)}]]
   [#else]
   [données (exceptées les variables  {@tt]#R{#{.objR}$data.vars.ext}[@}).]
-  [#>].df[#{.data.objR}[-#R{which(names(#{.data.objR})%in% #{.objR}$data.vars.ext)}]]
+  [#>].df[#{.data.objR}[-#R{which(names(#{.data.objR}) %in% #{.objR}$data.vars.ext)}]]
   [#}<br/><br/>]
   [#?]#{.log}[#>] .df[log(#{.df})]
 [#meth}
@@ -222,12 +225,12 @@ D'après ce qui précède, la statistique du test \(\mathbf{H_1}: \beta_#{indVar
 \end{Correction}]
 [#}
 
-{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[.05] [#,] alphaTex[5%]
+{#meth]pvalAsymp.ExoLM[#,] indVar[2] [#,] betaRef[-.3] [#,] alphaR[0.05] [#,] alphaTex[5%]
 [#%]saved for QCM
 [#=].qcm.pvalAsymp.indVar[#{indVar}][#=].qcm.pvalAsymp.indVarBad[:r{setdiff(1:(nrow(#{.objR}$summary$coef)-1),#{indVar})[1]}]
-[#=].qcm.pvalAsymp.betaRef[#{betaRef}][#=].qcm.pvalAsymp.betaRefMinusBad[#R{-#{betaRef}}]
+[#=].qcm.pvalAsymp.betaRef[#{betaRef}][#=].qcm.pvalAsymp.betaRefMinusBad[#r{-#{betaRef}}]
 [#=].qcm.pvalAsymp.alphaR[#{alphaR}][#=].qcm.pvalAsymp.alphaTex[#{alphaTex}]
-[#r<](#R{#{.objR}$summary$coef[#{indVar}+1,1]}-(#{betaRef}))/#R{#{.objR}$summary$coef[#{indVar}+1,2]}->tmp
+[#r<](#R{#{.objR}$summary$coef[#{indVar}+1,1]}-(#{betaRef}))/#r{#{.objR}$summary$coef[#{indVar}+1,2]}->tmp
 pnorm(tmp)->tmp.PValG
 [#>]
 [{#Question#} A partir de l'instruction  {@tt]R[@} suivante, que peut-on avancer au vu des données comme affirmation(s) d'intérêt au seuil #{alphaTex} ?

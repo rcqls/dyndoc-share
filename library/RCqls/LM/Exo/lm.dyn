@@ -7,8 +7,8 @@ RCqls/Exo/exos
   [#<]{#new].data[#of]Data[#,]#{df}[#,]#{rdata}[#}
   [#<]{#new].model[#of]LM[#,]:self.formula[#,]:self.data[#}
   [#>].objR[#{.model.objR}]
-  [#rb>].log[:r{#{.objR}$log}]
-  [#=] .y[:r{#{.objR}$vars[1]}]
+  [#=].log[:{=#r{#{.objR}$log}}]
+  [#=].y[:r{#{.objR}$vars[1]}]
   [#=].cpt@[0]
 [#}
 
@@ -20,7 +20,7 @@ RCqls/Exo/exos
 
 {#meth]model.ExoLM
   [#>]
-  [On envisage un modèle #Rb{#{.log} ? "log-" : ""}linéaire multiple expliquant la variable \texttt{#{.y}} en fonction de tous les régresseurs du jeu de
+  [On envisage un modèle :{#{.log} ? "log-" : ""}linéaire multiple expliquant la variable \texttt{#{.y}} en fonction de tous les régresseurs du jeu de
   {#case]#R{length(#{.objR}$data.vars.ext)}
   [#when]0[#>][données.][#>].df[#{.data.objR}]
   [#when]1[#>]

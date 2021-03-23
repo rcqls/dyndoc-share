@@ -1,5 +1,4 @@
 [#require]
-RCqls/StatInf/QCM
 RCqls/StatInf/HypoTestHtml
 [#main][#<]
 
@@ -42,7 +41,7 @@ res_table.each_with_index do |res_ligne,li| #
     {#<]choice:{ll + 1}{#if]answer == :good[#>]*[#}: :{h1} :{res_elt[:what] || "AsIs"} :{res_elt[:cadre] || "a"} data(:{res_elt[:data] || ""}) initR(:{res_elt[:init] || ""}) :{res_elt[:env] ||"envHypoTestExo"} === [#}
     {#>]{#qcmSrvH1]:{h1}[#,]:{res_elt[:what] || "AsIs"}[#cadre]:{res_elt[:cadre] || "a"}[#data]:{res_elt[:data] || ""}[#initR]:{res_elt[:init] || ""}[#envR]:{res_elt[:env] ||"envHypoTestExo"}[#}{#if]size[#>]}[#}[#>}
   end
-  {#>]\\[#>} if li != res_table.length-1
+  {#>]<br/><br/>[#>} if li != res_table.length-1
 end
 [#def}
 
@@ -70,7 +69,7 @@ content.keys.each do |k| #
   end
 end
 [#>]
-[{#if]#{+?test.pp}[#>]\noindent \underline{Partie Préliminaire~:}\\ #{test.pp}\\[#}|
+[{#if]#{+?test.pp}[#>]{Partie Préliminaire~:}\\ #{test.pp}\\[#}|
 {#if]#{+?test.h0}[#>]\noindent \underline{Hypothèses de test}~:\\
 \noindent $\mathbf{H_0}$:\quad
 #{test.h0}

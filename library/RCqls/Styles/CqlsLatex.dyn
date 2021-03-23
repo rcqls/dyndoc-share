@@ -11,7 +11,7 @@
 {#def]overleftrightarrow[#,]content[][#>]\overleftrightarrow{#{content}}[#def}
 
 
-{#def]cqlsbm[#,]txt[][#>]{\bold{ #{txt} }}[#}
+{#def]cqlsbm[#,]txt[][#>]{\mathbf{ #{txt} }}[#}
 {#def]cqlshat[#,]txt[][#>]\widehat{ #{txt}}[#}
  
 {#def]dataEmp[#,]y[y][#,]size[n][#>]{\left({ #{y}}\right)}_{ #{size}}[#def}
