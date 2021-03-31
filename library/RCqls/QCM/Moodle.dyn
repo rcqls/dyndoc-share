@@ -1,6 +1,229 @@
 [#require]RCqls/QCM/Quiz
 [#main][#rb<]$moodle={root: File.join(ENV["HOME"],"moodle")}
 [#<]
+
+
+{#def]moodleTest[#,]code[]
+[#=]questions[][#=]txt[]
+[#rb<]## p ["code", #{=code}]
+[#rb<]code=#{=code}.strip
+codes=code.split(/\n\-{3,}/).map{|e| e.strip}
+## p ["codes",codes]
+reponses,qcm_texte="",""
+# header
+*path,name=codes[0].split("/")
+if name =~/([^\[]*)\[(.*)\]/
+	name, cat = $1, $2
+else
+	cat = name
+end
+path=path.join("/")
+{#<]
+{#new]quizz[#of]Quizz,Quiz[#}
+{#quizz_init#}
+{#moodle_begin#}
+{#moodle_category]:{path}/:{cat}[#}
+[#<}
+# questions
+codes[1..-1].each do |code| #
+## p ["code", code]
+  parts=code.split(/\n(\w*)\:\s*\n/m).map{|e| e.strip}
+## p [:parts, parts]
+  # première ligne pour la nature de la question
+  lignes=parts[0].split("\n")
+  cmd,*qcm_args=lignes[0].split(" ")
+  qcm_args=qcm_args.join(" ")
+  ## p ["cmd", cmd.downcase, lignes[1..-1]]
+  # deals  with other  parts:
+  topic, key={}, nil
+  parts[1..-1].each do |pa| #
+	if key
+		topic[key] = pa.strip
+		key = nil
+	else
+		# p ["key"]
+		key = pa.strip.downcase
+		# p ["key", key]
+		key = :answer if ["r","a","réponse","answer","réponses","answers"].include? key
+		key = :moodle if ["m", "moodle"].include? key
+	end
+  end
+  # p ["topic22", topic]
+  case cmd.downcase
+  when "text"
+	quizz_text_intro = code[4..-1].strip + "<br/>"
+	## 
+	p [:quizz_intro, quizz_text_intro]
+	{#<][#+]questions[:{quizz_text_intro}][#<}
+  when "cat"
+	cat = code[3..-1].strip
+	p [:new_category, cat]
+	{#<]{#moodle_new_category]:{path}/:{cat}[#}[#<}
+  when "qcm"
+	# only answer:
+	reponses=(topic[:answer] ? topic[:answer].strip : "")
+	enonce=lignes[1..-1].map{|ligne| #
+		if ligne[0,2]=="=>"
+			meth,*args=ligne[2..-1].strip.split(" ")
+			args=args.join(" ")
+			##p ["doMeth", [meth, name, args]]
+			{#<][#=]txt[{#doMeth][ :{meth} :{name} :{args}][#}][#rb<]qcm_texte=#{=txt}[#<}
+			##p ["qcm_texte", qcm_texte]
+			qcm_texte
+		else
+			##p ["ligne", ligne]
+			ligne
+		end
+	}.join("\n")
+
+	{#<]
+		{#within][:{qcm_args}]
+		[#+]questions[{#qcm]:{name}[#title]:{name}[#text]:{enonce}[#what]:{reponses}[#}]
+		[#within}
+	[#<}
+  when "quizz"
+	enonce=lignes[1..-1].join("\n")
+	reponses=(topic[:answer] ? topic[:answer].strip : "")
+	moodle_text = (topic[:moodle] ? topic[:moodle].strip + "<br/>" : "")
+	## p [:reponses, reponses]
+	{#<]
+		{#within][:{qcm_args}]
+		[#+]questions[{#qcm]quizz[#title]:{name}[#text]:{enonce}[#quizz_text]{#Question#} [#moodle_text]:{moodle_text} <strong>Question</strong> [#what]:{reponses}[#qcm}]
+		[#within}
+	[#<}
+  when "quizzz"
+	enonce=lignes[1..-1].join("\n")
+	reponses=(topic[:answer] ? topic[:answer].strip : "")
+	## p [:reponses, enonce, reponses]
+	moodle_text = (topic[:moodle] ? topic[:moodle].strip + "<br/>" : "")
+	## p [:moodle, moodle_text]
+	answers,*choices=reponses.split("\n")
+	choices = choices.filter{|e| e.length > 0}
+	answers.strip!
+	answers = answers[1...-1].split(",").map{|e| e.strip.to_i - 1}
+	# p [:reponses, answers, choices, choices.length]
+	reponses = []
+	choices.each_with_index{|item,i| #
+		reponses << ("c" + i.to_s + ((answers.include? i) ? "*: " : ": ") + item) 
+	}
+	## p [:choices, reponses]
+	#reponses.shuffle!(random: Random.new(Time.now.to_i))
+	ordre = ("sample(" + reponses.length.to_s + ")").to_R
+	## p [:ordre, ordre]
+	reponses_shuffle = ordre.map{|i| reponses[i-1]}
+	## p [:choices_shuffle, reponses_shuffle]
+	reponses = reponses_shuffle.join("\n")
+	{#<]
+		{#within][:{qcm_args}]
+		[#+]questions[{#qcm]quizz[#title]:{name}[#text]:{enonce}[#quizz_text]{#Question#} [#moodle_text]:{moodle_text} <strong>Question</strong> [#what]:{reponses}[#qcm}]
+		[#within}
+	[#<}
+  end
+end
+[#%]:{path}/:{name} </br>
+:{codes[1..-1].inspect} </br>
+:{reponses.inspect}
+[#rb<]#p ["questions",#{=questions}]
+[#>]{#quizz_exo]:{name}[#mode]btn[#}<br/>
+#{questions}
+{#moodle_end]:{path}/:{name}[#}
+[#def}
+ 
+// Very nice function to 
+// define multi quizzz
+
+{#def]quizzzs[#,]options[]
+[#,]enonce[ ##item## ]
+[#,]items[]
+[#,]choices[]
+[#,]moodle[]
+[#rb<]
+enonce = #{=enonce}.strip
+text = #{=items}.strip.split("\n").map{|e| e.strip}
+#p [:debut, enonce, text]
+
+items, reponses = [], [], []
+ans_i = 0
+text.each do |item| #
+	case item[0...2]
+	when "=>"
+		reponses << item[2..-1].strip
+		ans_i += 1
+		items[-1][:answers] << ans_i
+	when "->"
+		extra_answers = item[2..-1].strip.split(",").map{|e| e.strip.to_i}
+		## p [:extra, extra_answers]
+		items[-1][:answers] += extra_answers
+	else
+		answer_indices = []
+		items << {enonce: item, answers: []}
+	end
+end
+
+#p [:items, items, reponses]
+others = #{=choices}.strip.split("\n").map{|e| e.strip}
+
+reps = ""
+items.each_with_index do |item,i| #
+	reps << "---quizzz " + #{=options}.strip << "\n"
+	reps << enonce.gsub("##item##",item[:enonce]) << "\n"
+	unless #{=moodle}.empty?
+		reps << "M:" << "\n"
+		reps << #{=moodle}.strip << "\n"
+	end
+	reps << "R:" << "\n"
+	reps << "(" + item[:answers].map{|e| e.to_s}.join(", ") + ")\n"
+	reps << (reponses + others).join("\n") << "\n\n"
+end
+## p [:reps, reps]
+[#>][:{reps}]
+[#def}
+
+{#def]quizzsTrueFalse[#,]true[][#,]false[]
+[#,]moodle[]
+[#rb<]
+## p [:true, #{=true}, :false ,#{=false}, :moodle, #{=moodle}, :quizz, #{=quizz}]
+quizzT  = #{=true}.strip.split("\n")
+quizzF = #{=false}.strip.split("\n")
+
+quizzs = []
+quizzT.each do |item| #
+	quizz = "---quizz #cols[four] \n"
+	quizz << item << "\n"
+	unless #{=moodle}.empty?
+		quizz << "M:" << "\n"
+		quizz << #{=moodle}.strip << "\n"
+	end
+	quizz << "R:" << "\n"
+	quizz << "c1*: vrai\n"
+	quizz << "c2: faux"
+	quizzs << quizz
+end
+
+quizzF.each do |item| #
+	quizz = "---quizz #cols[four] \n\n"
+	quizz << item << "\n\n"
+	unless #{=moodle}.empty?
+		quizz << "M:" << "\n"
+		quizz << #{=moodle}.strip << "\n"
+	end
+	quizz << "R:" << "\n"
+	quizz << "c1: vrai\n"
+	quizz << "c2*: faux\n"
+	quizzs << quizz
+end
+
+ordre = ("sample(" + quizzs.length.to_s + ")").to_R
+## p [:ordre, ordre]
+quizzs_shuffle = ordre.map{|i| quizzs[i-1]}
+
+quizzs = quizzs_shuffle.join("\n")
+## puts quizzs
+[#>][:{quizzs}]
+[#def}
+
+### MOODLE KERNEL
+
 {#def]moodle_root[#,]root[]
 [#?]#{0?root}[#rb>][$moodle[:root]]
 [#?]else[#rb<]$moodle[:root]=#{=root}
@@ -21,7 +244,7 @@ FileUtils.mkdir_p File.dirname(moodle_test)
 File.open(moodle_test,"w") do |f| #
 	f << #{=code}
 end
-[#>]moodle_tesr((:{moodle_test})) <br/>
+[#>]moodle_test((:{moodle_test})) <br/>
 [#def}
 
 {#def]moodle_end[#,]test[]
@@ -45,6 +268,16 @@ end
 </question>
 ]
 [#rb<]$moodle[:category]=#{=category}
+[#def}
+
+{#def]moodle_new_category[#,]title[]
+[#<]{#moodle_xml][
+<question type="category">
+<category>
+<text>$course$/#{title}</text>
+</category>
+</question>
+][#}
 [#def}
 
 {#def]moodle_multichoice
@@ -95,7 +328,7 @@ end
 [#def}
 
 
-[#main][#<]
+### STUFF NOT USED ANYMORE!!!! 
 
 
 {#newBlck]moodle
@@ -188,162 +421,6 @@ end
 [#>]{#quizz_exo]:{name}[#mode]btn[#}<br/>
 #{questions}
 {#moodle_end]:{path}/:{name}[#}
-[#def}
-
-
-{#def]moodleTest[#,]code[]
-[#=]questions[][#=]txt[]
-[#rb<]## p ["code", #{=code}]
-[#rb<]code=#{=code}.strip
-codes=code.split(/\n\-{3,}/).map{|e| e.strip}
-## p ["codes",codes]
-reponses,qcm_texte="",""
-# header
-*path,name=codes[0].split("/")
-path=path.join("/")
-{#<]
-{#new]quizz[#of]Quizz,Quiz[#}
-{#quizz_init#}
-{#moodle_begin#}
-{#moodle_category]:{path}/:{name}[#}
-[#<}
-# questions
-codes[1..-1].each do |code| #
-## p ["code", code]
-  parts=code.split(/\n(\w*)\:\s*\n/m).map{|e| e.strip}
-## p [:parts, parts]
-  # première ligne pour la nature de la question
-  lignes=parts[0].split("\n")
-  cmd,*qcm_args=lignes[0].split(" ")
-  qcm_args=qcm_args.join(" ")
-  ## p ["cmd", cmd.downcase, lignes[1..-1]]
-  # deals  with other  parts:
-  topic, key={}, nil
-  parts[1..-1].each do |pa| #
-	if key
-		topic[key] = pa.strip
-		key = nil
-	else
-		# p ["key"]
-		key = pa.strip.downcase
-		# p ["key", key]
-		key = :answer if ["r","a","réponse","answer","réponses","answers"].include? key
-	end
-  end
-  #p ["topic", topic]
-  case cmd.downcase
-  when "qcm"
-	# only answer:
-	reponses=(topic[:answer] ? topic[:answer].strip : "")
-	enonce=lignes[1..-1].map{|ligne| #
-		if ligne[0,2]=="=>"
-			meth,*args=ligne[2..-1].strip.split(" ")
-			args=args.join(" ")
-			##p ["doMeth", [meth, name, args]]
-			{#<][#=]txt[{#doMeth][ :{meth} :{name} :{args}][#}][#rb<]qcm_texte=#{=txt}[#<}
-			##p ["qcm_texte", qcm_texte]
-			qcm_texte
-		else
-			##p ["ligne", ligne]
-			ligne
-		end
-	}.join("\n")
-
-	{#<]
-		{#within][:{qcm_args}]
-		[#+]questions[{#qcm]:{name}[#title]:{name}[#text]:{enonce}[#what]:{reponses}[#}]
-		[#within}
-	[#<}
-  when "quizz"
-	enonce=lignes[1..-1].join("\n")
-	reponses=(topic[:answer] ? topic[:answer].strip : "")
-	## p [:reponses, reponses]
-	{#<]
-		{#within][:{qcm_args}]
-		[#+]questions[{#qcm]quizz[#title]:{name}[#text]{#Question#} :{enonce}[#what]:{reponses}[#qcm}]
-		[#within}
-	[#<}
-  when "quizzz"
-	enonce=lignes[1..-1].join("\n")
-	reponses=(topic[:answer] ? topic[:answer].strip : "")
-	
-	## p [:reponses, enonce, reponses]
-	answers,*choices=reponses.split("\n")
-	choices = choices.filter{|e| e.length > 0}
-	answers.strip!
-	answers = answers[1...-1].split(",").map{|e| e.strip.to_i - 1}
-	# p [:reponses, answers, choices, choices.length]
-	reponses = []
-	choices.each_with_index{|item,i| #
-		reponses << ("c" + i.to_s + ((answers.include? i) ? "*: " : ": ") + item) 
-	}
-	## p [:choices, reponses]
-	#reponses.shuffle!(random: Random.new(Time.now.to_i))
-	ordre = ("sample(" + reponses.length.to_s + ")").to_R
-	## p [:ordre, ordre]
-	reponses_shuffle = ordre.map{|i| reponses[i-1]}
-	## p [:choices_shuffle, reponses_shuffle]
-	reponses = reponses_shuffle.join("\n")
-	{#<]
-		{#within][:{qcm_args}]
-		[#+]questions[{#qcm]quizz[#title]:{name}[#text]{#Question#} :{enonce}[#what]:{reponses}[#qcm}]
-		[#within}
-	[#<}
-  end
-end
-[#%]:{path}/:{name} </br>
-:{codes[1..-1].inspect} </br>
-:{reponses.inspect}
-[#rb<]#p ["questions",#{=questions}]
-[#>]{#quizz_exo]:{name}[#mode]btn[#}<br/>
-#{questions}
-{#moodle_end]:{path}/:{name}[#}
-[#def}
-
- 
-// Very nice function to 
-// define multi quizzz
-
-{#def]quizzzs[#,]options[]
-[#,]enonce[ ##item## ]
-[#,]items[]
-[#,]others[]
-[#rb<]
-enonce = #{=enonce}.strip
-text = #{=items}.strip.split("\n").map{|e| e.strip}
-#p [:debut, enonce, text]
-
-items, reponses = [], [], []
-ans_i = 0
-text.each do |item| #
-	case item[0...2]
-	when "=>"
-		reponses << item[2..-1].strip
-		ans_i += 1
-		items[-1][:answers] << ans_i
-	when "->"
-		extra_answers = item[2..-1].strip.split(",").map{|e| e.strip.to_i}
-		## p [:extra, extra_answers]
-		items[-1][:answers] += extra_answers
-	else
-		answer_indices = []
-		items << {enonce: item, answers: []}
-	end
-end
-
-#p [:items, items, reponses]
-others = #{=others}.strip.split("\n").map{|e| e.strip}
-
-reps = ""
-items.each_with_index do |item,i| #
-	reps << "---quizzz " + #{=options}.strip << "\n"
-	reps << enonce.gsub("##item##",item[:enonce]) << "\n"
-	reps << "R:" << "\n"
-	reps << "(" + item[:answers].map{|e| e.to_s}.join(", ") + ")\n"
-	reps << (reponses + others).join("\n") << "\n\n"
-end
-## p [:reps, reps]
-[#>][:{reps}]
 [#def}
 
 // Not sure to be useful now after the quizzz option in #moodleTest

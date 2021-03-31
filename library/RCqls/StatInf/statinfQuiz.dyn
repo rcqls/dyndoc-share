@@ -3,7 +3,7 @@
 [#R<]require(CqlsEAP)
 [#<]
 
-### qcmSrv.HypoTestExo provides any info related to .test object extracted from srv of class HypoTestExo (gathering .param and .test objects)
+### qcmSrv.ExoHypoTest provides any info related to .test object extracted from srv of class HypoTestExo (gathering .param and .test objects)
 
 {#meth]qcmSrv.ExoHypoTest[#,]what[]
 [#=]res[|
@@ -25,6 +25,9 @@
 [#when]stH0,StatTestH0[#>][\({#deltaEstH0ExprTex].test[#,]va[true][#}\)]
 [#when]lstH0,loiStatTestH0[#>][{#StatTestH0].test[#}]
 [#when]lstH0@y,loiStatTestH0@y[#>][{#StatTestH0].test[#,]va[false][#}]
+[#when]lstH0@vg,loiStatTestH0@vg[#>][{#StatTestH0].test[#,]va[true][#mode]v-g[#loiTex]{#loiStatH0].test[#mode]v-g[#}[#}]
+[#when]lstH0@lvg,loiStatTestH0@lvg[#>][{#StatTestH0].test[#,]va[true][#mode]v-g[#loiTex]{#loiStatH0].test[#}[#}]
+[#when]lstH0@mg,loiStatTestH0@mg[#>][{#StatTestH0].test[#,]va[true][#mode]m-g[#loiTex]{#loiStatH0].test[#mode]m-g[#}[#}]
 
 [#%]rdq | rdp@alpha | rdp@Y | rdp | rdp@> | rdp@qlim
 [#when]rdq,RDQ[#>][{#RD].test[#indic]q[#}]
@@ -34,18 +37,21 @@
 [#when]rdp@>[#>][{#qcmBadRD].test[#indic]p@>[#}]
 [#when]rdp@qlim[#>][{#qcmBadRD].test[#indic]p@qlim[#}]
 
-[#%]pvalR | pvalNum
+[#%]pvalR | pvalNum | pvalR@opp | pvalR@opp!= | pvalNum@opp | pvalNum@opp
 [#when]pvalR[#>][p-valeur\({#NotR#}\texttt{{#pvalR].test[#}}\)]
 [#when]pvalNum[#>][p-valeur\(={#pvalNum].test[#}\)]
 [#when]pvalR@q[#>][TODO]
+[#when]pvalR@opp[#>][p-valeur\({#NotR#}\texttt{{#pvalR].test[#side]opp[#}}\)]
+[#when]pvalR@opp!=[#>][p-valeur\({#NotR#}\texttt{{#pvalR].test[#side]opp!=[#}}\)]
+[#when]pvalNum@opp[#>][p-valeur\(={#pvalNumOpp].test[#}\)]
 
 [#%]deltaH0R | deltaH0Num | deltaLimLeftR | deltaLimRightR | deltaLimLeftNum | deltaLimRightNum
 [#when]deltaH0R[#>][\({#deltaEstH0Tex].test[#va]false[#}{#NotR#}\texttt{{#deltaH0R].test[#}}\)]
 [#when]deltaH0Num[#>][\({#deltaEstH0Tex].test[#va]false[#}={#deltaH0Num].test[#}\)]
-[#when]deltaLimLeftR[#>][\({#deltaLimTex].test[#side]<[#}{#NotR#} {#deltaLimR].test[#}\)]
-[#when]deltaLimRightR[#>][\({#deltaLimTex].test[#side]>[#}{#NotR#} {#deltaLimR].test[#}\)]
-[#when]deltaLimLeftNum[#>][\({#deltaLimTex].test[#side]<[#}={#deltaLimNum].test[#}\)]
-[#when]deltaLimRightNum[#>][\({#deltaLimTex].test[#side]>[#}={#deltaLimNum].test[#}\)]
+[#when]deltaLimLeftR[#>][\({#deltaLimTex].test[#side]<[#}{#NotR#} {#deltaLimR].test[#side]<[#}\)]
+[#when]deltaLimRightR[#>][\({#deltaLimTex].test[#side]>[#}{#NotR#} {#deltaLimR].test[#side]>[#}\)]
+[#when]deltaLimLeftNum[#>][\({#deltaLimTex].test[#side]<[#}={#deltaLimNum].test[#side]<[#}\)]
+[#when]deltaLimRightNum[#>][\({#deltaLimTex].test[#side]>[#}={#deltaLimNum].test[#side]>[#}\)]
 
 [#%]ppsn | ppsd | ppsp | ppp
 [#when]ppsn,PreSignNum[#>][{#PP].test[#,]sign-num[#}]
@@ -89,7 +95,7 @@
 [{#case]#{indic}
   [#when]p@>[#>][p-valeur > \(#{.alphaTex}\)]
   [#when]p@qlim[#>]
-    [p-valeur {#case]#{.side} [#when]<[#>] [ < \({#deltaLimTex]self[#side]<[#}\)] [#when]>[#>] [ >  \({#deltaLimTex]self[#side]>[#}\)] [#when]!=,\neq[#>] [ < \({#deltaLimTex]self[#,]>[#}\)] [#case}]
+    [p-valeur {#case]#{.side} [#when]<[#>] [ < \({#deltaLimTex]self[#type]<[#}\)] [#when]>[#>] [ >  \({#deltaLimTex]self[#type]>[#}\)] [#when]!=,\neq[#>] [ < \({#deltaLimTex]self[#type]>[#}\)] [#case}]
   [#when]q@alpha[#>]
     [{#case]#{.side}
     [#when]<[#>] [\({#deltaEstH0Tex]self[#,]false[#} < #{.alphaTex}\)]
