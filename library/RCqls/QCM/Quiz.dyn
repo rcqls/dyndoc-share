@@ -97,9 +97,30 @@ res = (res[-1,1]=="*" ? res[1..-3] : res[1..-2])
 [#>][:{res}]
 [#meth}
 
+
 {#meth]qcmAnswers.Quiz[#,]what[]
+[#=]res[]
+[#rb<]
+results, res = [], nil
+what = #{=what}.strip
+what = what.split("\n").map{|e| e.split(" | ").map{|e2| e2.strip}}.flatten
+what.each do |w| #
+  {#<][#=]res[{#qcmAns]self[#what]:{w}[#}][#<}
+  res = Dyndoc.vars["res"]
+  if results.include? res 
+    p [:qcmAnswersError, res , results, res == results[0]]
+  else
+    results << res
+  end
+end
+## p [:results,results]
+[#>][:{results.join("\n")}]
+[#meth}
+
+{#hide]{#meth]qcmAnswers.Quiz[#,]what[]
 [#=]txt[]
-[#rb<]what = #{=what}.strip
+[#rb<]
+what = #{=what}.strip
 what = what.split("\n").map{|e| e.split(" | ").map{|e2| e2.strip}}.flatten
 what.each do |w| #
   {#<][#+]txt[|
@@ -108,4 +129,4 @@ what.each do |w| #
   [#<}
 end
 [#>][#{txt}]
-[#meth}
+[#meth}[#hide}

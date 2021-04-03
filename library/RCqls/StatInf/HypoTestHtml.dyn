@@ -46,6 +46,7 @@ end
 [#rb<]puts '#new.param #of ParamFrame #in #{.Renvir} #paramType #{paramType} #sampleType #{sampleType} #,.nomPb[#{nomPb}] #,.yR[#{yR}] #,.ny[#{ny}] #,.nom1Pb[#{nom1Pb}] #,.y1R[#{y1R}] #,.n1y[#{n1y}] #,.nom2Pb[#{nom2Pb}] #,.y2R[#{y2R}] #,.n2y[#{n2y}] #,.thetaEstR[#{thetaEstR}]'
 [#<]{#new].param[#of]ParamFrame[#in]#{.Renvir}[#paramType]#{paramType}[#sampleType]#{sampleType}[#,].nomPb[#{nomPb}][#,].yR[#{yR}][#,].ny[#{ny}][#,].nom1Pb[#{nom1Pb}][#,].y1R[#{y1R}][#,].n1y[#{n1y}][#,].nom2Pb[#{nom2Pb}][#,].y2R[#{y2R}][#,].n2y[#{n2y}][#,].thetaEstR[#{thetaEstR}][#}
 {#new].test[#of]TestParam[#in]#{.Renvir}[#,].frame[:self.param][#,].side[#{side}][#,].indic[#{indic}][#,].theta0R[#{theta0R}][#,].alphaR[#{alphaR}][#,].affirmation[#{affirmation}][#}
+[#=].test.nomPb[#{nomPb}]
 [#meth}
 
 {#meth]redaction.TestParam[#,] type[s] [#>]
@@ -240,8 +241,11 @@ okH1<- pval<#{.alphaR}
 [#}]
 [#}
 
-{#meth]deltaEstH0Tex.TestParam[#,]va[true][#>]
-[{#Est]\delta_{#{.frame.thetaTex},#{.theta0Tex}}[#,]{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}[#}]
+{#meth]deltaEstH0Tex.TestParam[#,]va[true][#,]thetaTex[][#,]theta0Tex[]
+[#?]#{0?thetaTex}[#=]thetaTex[#{.frame.thetaTex}]
+[#?]#{0?theta0Tex}[#=]theta0Tex[#{.theta0Tex}][#?]end
+[#>]
+[{#Est]\delta_{#{thetaTex},#{theta0Tex}}[#,]{#if]#{va}[#>]#{.frame.YTex}[#else]#{.frame.yTex}[#}[#}]
 [#}
 
 {#meth]deltaEstH0ExprTex.TestParam[#,]va[true][#,]mode[]

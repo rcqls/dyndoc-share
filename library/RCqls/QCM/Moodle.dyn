@@ -52,12 +52,11 @@ codes[1..-1].each do |code| #
   case cmd.downcase
   when "text"
 	quizz_text_intro = code[4..-1].strip + "<br/>"
-	## 
-	p [:quizz_intro, quizz_text_intro]
+	## p [:quizz_intro, quizz_text_intro]
 	{#<][#+]questions[:{quizz_text_intro}][#<}
   when "cat"
 	cat = code[3..-1].strip
-	p [:new_category, cat]
+	## p [:new_category, cat]
 	{#<]{#moodle_new_category]:{path}/:{cat}[#}[#<}
   when "qcm"
 	# only answer:
@@ -103,6 +102,17 @@ codes[1..-1].each do |code| #
 	answers = answers[1...-1].split(",").map{|e| e.strip.to_i - 1}
 	# p [:reponses, answers, choices, choices.length]
 	reponses = []
+	## test same choices
+	unless choices.uniq.length == choices.length
+		dupli, alert = [], false
+		choices.each_with_index do |e,i| #
+			if choices[0...i].include? choices[i]
+				dupli << [i,e] 
+				alert= true if choices[i] == choices[0]
+			end
+		end
+		p [:ERRROR, alert , dupli ,choices.length - choices.uniq.length]
+	end
 	choices.each_with_index{|item,i| #
 		reponses << ("c" + i.to_s + ((answers.include? i) ? "*: " : ": ") + item) 
 	}

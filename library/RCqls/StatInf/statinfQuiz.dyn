@@ -112,6 +112,7 @@
 [#meth}
 
 
+{#hide]
 ##  convertir en qcmSrv comme ci-dessus 
 {#meth]qcmSrvRedStd.ExoHypoTest[#,]title[][#,]PP[][#,]H0[][#,]H1[][#,]StatTest[][#,]RD[][#,]Conclusion[]
 [#=]title[:{#{=title}.strip}]
@@ -153,4 +154,6 @@ end
 [#if}
 {#if]#{+?test.an}[#>]\noindent\underline{Conclusion}~: Au vu des données, \\
 #{test.an}[#if}]
-[#def}
+[#meth}
+
+[#hide}
