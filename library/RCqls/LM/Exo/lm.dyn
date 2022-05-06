@@ -7,7 +7,7 @@ RCqls/Exo/exos
   [#<]{#new].data[#of]Data[#,]#{df}[#,]#{rdata}[#}
   [#<]{#new].model[#of]LM[#,]:self.formula[#,]:self.data[#}
   [#>].objR[#{.model.objR}]
-  [#=].log[:{=#r{#{.objR}$log}}]
+  [#=].log[:R{#{.objR}$log}]
   [#=].y[:r{#{.objR}$vars[1]}]
   [#=].cpt@[0]
 [#}
@@ -327,7 +327,7 @@ Pour chacun des modèles, la prévision est donnée par la variable notée \text
 [#}
 
 
-{#meth]data.ExoLM[#,]data[#{.data.objR}][#,] out[##out | short=10,...,10] [#>]
+{#meth]data.ExoLM[#,]data[#{.data.objR}][#,]out[##out | short=10,...,10] [#>]
 [\noindent \textbf{Jeu de données}~:
 {#rverb]
 #{out}

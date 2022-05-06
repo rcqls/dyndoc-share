@@ -7,7 +7,7 @@ RCqls/Exo/exos
   [#<]{#new].data[#of]Data[#,]#{df}[#,]#{rdata}[#}
   [#<]{#new].model[#of]LM[#,]#{.y}~#{.x}[#,]:self.data[#}
   [#>].objR[#{.model.objR}]
-  [#rb>].log[:r{#{.objR}$log}]
+  [#>].log[:R{#{.objR}$log}]
   [#<]{#makeIndic]self[#}
   [#=].cpt@[0]
 [#}
@@ -34,7 +34,8 @@ RCqls/Exo/exos
 [#}
 
 {#meth]model.ExoLM1 [#>]
-  [On envisage un modèle linéaire expliquant la variable \texttt{#{.y}} en fonction de la seule variable  \texttt{#{.x}}. On tente une modélisation :{#{.log} ? "log-" : ""}linéaire du type~:
+  [On envisage un modèle linéaire expliquant la variable \texttt{#{.y}} en fonction de la seule variable  \texttt{#{.x}}. 
+  |On tente une modélisation :{#{.log} ? "log-" : ""}linéaire du type~:
   |$$ (#{.y})_i = \beta_0+\beta_1 (#{.x})_i+\Bruit_i, \qquad i=1,\ldots,#R{NROW(#{.data.objR})}$$]
 [#}
 

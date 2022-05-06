@@ -354,12 +354,12 @@ okH1<- pval<#{.alphaR}
   [#>]
     [{#if]#{titrePre}[#>] [{#b]Préliminaire[#} : ] [#if}]
   [#>]
-    [{#if]#{verifRPre}[#<]{#if]:r{#{.theta0R}>=0}[#=]theta0Rtmp[#{.theta0R}][#else][#=]theta0Rtmp[(#{.theta0R})][#if}[#>]
+    [{#if]#{verifRPre}[#<]{#if]:r{=#{.theta0R}>=0}[#=]theta0Rtmp[#{.theta0R}][#else][#=]theta0Rtmp[(#{.theta0R})][#if}[#>]
       [puisque  \(\mathtt{(mean(#{.frame.yR})-#{theta0Rtmp})}\simeq#r{(mean(#{.frame.yR})-#{.theta0R})}\) est du même signe (i.e. ]
-      [#>]{#if]:r{deltaEst.H0>=0}[#>]positif[#else]négatif[#if}[#>] que \(\mathtt{deltaEst.H0}\) |
+      [#>]{#if]:r{=deltaEst.H0>=0}[#>]positif[#else]négatif[#if}[#>] que \(\mathtt{deltaEst.H0}\) |
       |{#if]#{=.indic}=="p"[#>]
         [(car p-valeur gauche ]
-        [#>]{#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if}[#>][ à \(50\%\))]
+        [#>]{#if]:r{=leftpval<=.5}[#>]inférieure[#else]supérieure[#if}[#>][ à \(50\%\))]
       [#if}, on a :
     [#if}]
   [#>]
@@ -375,11 +375,12 @@ okH1<- pval<#{.alphaR}
   [#>]
     [{#if]#{verifRPre}[#>]
       [{#if]#{=.frame.paramType}+#{=.frame.sampleType}=="rvg"[#>] [{#hide] A Faire: ce n'est pas si évident!!! [#hide}]
-      [#else][#<]{#if]:r{#{.theta0R}>=0}[#=]theta0Rtmp[#{.theta0R}][#else][#=]theta0Rtmp[(#{.theta0R})][#if}[#>] [puisque \(\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R}}\) est du même signe (i.e. ]
-      [#>]{#if]:r{deltaEst.H0>=0}[#>]positif[#else][#>]négatif[#if}) que \(\mathtt{deltaEst.H0}\) |
+      [#else][#<]{#if]:r{=#{.theta0R}>=0}[#=]theta0Rtmp[#{.theta0R}][#else][#=]theta0Rtmp[(#{.theta0R})][#if}
+      [#>] [puisque \(\mathtt{(#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{theta0Rtmp})}\simeq#r{#{.frame.thetaEstFctR}(#{.frame.y1R})#{.frame.operation}#{.frame.thetaEstFctR}(#{.frame.y2R})-#{.theta0R}}\) est du même signe (i.e. ]
+      [#>]{#if]:r{=deltaEst.H0>=0}[#>]positif[#else][#>]négatif[#if}) que \(\mathtt{deltaEst.H0}\) |
       |{#if]#{=.indic}=="p"[#>]
         [(car p-valeur gauche ]
-        [#>]{#if]:r{leftpval<=.5}[#>]inférieure[#else]supérieure[#if}[#>][ à \(50\%\))]
+        [#>]{#if]:r{=leftpval<=.5}[#>]inférieure[#else]supérieure[#if}[#>][ à \(50\%\))]
       [#if}, on a :
       [#if}]
     [#if}]

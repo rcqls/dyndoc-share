@@ -1,6 +1,94 @@
 [#<]
 
-{#def]moodleTestHypo[#,]exo[][#,]q[q1]
+{#def]moodleTestPValeurMiniR[#,]exo[][#,]q[q1][#,]extra[][#,]cat[]
+[#,]refs[]
+[#,]sides[]
+[#,]texte[]
+[#,]questions[]
+[#,]indic[L'exercice se traite en <strong>proposant la valeur numérique de la p-valeur </strong>calculée avec <a href="https://probastat.dyndoc.fr/miniR" target="_blank">le MiniR du cours</a> qui s'ouvre dans un nouvel onglet en cliquant <a href="https://probastat.dyndoc.fr/miniR" target="_blank">ICI</a>. Quand nécessaire, charger au préalable le ou les jeux de données (sélection dans la liste au dessus du MiniR).<br> ##item## <br> <strong>Indication générale :</strong> lorsque le paramètre d'intérêt est un rapport de moyennes ou variances, l'ordre des paramètres est celui d'apparition dans l'exercice.]
+[#rb<]
+exo = #{=exo}.strip
+
+refs = #{=refs}.strip.split(",").map{|e| e.strip}
+sides = #{=sides}.strip.split(",").map{|e| e.strip}
+questions = #{=questions}.strip.split("\n").map{|e| e.strip} 
+
+m = [refs.length,sides.length,questions.length].max
+
+questions = questions * m if questions.length == 1
+refs = refs * m if refs.length == 1
+sides = sides * m if sides.length == 1
+
+[#=]test[:{exo}_#{q}_exo]
+[#=]envR[#{:{exo}_#{q}_envR}]
+[#=]param[#{#{test}.test.frame.paramType}]
+[#R<]pvals <- NULL
+[#rb<]
+# p [:testtttt, #{=test},#{=envR}, #{=param}]
+refRs = refs.dup
+refRs = refRs.map{|e| e + " / 100"} if #{=param} == "p" 
+texts = []
+pvalRs = []
+pvalNums = []
+refs.each_with_index do |ref,i| #
+  q = questions[i]
+  side = sides[i]
+  allSides = [side] + (["<",">",'!='] - [side])
+  #p [:allSides, allSides]
+  allSides.each do |s| #
+    text, pvalR = "", ""
+    # p [:s, s]
+    {#<]
+      [#=]text[{#doCall][:{q} #ref[:{ref}]][#}]
+      [#<]{#init]#{test}.test[#.theta0R]:{refRs[i]}[#.side]:{s}[#}
+      [#=]pvalR[{#pvalR]:#{test}.test[#}]
+      [#R<] #
+      print("#{pvalR}")
+      pvalR <- sprintf("%.7f",round(local({#{pvalR}},envir=.env4dyn$#{envR}),8))
+      pvals <- c(pvals,pvalR)
+      # 
+      print(pvals)
+      [#rb<]
+      text = #{=text}
+      pvalR = #{=pvalR}
+    [#<}
+    texts << text.gsub("\n"," ")
+    pvalRs << pvalR
+  end
+end
+[#rb<]
+pvalNums = :r{=pvals}
+q_items, q_choices = "", ""
+
+refs.each_with_index do |ref,i| #
+  q_items << texts[3*i] << "\n" << "=> " << pvalNums[i*3].to_s << "\n" 
+  q_choices << pvalNums[(i*3+1)...((i+1)*3)].join("\n") << "\n"
+end
+
+#p [:q_items, q_items]
+#p [:q_choices, q_choices]
+
+[#>]
+{#moodleTest]
+statinf/pval-miniR-:{exo}{#if]#{+?extra}[#>]-#{extra}[#}-#{q}
+
+{#if]#{+?cat}[#>]
+[---cat 
+pval-miniR-#{cat}]
+[#if}
+
+{#quizzzs][#cols[three]]
+[#enonce]#{indic}
+[#items]:{q_items}
+[#choices]:{q_choices}
+[#quizzzs}
+
+[#}
+
+[#def}
+
+
+{#def]moodleTestHypo[#,]exo[][#,]q[q1][#,]extra[]
 [#=]texte[#{#{exo}_texte} <br/>#{#{exo}_#{q}_texte}<br/>]
 [#=]test[#{exo}_#{q}_exo]
 [#=]indicQ[{#indicRTest]#{test}.test[#,]est,table,deltaH0Form,deltaH0[#}]
@@ -12,7 +100,7 @@ statinf/hypo-exo-#{exo}-#{q}
 
 ---cat
 
-hypo-exo-h1
+hypo-exo-h1{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -35,7 +123,7 @@ H0 | H0@< | H0@> | H0@!= | H0@Y
 
 ---cat
 
-hypo-exo-h0
+hypo-exo-h0{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -57,7 +145,7 @@ H1 | H1@<= | H1@>= | H1@=
 
 ---cat
 
-hypo-exo-stat-h0
+hypo-exo-stat-h0{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -78,7 +166,7 @@ lstH0 | lstH0@y | lstH0@vg | lstH0@lvg | lstH0@mg
 
 ---cat
 
-hypo-exo-rdq
+hypo-exo-rdq{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -105,7 +193,7 @@ rdp | rdp@> | rdp@qlim
 
 ---cat
 
-hypo-exo-rdp
+hypo-exo-rdp{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -133,7 +221,7 @@ rdq | rdq@alpha | rdq@Y
 
 ---cat
 
-hypo-exo-rdqR
+hypo-exo-rdqR{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -166,7 +254,7 @@ pvalR | pvalNum | pvalR@opp | pvalR@opp!= | pvalNum@opp
 
 ---cat
 
-hypo-exo-rdpR
+hypo-exo-rdpR{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---text
 
@@ -198,7 +286,7 @@ deltaH0R | deltaH0Num | deltaLimLeftR | deltaLimRightR | deltaLimLeftNum | delta
 [#}[#hide}
 
 ---cat
-hypo-exo-rdq-concl
+hypo-exo-rdq-concl{#if]#{+?extra}[#>]-#{extra}[#if}
 
 
 ---text
@@ -228,7 +316,7 @@ M:
 <br>
 
 ---cat
-hypo-exo-rdp-concl
+hypo-exo-rdp-concl{#if]#{+?extra}[#>]-#{extra}[#if}
 
 ---quizzz
 
@@ -282,11 +370,13 @@ deltaEst.H0 <- {#deltaEstH0R]self[#mode]#{modeDeltaH0R}[#}
 leftpval <- p#{.loiStatR}(deltaEst.H0#{.paramLoiStatR})
 pval <- {#pvalR]self[#side]#{side}[#}
 okH1 <- pval < #{.alphaR}
-[#rb<] p [:rdq, ":r{okH1} :r{pval} :r{deltaEst.H0} :r{leftpval}"]
 [#=]okH1[{#if]:R{okH1}[#>]ok[#else]nok[#}]
 [#=]pvaleurR[{#pLoiStatR]self[#side]#{side}[#mode]#{modeLoiStatR}[#deltaH0R]{#deltaEstH0R]self[#mode]#{modeDeltaH0R}[#}[#}]
-[#=]pvaleurNum[:r{round({#pLoiStatR]self[#side]#{side}[#mode]#{modeLoiStatNum}[#deltaH0R]{#deltaEstH0R]self[#mode]#{modeDeltaH0R}[#} [#} * 100,3)}]
+[#=]pvaleurNum[:r{round((#{pvaleurR}) * 100,3)}]
+[#=]pvaleurNumBADPREVIOUSVERSION[:r{round({#pLoiStatR]self[#side]#{side}[#mode]#{modeLoiStatNum}[#deltaH0R]{#deltaEstH0R]self[#mode]#{modeDeltaH0R}[#} [#} * 100,3)}]
 [#?]#{=pvaleurNum} == "NaN"[#=]pvaleurNum[:r{round(pval*100,3)}][#?]end
+[#rb<]# 
+p [:rdp, ":r{okH1} :r{pval} :r{deltaEst.H0} :r{leftpval} #{pvaleurNum}"]
 [#>]
 [\(p-valeur {#NotR#} \texttt{#{pvaleurR}} ≃ #{pvaleurNum}\%\)]
 [#meth}
@@ -409,7 +499,7 @@ okH1 <- pval < #{.alphaR}
 [#=]deltaLimR[\mathtt{#{deltaLim}}]
 [#=]deltaLimNum[:r{#{deltaLim}}]
 [#=]deltaEstH0Num[:r{{#deltaEstH0R]self[#mode]#{modeDeltaH0R}[#}}]
-[#rb<]p [:deltaEstH0Num, #{=deltaEstH0Num}, "NaN"]
+[#rb<]# p [:deltaEstH0Num, #{=deltaEstH0Num}]
 [#?]#{=deltaEstH0Num} == "NaN" [#=]deltaEstH0Num[:r{#{.deltaH0R}}][#?]end
 [#>]
 [\[\begin{aligned}|
