@@ -61,7 +61,7 @@ module QCM
   def QCM.read_project
     unless @@qcm[@@prj]
       qcmAMC=File.expand_path File.join("~",".qcmAMC",@@prj+".qcm")
-      #p [qcmAMC,(File.exists? qcmAMC)]
+      #p [qcmAMC,(File.exist? qcmAMC)]
       if File.exist? qcmAMC
         @@qcm[@@prj]=eval(File.read(qcmAMC))
         ##p [:qcm,$qcm[prj]]
@@ -191,10 +191,10 @@ end
 {#meth]qcm.QCM[#,]title[][#,]what[]
 [#=]items[]
 [#rb<]items_lines=#{=what}.split("\n").map{|lines| lines.strip.split(",").map{|e| e.strip}}.flatten
-items_lines.each do |line| #
+[#rb<]items_lines.each do |line| #
   items=line.split("|").map{|e| e.strip}
   items.each_with_index do |item,i| #
-    add=(i==items.length-1 ? "<\n>" : " | " )
+    add = (i == items.length-1 ? "<\n>" : " | " )
     {#<][#+]items[{#qcmSrv]self[#what]:{item}[#} :{add}][#<}
   end
 end

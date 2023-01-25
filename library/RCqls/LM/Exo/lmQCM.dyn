@@ -62,6 +62,8 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp and tmp.length > 1
 tmpLim.deltaH0Asymp<-qnorm(#{.qcm.deltaH0Asymp.alphaR})
 [#when]pvalAsymp[#r<](#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,1]}-(#{.qcm.pvalAsymp.betaRef}))/#R{#{.objR}$summary$coef[#{.qcm.pvalAsymp.indVar}+1,2]}->tmp
 pnorm(tmp)->tmpPValG
+#print(tmp)
+#print(#{.qcm.pvalAsymp.betaRef})
 [#when]colinCorr[#R<]
   tmp <-abs(cor(#{.df})[-#{.qcm.corr.yIndex},-#{.qcm.corr.yIndex}])
   index.tmp<-order(tmp,decreasing=TRUE)
@@ -179,9 +181,9 @@ tmp=tmp[0...-1].join(", ")+" et "+tmp[-1] if tmp.length > 1
 
 
   [#%]pvalAsymp
-  [#when]pvalAsymp-gaucheGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}{#if]#r{tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
-  [#when]pvalAsymp-droiteGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}{#if]#r{1-tmp.PValG<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
-  [#when]pvalAsymp-biGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}{#if]#r{(2*min(tmp.PValG,1-tmp.PValG))<#{.qcm.pvalAsymp.alphaR}}[#>]*[#}]
+  [#when]pvalAsymp-gaucheGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}<#{.qcm.pvalAsymp.betaRef}$}{#if]#R{tmp.PValG} < #{.qcm.pvalAsymp.alphaR}[#>]*[#}]
+  [#when]pvalAsymp-droiteGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}>#{.qcm.pvalAsymp.betaRef}$}{#if]#R{1-tmp.PValG} < #{.qcm.pvalAsymp.alphaR}[#>]*[#}]
+  [#when]pvalAsymp-biGood[#>][{$\beta_#{.qcm.pvalAsymp.indVar}\neq #{.qcm.pvalAsymp.betaRef}$}{#if]#R{(2*min(tmp.PValG,1-tmp.PValG))} < #{.qcm.pvalAsymp.alphaR}[#>]*[#}]
   [#when]pvalAsymp-gaucheBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}<#{.qcm.pvalAsymp.betaRef}$}]
   [#when]pvalAsymp-droiteBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad}>#{.qcm.pvalAsymp.betaRef}$}]
   [#when]pvalAsymp-biBadBeta2[#>][{$\beta_#{.qcm.pvalAsymp.indVarBad} \neq #{.qcm.pvalAsymp.betaRef}$}]

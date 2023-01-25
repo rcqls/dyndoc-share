@@ -8,6 +8,8 @@ RCqls/LM/Exo/lm1
 [#when]graph[#R<]
 beta0Est<-(coef(lm(#{.y}~#{.x}))->tmp)[1]
 beta1Est<-tmp[2]
+[#when]summary[#=].neg.deb[][#=].neg.fin[]
+[#?]:r{#{.objR}$summary$coeff[2,4]} > 0.05[#+].neg.deb[ ne ][#+].neg.fin[ pas ][#?]end
 [#case}
 [#meth}
 
@@ -53,11 +55,10 @@ beta1Est<-tmp[2]
   [#when]corr-R2_interpGood[#>][{plus $R^2$ proche de 1 plus les points sont alignés}*]
 
   [#%]summary
-  [#when]summary-pvalGood[#=]neg.deb[][#=]neg.fin[][#?]:r{#{.objR}$summary$coeff[2,4]>.05}[#+]neg.deb[ ne ][#+]neg.fin[ pas ][#?]end
-  [#>][{La dernière colonne #{neg.deb} laisse #{neg.fin} en particulier apparaître que la variable \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}}*]
+  [#when]summary-prelim[#<]{#qcmPrelim]self[#what]summary[#}
+  [#when]summary-pvalGood[#>][{La dernière colonne #{.neg.deb} laisse #{.neg.fin} en particulier apparaître que la variable \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}}*]
+  [#when]summary-pvalBad[#>][{On {#if]#{=.neg.deb}==""[#>]ne [#if}peut {#if]#{=.neg.deb}==""[#>]pas [#if}dire que \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}}]
   [#when]summary-R2Good[#>][{$R^2=:r{round(#{.objR}$summary$r.sq*100,2)}\%$}*]
-
-  [#when]summary-pvalBad[#>][{on ne peut pas dire que \texttt{#{.x}} semble apporter de l'information dans l'explication de la variable \texttt{#{.y}}}]
   [#when]summary-R2Bad[#>][{La part de variance expliquée par le modèle est de $56.68\%$}]
 
   [#%]graph

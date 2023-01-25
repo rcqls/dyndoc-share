@@ -10,7 +10,7 @@
     require 'fileutils'
     tmp=File.expand_path(File.dirname("#{img}"))
     #p tmp
-    FileUtils.mkdir_p(tmp) unless File.exists? tmp
+    FileUtils.mkdir_p(tmp) unless File.exist? tmp
     @vars[:img]=File.expand_path(@vars[:img])
     @vars[:rrcode]="> "+(@vars[:rrcode].split("\n").join("\n> "))
 [#r<]
@@ -34,7 +34,7 @@
     require 'fileutils'
     tmp=File.expand_path(File.dirname("#{img}"))
     #p tmp
-    FileUtils.mkdir_p(tmp) unless File.exists? tmp
+    FileUtils.mkdir_p(tmp) unless File.exist? tmp
     @vars[:img]=File.expand_path(@vars[:img])
 [#r<]
     if(#{newR} || !file.exists('#{img}')) {
@@ -54,7 +54,7 @@
 [#rb<]
     require 'fileutils'
     tmp=File.expand_path(File.dirname("#{img}"))
-    FileUtils.mkdir_p(tmp) unless File.exists? tmp
+    FileUtils.mkdir_p(tmp) unless File.exist? tmp
     @vars[:img]=File.expand_path(@vars[:img])
     #Dyndoc.warn "RFig:img",[@vars[:img],@vars[:device],@vars[:optR]]
 {#hide][#%]POUR DECODER! Affiche code executé dans le bloc #r< après le #hide
