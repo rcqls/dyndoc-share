@@ -1,0 +1,108 @@
+
+\documentclass[]{article}
+%Packages
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{aeguill}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage[a4paper,pdftex=true]{geometry}
+\usepackage{fancyvrb}
+
+%Preamble
+\usepackage{tikz}
+
+
+\definecolor{beaubleu}{rgb}{0.26,0.31,0.61}
+\definecolor{beauvert}{rgb}{0.27,0.52,0.42}
+
+%Styles
+
+%Title
+
+\begin{document}
+
+
+
+
+
+Le professeur de statistique tape dans son logiciel préféré (à préciser) les quatre instructions \texttt{R} suivantes calculant des \textbf{p$-$valeurs} associées à quelques questions particuli{\`e}res qu'il se pose~:
+
+
+\begin{Verbatim}[commandchars=\\\{\},fontfamily=courier,fontseries=b,fontsize=\small]
+> \textcolor{beaubleu}{# test 1}
+> \textcolor{beaubleu}{2*(1-pnorm((var(yExamC)-var(yExamD)-0)/seDVar(yExamC,yExamD)))}
+\textit{\textcolor{beauvert}{Erreur dans is.data.frame(x) : objet 'yExamC' introuvable}}
+> \textcolor{beaubleu}{# test 2}
+> \textcolor{beaubleu}{1-pnorm((mean(yExamC)-mean(yExamD)-1)/seDMean(yExamC,yExamD))}
+\textit{\textcolor{beauvert}{Erreur dans mean(yExamC) : objet 'yExamC' introuvable}}
+> \textcolor{beaubleu}{# test 3}
+> \textcolor{beaubleu}{2*(1-pnorm((var(yExamC)-var(yExamD)-0)/seDVar(yExamC,yExamD)))}
+\textit{\textcolor{beauvert}{Erreur dans is.data.frame(x) : objet 'yExamC' introuvable}}
+> \textcolor{beaubleu}{# test 4}
+> \textcolor{beaubleu}{1-pnorm((mean(yExamC)-mean(yExamD)-1)/seDMean(yExamC,yExamD))}
+\textit{\textcolor{beauvert}{Erreur dans mean(yExamC) : objet 'yExamC' introuvable}}
+\end{Verbatim}
+
+
+
+A la seule lecture de ces quatre instructions compl{\'e}tez le tableau suivant (\textbf{SANS} justification).\\
+\hspace*{-1.3cm}\begin{tabular}{|c|c|c|c|}\hline
+Test  & hypoth{\`e}se $H_1$ & Expression litt{\'e}rale de $H_1$ & {\small{Acceptation de $H_1$ }} \\
+\hline \hline
+<pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 6: 
+[:blck, :"=", [:named, "test", [:main, ":.test.3"]], :>, [:main, ""], [:for, [:args, [:main, "col in 0..3\n"]], :>, [:named, "result", [:main, ""], [:case, [:args, [:main, ":{col}\n"]], :when,  ...... [:args, [:main, ":{col}!=3"]], [:blck, :>, [:main, " & "]]], [:main, ""]], [:main, "\\\\\\hline\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 6: 
+[:blck, :"=", [:named, "test", [:main, ":.test.3"]], :>, [:main, ""], [:for, [:args, [:main, "col in 0..3\n"]], :>, [:named, "result", [:main, ""], [:case, [:args, [:main, ":{col}\n"]], :when,  ...... [:args, [:main, ":{col}!=3"]], [:blck, :>, [:main, " & "]]], [:main, ""]], [:main, "\\\\\\hline\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 6: 
+[:blck, :"=", [:named, "test", [:main, ":.test.3"]], :>, [:main, ""], [:for, [:args, [:main, "col in 0..3\n"]], :>, [:named, "result", [:main, ""], [:case, [:args, [:main, ":{col}\n"]], :when,  ...... [:args, [:main, ":{col}!=3"]], [:blck, :>, [:main, " & "]]], [:main, ""]], [:main, "\\\\\\hline\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 6: 
+[:blck, :"=", [:named, "test", [:main, ":.test.3"]], :>, [:main, ""], [:for, [:args, [:main, "col in 0..3\n"]], :>, [:named, "result", [:main, ""], [:case, [:args, [:main, ":{col}\n"]], :when,  ...... [:args, [:main, ":{col}!=3"]], [:blck, :>, [:main, " & "]]], [:main, ""]], [:main, "\\\\\\hline\n"]]
+</code></pre>\end{tabular}
+
+
+Associez {\`a} chacun des tests (1 {\`a} 4) pr{\'e}c{\'e}dents le graphique repr{\'e}sentant la r{\`e}gle de d{\'e}cision trac{\'e}e au seuil de 5\% bas{\'e}e sur $\Est{\delta_{\theta,\theta_0}}{y}$ not{\'e}e \texttt{deltaEst.H0} en \texttt{R} (\textbf{AVEC} justification). 
+
+\begin{pgfpicture}{0cm}{0cm}{15cm}{15cm}
+%print here the actors
+<pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre><pre style='background-color: #EBECE4;'><code>Dyn Runtime Error
+=> Leaving block depth 12: 
+[:blck, :"rb<", [:args, [:main, "@ind["\#\{\_elt\_\}"]+=1\n"]], :"=", [:named, "\#\{\_elt\_\}", [:main, ":self.content."]], :"=", [:named, "ind_\#\{\_elt\_\}", [:main, ""]], :yield, [:main, "default\n"]]
+</code></pre>
+\end{pgfpicture}
+
+
+
+
+
+\end{document}
+
+
+

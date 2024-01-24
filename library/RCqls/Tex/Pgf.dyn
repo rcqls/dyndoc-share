@@ -48,6 +48,7 @@ $dyn_pgf_rfig=0
 {#meth]new.PGFGroup[#,].first[][#,].last[][#<][#}
 
 {#meth]print.PGFGroup[#>]scene[#{.scene}] [#%]declare the scene name to be used inside the apply loop!
+[#rb<]#Dyndoc.warn :pgfgroupe_print_deb, [#{=.first}, #{=.last}]
 [#>]
 [#{.first}
 %print here the actors
@@ -56,6 +57,7 @@ $dyn_pgf_rfig=0
 [#>][\pgfputat{\pgfxy(#{actor.where})}{\pgfbox[#{actor.align}]{{#print]actor.elt[#}}}<\n>]
 [#}
 #{.last}]
+[#rb<]#Dyndoc.warn :pgfgroupe_print_fin
 [#}
 
 {#meth]add.PGFGroup[#,]_actor[][#,]_where[0.0,0.0][#,]_align[left,bottom]
@@ -95,6 +97,7 @@ local({
 [#?]end
 [#%]common treatments
 [#rb>].fname[File.join(File.dirname(#{=.img}),#{=.ObjectName})]
+[#%]Dyndoc.warn :pgfimg, [#{=.Class},#{=.type}, #{=.img}, #{=.ObjectName})]
 [#>][\pgfdeclareimage[width=#{.size.0}cm,height=#{.size.1}cm,interpolate=true]{#{.ObjectName}}{#{.img}}]
 [#}
 

@@ -29,7 +29,7 @@ cpt=-1
 {#meth]beginTab.InstrProbaHtml[#,]first[0][#,]last[0][#,]border[3][#>]
 <table border="#{border}">[#meth}
 
-{#meth]endTab.InstrProbaHtml[#>]<table>[#meth}
+{#meth]endTab.InstrProbaHtml[#>]</table>[#meth}
 
 {#meth]headAEP.InstrProbaHtml[#,]first[][#,]last[][#,]what[]
 [#>]<tr>

@@ -71,10 +71,17 @@ Rmk: method starting by qcmBad is generally only used for qcm goal!
 %%% Facility Class
 [#<]
 
+h1 peut être:
+1) mode :direct => un pointer dyndoc sur un exo (ici HypoTestExo mais pourrait être ExoHypoTest)
+2) mode :h1     => une expression de H1 pour générer un exo
+
 {#def]qcmSrvH1[#,]h1[][#,]what[][#,]cadre[a][#,]data[][#,]initR[][#,]envR[envHypoTestExo]
 [#rb<]h1=#{=h1}
-#p :h1;p h1
-if h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
+#Dyndoc.warn :h1, [(h1.is_a? Hash), h1["Class"]=="HypoTestExo"]
+if h1.is_a? Hash and h1["Class"]=="HypoTestExo"
+  mode=:direct
+  #Dyndoc.warn :h1_hash, mode
+elsif h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
   mode=:h1
   par,pb,side,refR= [$1,$2,$3,$4]
   #p [par,pb,side,refR]
@@ -83,16 +90,14 @@ if h1 =~ /^(p|m|v|md|dm|dv|rm|rv)\(([^\(\)]*)\)(<|>|\!\=)([^<>]*)$/
   else
     Dyndoc.warn "burk"
   end
-elsif h1.is_a? Hash and h1["Class"]=="HypoTestExo"
-  mode=:direct
 else
   mode=:as_is
   par=[] # as is
 end
-#p [#{=type},par,pb,pbs,refR]
 [#?]mode==:direct[#%]h1 is represented as Hash when it is a Dyndoc pointer or object
 [#=]qcmSrv[::{h1["ObjectName"]}]
 [#?]mode==:h1 and par.length==1
+[#rb<]#Dyndoc.warn :qcmSrvH1_modeH1_par1
 [#<]
 {#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
 [#,]:{par}[#,]#{cadre}[#,]nomPb[:{pb}]
@@ -102,6 +107,7 @@ if(#{=data} != "") load(path.data("#{data}.RData"))
 #{initR}
 [#new}
 [#?]mode==:h1 and par.length==2
+[#rb<]#Dyndoc.warn :qcmSrvH1_modeH1_par2
 [#<]{#new]qcmSrv[#of]HypoTestExo[#in]#{envR}
 [#,]:{par}[#,]#{cadre}[#,]nom1Pb[:{pbs[0]}][#,]nom2Pb[:{pbs[1]}]
 [#,]side[:{side}][#,]theta0R[:{refR}]
@@ -158,6 +164,8 @@ res_table.each_with_index do |res_ligne,li| #
     size=res_elt[:size] || ""
     size=#{=size} if size.empty? and #{+?size}
     QCM.add_question_item label, answer
+    #Dyndoc.warn :h1, h1
+    ## Rmq: Très intéressant h1 ici commence par ":" signifiant que c'est un "pointer" (ici un exo)
     {#>]\fbox{:{label}}~ {#if]size[#>]{:{size} [#}{#qcmSrvH1]:{h1}[#,]:{res_elt[:what] || "AsIs"}[#cadre]:{res_elt[:cadre] || "a"}[#data]:{res_elt[:data] || "#{data}"}[#initR]:{res_elt[:init] || ""}[#envR]:{res_elt[:env] ||"envHypoTestExo"}[#}{#if]size[#>]}[#} :{res_elt[:space] || '#{space}'}[#>}
   end
   {#>]\\[#>} if li != res_table.length-1
