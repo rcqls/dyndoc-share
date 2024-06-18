@@ -48,14 +48,47 @@ $dyn_pgf_rfig=0
 {#meth]new.PGFGroup[#,].first[][#,].last[][#<][#}
 
 {#meth]print.PGFGroup[#>]scene[#{.scene}] [#%]declare the scene name to be used inside the apply loop!
-[#rb<]#Dyndoc.warn :pgfgroupe_print_deb, [#{=.first}, #{=.last}]
+Dyndoc.warn :pgfgroupe_print_deb, [#{=.first}, #{=.last}]
 [#>]
 [#{.first}
 %print here the actors
-{#apply].actors[#,]actor
-[#?]#{=actor.where}.split(":").length>1[#>]actor.where[{#where]#{scene}[#,]#{actor.where}[#}][#?]end
-[#>][\pgfputat{\pgfxy(#{actor.where})}{\pgfbox[#{actor.align}]{{#print]actor.elt[#}}}<\n>]
+{#apply].actors[#,]actor[#>][\pgfputat{\pgfxy(#{actor.where})}{\pgfbox[#{actor.align}]{{#print]actor.elt[#}}}<\n>]
+[#apply}
+#{.last}]
+[#rb<]#Dyndoc.warn :pgfgroupe_print_fin
 [#}
+
+{#meth]apply.Array[#,]_elt_[elt]
+[#rb<]
+elt_ = #{=_elt_}
+@nb={} unless @nb
+@nb[elt_] = #{.content}.length
+@ind={} unless @ind
+@ind[elt_]=-1
+[#<]test :{elt_} :{@nb[elt_]}
+[#>]
+[{#loop][#rb<][@ind[elt_]+=1]
+[#=]#{_elt_}[:.content.:{@ind[elt_]}]
+[#=]ind_#{_elt_}[:{@ind[elt_]}]
+[#yield]default
+[#break]@ind[elt_]==@nb[elt_]-1
+[#}]
+[#rb<]@ind[elt_]=-1
+[#}
+
+{#meth]print.PGFGroup[#>]scene[#{.scene}] [#%]declare the scene name to be used inside the apply loop!
+Dyndoc.warn :pgfgroupe_print_deb, [#{=.first}, #{=.last}]
+[#>]
+[#{.first}
+]
+[#rb<]## p [:len, #{=.actors}.length]
+[#rb>](0...#{=.actors}.length).each do |i| #
+  {#>][#=]actor[.actors.:{i}]
+  [#?]#{=#{actor}.where}.split(":").length>1[#>]#{actor}.where[{#where]#{scene}[#,]#{actor}.where[#}][#?]end
+  [#>][\pgfputat{\pgfxy(#{#{actor}.where})}{\pgfbox[#{#{actor}.align}]{{#print]#{actor}.elt[#}}}<\n>]
+  [#>}
+end
+[#>] [
 #{.last}]
 [#rb<]#Dyndoc.warn :pgfgroupe_print_fin
 [#}

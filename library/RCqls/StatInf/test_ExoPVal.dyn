@@ -1,5 +1,5 @@
 [#require]HypoTest_PVal
-Tex/Cqls
+Rcqls/Tex/Cqls
 [#main]
 [#<] Contexte
 {#new]muECNotes[#of]ParamFrame[#in]muECNotes[#,]m[#,]a[#,].nomPb[EC][#,].yR[yExamC][#r<]

@@ -51,13 +51,16 @@ Test  & hypoth{\`e}se $H_1$ & Expression litt{\'e}rale de $H_1$ & {\small{Accept
 {#meth]graph.ExoPVal[#,]exam[std][#,]delta[false][#,]justif[true][#rb<]order=[#{.order}]
 [#>]Associez {\`a} chacun des tests (1 {\`a} 4) pr{\'e}c{\'e}dents le graphique repr{\'e}sentant la r{\`e}gle de d{\'e}cision trac{\'e}e au seuil de 5\% bas{\'e}e sur $\Est{\delta_{\theta,\theta_0}}{y}$ not{\'e}e \texttt{deltaEst.H0} en \texttt{R} ({#if]#{justif}[#>]\textbf{AVEC}[#else]\textbf{SANS}[#if} justification). 
 
-{#new]:pgf[#of]PGFScene[#,][<<[0]<<[0]<<[15]<<[15]][#}{#new]:img1[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.0[#}][#Renvir]#{.test.0.Renvir}[#}
+{#new]:pgf[#of]PGFScene[#,][<<[0]<<[0]<<[15]<<[15]][#}
+{#new]:img1[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.0[#}][#Renvir]#{.test.0.Renvir}[#}
 {#new]:img2[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.1[#}][#Renvir]#{.test.1.Renvir}[#}
 {#new]:img3[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.2[#}][#Renvir]#{.test.2.Renvir}[#}
 {#new]:img4[#of]PGFImg[#,][<<[7]<<[7]][#,]rcode[{#pvalRCode].test.3[#}][#Renvir]#{.test.3.Renvir}[#}
 
-{#add]:pgf[#,]:img:{order[0]}[#,]0,7.5[#}{#add]:pgf[#,]:img:{order[1]}[#,]7.5,7.5[#}
-{#add]:pgf[#,]:img:{order[2]}[#,]0,0[#}{#add]:pgf[#,]:img:{order[3]}[#,]7.5,0[#}
+{#add]:pgf[#,]:img:{order[0]}[#,]0,7.5[#}
+{#add]:pgf[#,]:img:{order[1]}[#,]7.5,7.5[#}
+{#add]:pgf[#,]:img:{order[2]}[#,]0,0[#}
+{#add]:pgf[#,]:img:{order[3]}[#,]7.5,0[#}
 
 {#new]:h1[#of]PGFRaw[#,]Graphique 1[#}{#add]:pgf[#,]:h1[#,]3.75,14[#,]center,center[#}
 {#new]:h2[#of]PGFRaw[#,]Graphique 2[#}{#add]:pgf[#,]:h2[#,]11.25,14[#,]center,center[#}
@@ -73,6 +76,9 @@ Test  & hypoth{\`e}se $H_1$ & Expression litt{\'e}rale de $H_1$ & {\small{Accept
 {#add]:pgf[#,]:txt:{order[2]}[#,]3.75,6[#,]center,center[#}
 {#add]:pgf[#,]:txt:{order[3]}[#,]11.25,6[#,]center,center[#}
 [#?]end[#>]
+{#hide][#hide}
 {#print]:pgf[#}
+
 {#Exam]#{exam}[#}
+
 [#meth}
