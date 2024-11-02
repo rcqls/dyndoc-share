@@ -1,4 +1,5 @@
 [#require]RCqls/LM/Exo/lm1
+RCqls/Exo/exosHtml
 CqlsLatexEcono
 RCqls/Styles/StdHtml
 [#main][#<]
